@@ -21,7 +21,7 @@ reflects reality. There is no sync step to forget.
 | Path | |
 |---|---|
 | `.zshrc` | Shell config, sectioned and indexed at the top |
-| `.zshenv`, `.zprofile` | Login/env stubs |
+| `.zprofile` | Login shell — sets up the Homebrew environment |
 | `.tmux.conf` | tmux + tpm plugins |
 | `.gitconfig` | Git identity, colors, aliases |
 | `.config/nvim/` | Neovim config — `init.lua`, `lsp/`, `lua/core/` |

@@ -19,7 +19,6 @@ STAMP="$(date +%Y%m%d-%H%M%S)"
 
 FILES=(
   .zshrc
-  .zshenv
   .zprofile
   .tmux.conf
   .gitconfig

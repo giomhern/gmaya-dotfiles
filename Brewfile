@@ -53,8 +53,6 @@ brew "grpcurl"
 brew "istioctl"
 # Java language specific implementation of the Language Server Protocol
 brew "jdtls"
-# Manage your Java environment
-brew "jenv"
 # Lightweight and flexible command-line JSON processor
 brew "jq"
 # Tool that can switch between kubectl contexts easily and create aliases
@@ -121,8 +119,6 @@ brew "yaml-language-server"
 brew "yq"
 # UNIX shell (command interpreter)
 brew "zsh"
-# Additional completion definitions for zsh
-brew "zsh-completions"
 # The AI coding agent built for the terminal.
 brew "anomalyco/tap/opencode", trusted: true
 # Software to interact with Atlassian Cloud from the terminal
@@ -149,6 +145,8 @@ brew "stripe/stripe-cli/stripe", trusted: true
 brew "supabase/tap/supabase", trusted: true
 # OpenJDK distribution from Amazon
 cask "corretto@17"
+# Docker Desktop — provides the docker CLI at /usr/local/bin/docker
+cask "docker-desktop"
 # Terminal emulator that uses platform-native UI and GPU acceleration
 cask "ghostty"
 # HTTP client from JetBrains IDEs available as a standalone CLI tool

@@ -50,7 +50,6 @@ path=(
   $JAVA_HOME/bin
   $HOME/.docker/bin
   $HOME/.local/bin
-  $HOME/.local/bin/nvim-nightly/bin
   $GOROOT/bin
   $GOPATH/bin
   $path
