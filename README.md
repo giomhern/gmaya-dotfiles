@@ -30,6 +30,37 @@ reflects reality. There is no sync step to forget.
 | `.config/btop/` | System monitor |
 | `Brewfile` | Everything installed via Homebrew |
 
+## Keys
+
+tmux prefix is `Ctrl-a`.
+
+| tmux | |
+|---|---|
+| `prefix` + `\|` / `-` | split right / down, in the current directory |
+| `prefix` + `c` | new window, in the current directory |
+| `Ctrl` + arrows | move between panes *and* nvim splits (no prefix) |
+| `prefix` + `Shift`+arrows | resize the pane — repeatable, keep tapping |
+| `prefix` + `z` | zoom / unzoom the pane |
+| `prefix` + `n` / `p` | next / previous window — repeatable |
+| `prefix` + `1`…`9` | jump to window (windows and panes are 1-indexed) |
+| `Alt-t` | toggle the floating scratch session (no prefix) |
+| `prefix` + `[` | copy mode — `v` select, `Ctrl-v` block, `y` copy, `Esc` out |
+| `prefix` + `r` | reload `~/.tmux.conf` |
+| `prefix` + `I` | install plugins (once, after a fresh clone) |
+
+| nvim | |
+|---|---|
+| `<leader>ff` / `fb` / `fr` | find files / buffers / recent |
+| `<leader>ss` / `sw` | grep project / word under cursor |
+| `<leader>ee` | file explorer at the current file's directory |
+| `gd` / `grr` / `gri` | definition / references / implementations |
+| `gO` / `gW` | symbols in this file / anywhere in the workspace |
+
+`gW` is the one to reach for in a large Java or Go repo — jdtls and gopls index
+the whole workspace, so jumping by symbol name beats walking a directory tree.
+`<leader>ff` for paths, `<leader>ss` for content, `<leader>ee` only when you
+actually want to *browse*.
+
 ## Notes
 
 **Java is pinned to 25.** `JAVA_HOME` targets `openjdk@25` explicitly, because
@@ -43,9 +74,18 @@ pane is running nvim and either forwards the key or moves the pane. Ctrl-hjkl is
 deliberately avoided: `Ctrl-j`/`Ctrl-k` belong to multicursor, and `Alt-j`/`Alt-k`
 move lines.
 
-**`Ctrl-t` belongs to tmux**, which binds it at the root key table for the popup
-session. It never reaches zsh, so fzf's Ctrl-T file widget is unreachable inside
-tmux. `Ctrl-r` and `Alt-c` are unaffected.
+**`Alt-t` toggles a floating scratch session** (`popup`), opened in the current
+pane's directory. Press it again from inside to dismiss. It used to be `Ctrl-t`,
+which was a bad choice twice over: root-table bindings never reach the pane, so
+it swallowed both fzf's Ctrl-T file widget and nvim's explorer open-in-new-tab.
+The popup command runs with `TMUX=` unset — tmux refuses to attach a session
+from inside an existing client otherwise, so the old binding just flashed and
+closed.
+
+**Windows name themselves** after the directory of the active pane
+(`automatic-rename-format`). The previous `after-new-window` hook opened a
+blocking rename prompt on every single window, including the ones tmux-resurrect
+creates while restoring. `prefix + ,` still renames by hand.
 
 **Neovim plugins** are managed by the built-in `vim.pack` and install into
 `~/.local/share/nvim`. Only `nvim-pack-lock.json` is tracked. First launch

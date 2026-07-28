@@ -778,6 +778,13 @@ vim.api.nvim_create_autocmd("LspAttach", {
       vim.keymap.set("n", "gD", function()
         vim.lsp.buf.declaration({ loclist = false })
       end)
+      -- Jump to any symbol in the project by name. Neovim binds "gO" to
+      -- document symbols out of the box but leaves workspace symbols unbound,
+      -- and it is the fastest way around a Java or Go codebase — jdtls and
+      -- gopls both index the whole workspace, so this beats walking the tree.
+      vim.keymap.set("n", "gW", function()
+        vim.lsp.buf.workspace_symbol()
+      end)
       vim.keymap.set("n", "grh", function()
         vim.lsp.inlay_hint.enable(not vim.lsp.inlay_hint.is_enabled())
       end)

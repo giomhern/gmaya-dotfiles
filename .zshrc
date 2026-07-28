@@ -200,7 +200,9 @@ webshare() {
 
 ts()  { tmux attach -t main || tmux new -s main; }              # main session
 tsn() { tmux attach -t $1 || tmux new -s $1; }                  # named session
-tp()  { tmux popup -E "tmux attach -t popup || tmux new -s popup"; }
+# Scratch popup. Same as the Alt-t binding in .tmux.conf; TMUX= is required or
+# tmux refuses to attach from inside an existing client.
+tp()  { tmux popup -E "TMUX= tmux new-session -A -s popup"; }
 tdm() { tmux display-message $1; }
 
 # --- misc ---------------------------------------------------------------------
