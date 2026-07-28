@@ -228,13 +228,9 @@ vim.keymap.set(
   { expr = true, silent = true }
 )
 
--- Move to window using the "Ctrl" and arrow keys. These are wired to
--- vim-tmux-navigator (see TMUX NAVIGATION below) so that walking off the edge
--- of the last split continues into the neighbouring tmux pane.
-vim.keymap.set("n", "<c-left>", "<cmd>TmuxNavigateLeft<cr>", { silent = true })
-vim.keymap.set("n", "<c-down>", "<cmd>TmuxNavigateDown<cr>", { silent = true })
-vim.keymap.set("n", "<c-up>", "<cmd>TmuxNavigateUp<cr>", { silent = true })
-vim.keymap.set("n", "<c-right>", "<cmd>TmuxNavigateRight<cr>", { silent = true })
+-- Splits are moved between with the built-in "Ctrl-w" + h/j/k/l (or arrows).
+-- Ctrl+arrows are deliberately unbound: macOS reserves them for Mission Control
+-- and space switching, so they never reach the terminal in the first place.
 
 -- Resize windows using "Shift" and arrow keys.
 vim.keymap.set("n", "<s-up>", "<cmd>resize +2<cr>")
@@ -1208,24 +1204,6 @@ end)
 vim.keymap.set("n", "<leader>gfL", function()
   require("core.picker").git_log()
 end)
-
---------------------------------------------------------------------------------
--- TMUX NAVIGATION
---------------------------------------------------------------------------------
-
--- Move between nvim splits and tmux panes with one set of keys. The keymaps
--- themselves live with the other window bindings near the top of this file;
--- ctrl+arrows are used rather than the plugin's default ctrl+hjkl, because
--- ctrl+j / ctrl+k belong to multicursor and alt+j / alt+k move lines.
-vim.g.tmux_navigator_no_mappings = 1
-
-vim.pack.add({
-  {
-    src = "https://github.com/christoomey/vim-tmux-navigator",
-    name = "vim-tmux-navigator",
-    version = "master",
-  },
-}, { confirm = false, load = true })
 
 --------------------------------------------------------------------------------
 -- MULTICURSOR

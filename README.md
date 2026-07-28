@@ -38,8 +38,9 @@ Three layers, three modifiers, almost no collisions:
 - **tmux** owns `Ctrl-a` (the prefix) and a couple of no-prefix keys.
 - **Neovim** owns everything else. Leader is `Space`.
 
-`Ctrl` + arrows is the one key that crosses a boundary, deliberately — see
-*Navigation crosses the tmux/nvim boundary* below.
+Nothing crosses a boundary, which means `prefix` + arrows moves tmux panes and
+`Ctrl-w` moves nvim splits — see *macOS owns Ctrl+arrows* below for why there is
+no single key for both.
 
 ### A day at the keyboard
 
@@ -60,9 +61,10 @@ pane to fill the window and again to restore it — reach for it constantly, it
 is faster than resizing. When you do need to resize, `prefix + Shift`+arrows
 repeats, so hold `Shift` and tap.
 
-**Move without thinking.** `Ctrl` + arrows, no prefix, crosses nvim splits and
-tmux panes identically. This is the keystroke you press most; it is worth the
-machinery behind it.
+**Move between panes** with `prefix` + arrows. It repeats, so `Ctrl-a` once then
+arrow, arrow, arrow walks the layout. Inside nvim, splits are `Ctrl-w` + `h`/`j`
+/`k`/`l` (or `Ctrl-w` + arrows). Two different keys for two different things —
+see *macOS owns Ctrl+arrows*.
 
 **Inside nvim, navigate by meaning, not by path.**
 
@@ -255,7 +257,9 @@ quickfix, then `<leader>rR` to rewrite every match across every file.
 
 | | |
 |---|---|
-| `Ctrl` + arrows | move between splits *and* tmux panes |
+| `Ctrl-w` + `h`/`j`/`k`/`l` | move between splits (arrows work too) |
+| `Ctrl-w` `s` / `v` | split horizontally / vertically |
+| `Ctrl-w` `o` | close every split but this one |
 | `Shift` + arrows | resize the split |
 | `<leader>y` | copy a reference to this file — menu of filename, relative path, absolute path, GitHub URL, or the diagnostic under the cursor |
 
@@ -269,11 +273,18 @@ the unversioned Homebrew `openjdk` formula tracks the newest release (26 at time
 of writing). `$JAVA_HOME/bin` leads `$PATH`, so nvim's `jdtls` and the shell
 always agree on a version. Bump both by editing the one `JAVA_HOME` line.
 
-**Navigation crosses the tmux/nvim boundary.** `Ctrl` + arrow keys move between
-Neovim splits and tmux panes with the same keystroke — tmux checks whether the
-pane is running nvim and either forwards the key or moves the pane. Ctrl-hjkl is
-deliberately avoided: `Ctrl-j`/`Ctrl-k` belong to multicursor, and `Alt-j`/`Alt-k`
-move lines.
+**macOS owns Ctrl+arrows.** This config used to bind them at the tmux root table
+to cross nvim splits and tmux panes with one keystroke: tmux inspected the
+pane's process list and either forwarded the key to nvim or moved the pane
+itself. It cannot work here. The macOS window server claims all four before any
+terminal sees them — `Ctrl-←`/`Ctrl-→` switch Spaces, `Ctrl-↑` is Mission
+Control, `Ctrl-↓` is Application Windows — and pressing one moved the whole
+desktop instead. The bindings and the `vim-tmux-navigator` plugin behind them
+are gone; panes are `prefix` + arrows, splits are `Ctrl-w`.
+
+Disabling the four shortcuts in *System Settings > Keyboard > Keyboard Shortcuts
+> Mission Control* would free the keys if the unified navigation is ever worth
+having back.
 
 **`Alt-t` toggles a floating scratch session** (`popup`), opened in the current
 pane's directory. Press it again from inside to dismiss. It used to be `Ctrl-t`,
