@@ -112,7 +112,7 @@ also copies and no longer snaps the view back to the prompt.
 |---|---|
 | `prefix` + `,` | rename this window by hand (overrides the auto-name) |
 | `prefix` + `n` / `p` | next / previous window — repeatable |
-| `prefix` + `&` / `x` | kill the window / the pane |
+| `prefix` + `x` / `&` | kill the pane / the window — `y` confirms, `Esc` backs out |
 | `prefix` + `d` | detach; everything keeps running |
 | `prefix` + `r` | reload `~/.tmux.conf` |
 | `prefix` + `I` | install plugins — once, after a fresh clone |
@@ -121,9 +121,177 @@ also copies and no longer snaps the view back to the prompt.
 Windows and panes are both 1-indexed, and windows renumber themselves when one
 closes, so `prefix + 3` always means the third window you can see.
 
+## Vim fundamentals
+
+Plain Vim, not this config — but you need it before any of the rest is useful.
+Where this setup changes a default, it says so.
+
+### Modes
+
+You start in **normal** mode, where letters are commands, not text. `Esc` always
+returns there. The rest of the table assumes normal mode.
+
+| | |
+|---|---|
+| `i` / `a` | insert **before** / **after** the cursor |
+| `I` / `A` | insert at the first non-blank / at end of line |
+| `o` / `O` | open a new line below / above and insert |
+| `v` / `V` | visual character / whole line |
+| `Ctrl-v` | visual **block** — column selection |
+| `:` | command line |
+| `Esc` | back to normal (here it also clears search highlight) |
+
+`I` and `A` are the ones worth drilling. "Jump to the start/end of this line and
+start typing" is a single keystroke, not `0` then `i`.
+
+### Moving
+
+| | |
+|---|---|
+| `h` `j` `k` `l` | left, down, up, right (arrows work too) |
+| `w` / `b` | forward / back one word |
+| `e` | end of the current word |
+| `W` `B` `E` | same, but whitespace-separated — skips punctuation |
+| `0` / `^` / `$` | start of line / first non-blank / end of line |
+| `f<char>` / `F<char>` | jump to next / previous `<char>` on this line |
+| `t<char>` / `T<char>` | jump just before / after it |
+| `;` / `,` | repeat the last `f`/`t` forward / backward |
+| `%` | jump to the matching bracket |
+| `{` / `}` | previous / next blank line — paragraph hops |
+| `Ctrl-d` / `Ctrl-u` | half a screen down / up |
+| `Ctrl-f` / `Ctrl-b` | full page down / up |
+| `H` / `M` / `L` | top / middle / bottom of the visible screen |
+| `zz` / `zt` / `zb` | scroll so the cursor sits centre / top / bottom |
+
+**A caveat specific to this config:** `j`, `k` and the up/down arrows are mapped
+to `gj`/`gk`, so they move by *visible* line rather than by real line. On a long
+wrapped line they step within it. Give a count (`5j`) and you get the normal
+behaviour back.
+
+### Jumping to a line
+
+| | |
+|---|---|
+| `gg` / `G` | first / last line of the file |
+| `42G` or `:42` | go to line 42 |
+| `Ctrl-g` | show where you are |
+| `Ctrl-o` / `Ctrl-i` | back / forward through the jump list |
+| ``` `` ``` | back to where you last jumped from |
+
+`Ctrl-o` is the undo button for navigation. Followed a definition three files
+deep? `Ctrl-o` three times walks you back out.
+
+### Searching in a file
+
+| | |
+|---|---|
+| `/text` then `Enter` | search forward |
+| `?text` | search backward |
+| `n` / `N` | next / previous match |
+| `*` / `#` | search for the word under the cursor, forward / back |
+| `:noh` | clear the highlight (or just press `Esc` here) |
+
+Search is case-sensitive unless the pattern is all lowercase. `\c` anywhere in
+the pattern forces case-insensitive: `/todo\c`.
+
+For searching *across* files, use `<leader>ss` — see [Searching](#searching).
+
+### Changing text
+
+Operators combine with the motions above: `d` + `w` deletes a word, `c` + `$`
+changes to end of line. That composition is the whole language.
+
+| | |
+|---|---|
+| `x` / `X` | delete the character under / before the cursor |
+| `dd` / `cc` | delete / change the whole line |
+| `D` / `C` | delete / change to end of line |
+| `dw` / `cw` | delete / change to the next word |
+| `d$` `d0` `dG` `dgg` | delete to end of line / start / end of file / start |
+| `r<char>` | replace one character, staying in normal mode |
+| `s` | delete the character and insert |
+| `J` | join this line with the next |
+| `~` | toggle the case of one character |
+| `.` | **repeat the last change** |
+| `u` / `Ctrl-r` | undo / redo |
+
+`.` is the highest-value key in Vim. Make a small edit, `n` to the next match,
+`.` to repeat it. Most of what people use multiple cursors for is `.` in a loop.
+
+**A second caveat:** Vim increments the number under the cursor with `Ctrl-a`
+and decrements with `Ctrl-x`. Here `Ctrl-a` belongs to multicursor instead, so
+only the decrement half survives. Use `:s` or multicursor for bulk number
+edits.
+
+### Text objects
+
+Operators also take objects: `i` for "inner", `a` for "around" (includes the
+delimiters).
+
+| | |
+|---|---|
+| `diw` / `ciw` | delete / change the word under the cursor |
+| `ci"` `ci'` `ci(` `ci[` `ci{` | change inside the quotes / brackets |
+| `ca(` | change the brackets *and* their contents |
+| `dit` / `cit` | delete / change inside an HTML or XML tag |
+| `dap` | delete a whole paragraph |
+
+`ci"` with the cursor anywhere inside a string replaces its contents. `ciw` with
+the cursor anywhere in a word replaces the word. Neither needs you to position
+precisely first.
+
+### Copy and paste
+
+| | |
+|---|---|
+| `yy` | yank (copy) the line |
+| `yw` / `y$` | yank a word / to end of line |
+| `p` / `P` | paste after / before the cursor |
+| `dd` then `p` | move a line |
+| `"+y` / `"+p` | yank to / paste from the **system** clipboard |
+
+Vim's registers are separate from the macOS clipboard. `"+` is the bridge. In
+visual mode, `"+y` copies the selection out to other apps.
+
+### Visual mode
+
+Select first, then act. `v` then a motion, then an operator.
+
+| | |
+|---|---|
+| `viw` | select the word |
+| `V` then `j` `j` | select three lines |
+| `d` / `y` / `c` | delete / yank / change the selection |
+| `<` / `>` | indent left / right — here the selection stays put |
+| `Ctrl-v` then `I` then `Esc` | insert the same text on every selected line |
+
+### Counts
+
+Almost anything takes a number prefix: `3dd` deletes three lines, `5j` moves
+down five, `2ci"` — the grammar is `count` + `operator` + `motion`.
+
+### Files, buffers, splits
+
+| | |
+|---|---|
+| `:w` / `:q` / `:wq` | write / quit / both |
+| `:q!` | quit, discarding changes |
+| `:e <file>` | open a file |
+| `:bn` / `:bp` / `:bd` | next / previous / close buffer |
+| `Ctrl-w` `s` / `v` | split horizontally / vertically |
+| `Ctrl-w` + `h` `j` `k` `l` | move between splits |
+| `Ctrl-w` `o` | close every split but this one |
+| `Ctrl-w` `q` | close this split |
+
+**One gotcha:** inside a directory buffer (the file explorer), `n`, `d`, `r`,
+`c`, `m` and `s` are rebound to create, delete, rename, copy, move and grep.
+They are file operations there, not motions. See
+[Explorer buffers](#explorer-buffers).
+
 ## Neovim reference
 
-Leader is `Space`. Mode is noted only where it isn't normal.
+Everything below is specific to this config. Leader is `Space`. Mode is noted
+only where it isn't normal.
 
 ### Moving around a codebase
 
@@ -293,6 +461,14 @@ it swallowed both fzf's Ctrl-T file widget and nvim's explorer open-in-new-tab.
 The popup command runs with `TMUX=` unset — tmux refuses to attach a session
 from inside an existing client otherwise, so the old binding just flashed and
 closed.
+
+**Kill confirmations are a centred menu**, not tmux's built-in
+`confirm-before`, which takes over the status line and leaves the cursor
+blinking next to the window name. `prefix + x` and `prefix + &` open a small
+themed box in the middle of the screen; `y` still confirms. The `menu-*` styles
+near the top of `.tmux.conf` spell out the macchiato hexes rather than using
+`#{@thm_*}`, because those only exist once catppuccin has loaded and tpm loads
+it asynchronously from the last line of the file.
 
 **Windows name themselves** after the directory of the active pane
 (`automatic-rename-format`). The previous `after-new-window` hook opened a
