@@ -32,34 +32,91 @@ reflects reality. There is no sync step to forget.
 
 ## Keys
 
-tmux prefix is `Ctrl-a`.
+Three layers, three modifiers, almost no collisions:
+
+- **Ghostty** owns `Cmd`. It is the only thing with a real window.
+- **tmux** owns `Ctrl-a` (the prefix) and a couple of no-prefix keys.
+- **Neovim** owns everything else. Leader is `Space`.
+
+`Ctrl` + arrows is the one key that crosses a boundary, deliberately — see
+*Navigation crosses the tmux/nvim boundary* below.
+
+### A day at the keyboard
+
+**Start.** `ts` attaches the `main` session, or creates it. You almost never
+start a second one; you make windows instead. tmux-continuum has been
+autosaving every 15 minutes, so a reboot costs you nothing — panes, layouts and
+working directories come back on their own.
+
+**One window per repo.** `prefix + c` opens a window in the current directory
+and it names itself after that directory, so the status bar reads `payments-api`
+rather than `zsh`. `prefix + 1…9` jumps straight to one. If you have more than
+about six open you have too many; `prefix + &` closes one.
+
+**Split for the job, not for the aesthetic.** `prefix + |` puts a pane to the
+right, `prefix + -` below. The useful shape for a service is editor left, and
+right split in two for a log tail and a shell. `prefix + z` zooms the focused
+pane to fill the window and again to restore it — reach for it constantly, it
+is faster than resizing. When you do need to resize, `prefix + Shift`+arrows
+repeats, so hold `Shift` and tap.
+
+**Move without thinking.** `Ctrl` + arrows, no prefix, crosses nvim splits and
+tmux panes identically. This is the keystroke you press most; it is worth the
+machinery behind it.
+
+**Inside nvim, navigate by meaning, not by path.**
+
+| | |
+|---|---|
+| `gW` | any symbol in the workspace — **start here in a big repo** |
+| `gO` | symbols in this file |
+| `gd` / `grr` / `gri` | definition / references / implementations |
+| `<leader>ff` | find a file by path |
+| `<leader>ss` | grep the project |
+| `<leader>sw` | grep the word under the cursor |
+| `<leader>fb` / `<leader>fr` | open buffers / recent files |
+| `<leader>ee` | file explorer, only when you genuinely want to browse |
+| `<leader>d` | diagnostics for the buffer into the location list |
+
+The ordering matters. `gW` beats everything else in a Java or Go codebase
+because jdtls and gopls index the whole workspace — type `PaymentControl` and
+land on the class, no idea where it lives. Fall back to `<leader>ff` when you
+know the filename, `<leader>ss` when you only know a string. `<leader>ee` is
+last resort: a directory tree is the slowest way to find anything you can name.
+
+**Edit.** `Ctrl-n` adds a cursor at the next occurrence of the word under the
+cursor, `Ctrl-a` at all of them — the fastest rename when it is textual rather
+than semantic. Use `grn` instead when it is a real symbol, so the LSP fixes
+imports and other files too. `Alt-j` / `Alt-k` move the current line or
+selection. `grf` formats.
+
+**Review before committing.** `]c` and `[c` walk hunks, `<leader>gss` stages
+one, `<leader>gsr` resets one, `<leader>gsp` previews. `<leader>gsb` blames the
+line. The `<leader>gf*` family opens fzf pickers over branches, status, stashes
+and log.
+
+**Scratch work goes in the popup.** `Alt-t` floats a shell over whatever you
+are doing, in the same directory. Run the one-off `docker compose logs`, the
+`mvn dependency:tree`, the `kubectl get pods`; `Alt-t` again dismisses it. Your
+pane layout is never disturbed for a throwaway command.
+
+**Copy something out.** `prefix + [` enters copy mode with vi keys — `v`
+selects, `Ctrl-v` for a block, `y` copies and exits, `Esc` leaves. Mouse drag
+also copies and no longer snaps the view back to the prompt.
+
+### The rest
 
 | tmux | |
 |---|---|
-| `prefix` + `\|` / `-` | split right / down, in the current directory |
-| `prefix` + `c` | new window, in the current directory |
-| `Ctrl` + arrows | move between panes *and* nvim splits (no prefix) |
-| `prefix` + `Shift`+arrows | resize the pane — repeatable, keep tapping |
-| `prefix` + `z` | zoom / unzoom the pane |
+| `prefix` + `,` | rename this window by hand (overrides the auto-name) |
 | `prefix` + `n` / `p` | next / previous window — repeatable |
-| `prefix` + `1`…`9` | jump to window (windows and panes are 1-indexed) |
-| `Alt-t` | toggle the floating scratch session (no prefix) |
-| `prefix` + `[` | copy mode — `v` select, `Ctrl-v` block, `y` copy, `Esc` out |
+| `prefix` + `d` | detach; everything keeps running |
 | `prefix` + `r` | reload `~/.tmux.conf` |
-| `prefix` + `I` | install plugins (once, after a fresh clone) |
+| `prefix` + `I` | install plugins — once, after a fresh clone |
+| `prefix` + `Ctrl-s` / `Ctrl-r` | save / restore the session by hand |
 
-| nvim | |
-|---|---|
-| `<leader>ff` / `fb` / `fr` | find files / buffers / recent |
-| `<leader>ss` / `sw` | grep project / word under cursor |
-| `<leader>ee` | file explorer at the current file's directory |
-| `gd` / `grr` / `gri` | definition / references / implementations |
-| `gO` / `gW` | symbols in this file / anywhere in the workspace |
-
-`gW` is the one to reach for in a large Java or Go repo — jdtls and gopls index
-the whole workspace, so jumping by symbol name beats walking a directory tree.
-`<leader>ff` for paths, `<leader>ss` for content, `<leader>ee` only when you
-actually want to *browse*.
+Windows and panes are both 1-indexed, and windows renumber themselves when one
+closes, so `prefix + 3` always means the third window you can see.
 
 ## Notes
 

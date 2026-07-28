@@ -38,7 +38,6 @@ export NODE_OPTIONS="--dns-result-order=ipv4first"
 # AWS
 export AWS_PROFILE=cnd-gmaya-sandbox-Standard_Administrator
 
-export OPENCODE_DISABLE_LSP_DOWNLOAD=true
 export GLAMOUR_STYLE=$HOME/.config/glamour-catppuccin-macchiato.json
 export ANTHROPIC_MODEL="claude-opus-5"
 
@@ -203,15 +202,6 @@ tsn() { tmux attach -t $1 || tmux new -s $1; }                  # named session
 # tmux refuses to attach from inside an existing client.
 tp()  { tmux popup -E "TMUX= tmux new-session -A -s popup"; }
 tdm() { tmux display-message $1; }
-
-# --- misc ---------------------------------------------------------------------
-
-# Fuzzy-resume a previous opencode session
-opencode-session() {
-  local sid
-  sid=$(opencode session list | tail -n +3 | fzf --with-nth 2.. --nth 1 | awk '{print $1}') || return
-  [[ -n $sid ]] && opencode -s "$sid"
-}
 
 # ------------------------------------------------------------------------------
 # 12. Tooling init  (keep last — these hook the prompt and precmd)

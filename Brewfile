@@ -1,12 +1,9 @@
-tap "anomalyco/tap"
 tap "atlassian/acli", trusted: true
 tap "azure/kubelogin", trusted: true
 tap "fluxcd/tap", trusted: true
 tap "hashicorp/tap", trusted: true
 tap "jetbrains/utils", trusted: true
 tap "segmentio/packages", "git@github.com:segmentio/homebrew-packages.git", trusted: true
-tap "stripe/stripe-cli", trusted: true
-tap "supabase/tap", trusted: true
 # Mozilla CA certificate store
 brew "ca-certificates"
 # Display directories as trees (with optional color/HTML output)
@@ -25,8 +22,6 @@ brew "bat"
 brew "btop"
 # Cloudflare Tunnel client (formerly Argo Tunnel)
 brew "cloudflared"
-# Secure runtime for JavaScript and TypeScript
-brew "deno"
 # Docker Credential Helper for Amazon ECR
 brew "docker-credential-helper-ecr"
 # General purpose Language Server
@@ -73,8 +68,6 @@ brew "maven"
 brew "tree-sitter"
 # Ambitious Vim-fork focused on extensibility and agility
 brew "neovim"
-# Open-source, cross-platform JavaScript runtime environment
-brew "node@24"
 # Development kit for the Java programming language
 brew "openjdk@25"
 # SDK for building Kubernetes applications
@@ -117,8 +110,6 @@ brew "yaml-language-server"
 brew "yq"
 # UNIX shell (command interpreter)
 brew "zsh"
-# The AI coding agent built for the terminal.
-brew "anomalyco/tap/opencode", trusted: true
 # Software to interact with Atlassian Cloud from the terminal
 brew "atlassian/acli/acli"
 # A Kubernetes credential (exec) plugin implementing azure authentication
@@ -137,10 +128,6 @@ brew "segmentio/packages/robo-tooling", trusted: true
 brew "segmentio/packages/robofiles", trusted: true
 # Connect to EC2 instances with SSM session manager
 brew "segmentio/packages/ssm-scripts", trusted: true
-# Stripe CLI utility
-brew "stripe/stripe-cli/stripe", trusted: true
-# Supabase CLI
-brew "supabase/tap/supabase", trusted: true
 # OpenJDK distribution from Amazon
 cask "corretto@17"
 # Docker Desktop — provides the docker CLI at /usr/local/bin/docker
