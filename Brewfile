@@ -69,8 +69,6 @@ brew "mage"
 brew "marksman"
 # Java-based project management
 brew "maven"
-# Polyglot runtime manager (asdf rust clone)
-brew "mise"
 # Incremental parsing library
 brew "tree-sitter"
 # Ambitious Vim-fork focused on extensibility and agility

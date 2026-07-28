@@ -11,7 +11,7 @@
 #   09. Completion styling
 #   10. Aliases
 #   11. Functions         archives, tmux
-#   12. Tooling init      mise, starship
+#   12. Tooling init      starship
 #
 # ------------------------------------------------------------------------------
 # 01. Environment
@@ -216,7 +216,5 @@ opencode-session() {
 # ------------------------------------------------------------------------------
 # 12. Tooling init  (keep last — these hook the prompt and precmd)
 # ------------------------------------------------------------------------------
-
-eval "$(mise activate zsh)"
 
 type starship_zle-keymap-select >/dev/null || eval "$(starship init zsh)"
