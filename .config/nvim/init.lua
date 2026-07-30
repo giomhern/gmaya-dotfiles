@@ -47,6 +47,7 @@ vim.opt.shada = "!,'100,<50,s10,h"
 vim.opt.cc = "80,120" -- Display rulers
 vim.opt.clipboard = "unnamedplus" -- Sync with system clipboard
 vim.opt.completeopt = { "menuone", "noselect", "fuzzy", "nosort", "popup" } -- Better completion experience
+vim.opt.pumheight = 10 -- Cap the completion menu; unbounded it blankets the file when completing near the bottom
 vim.opt.cursorline = true -- Enable highlighting of the current line
 vim.opt.expandtab = true -- Use spaces instead of tabs
 vim.opt.exrc = true -- Look for .nvim.lua files in the project directory
