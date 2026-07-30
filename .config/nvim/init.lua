@@ -48,6 +48,14 @@ vim.opt.cc = "80,120" -- Display rulers
 vim.opt.clipboard = "unnamedplus" -- Sync with system clipboard
 vim.opt.completeopt = { "menuone", "noselect", "fuzzy", "nosort", "popup" } -- Better completion experience
 vim.opt.pumheight = 10 -- Cap the completion menu; unbounded it blankets the file when completing near the bottom
+-- Keep LSP progress out of the cmdline. Neovim 0.12 defaults to "progress:c",
+-- which renders progress through the floating cmd / msg windows anchored to
+-- "laststatus". A chatty server -- jdtls reports "Building" continuously --
+-- grows that window to several rows and it does not shrink back, leaving a
+-- blank block over the statusline and the tildes below the last line. Most
+-- visible when inserting near the bottom of a file, where there is nothing
+-- else drawn down there. Progress is still in ":messages".
+vim.opt.messagesopt = "hit-enter,history:500,progress:"
 vim.opt.cursorline = true -- Enable highlighting of the current line
 vim.opt.expandtab = true -- Use spaces instead of tabs
 vim.opt.exrc = true -- Look for .nvim.lua files in the project directory
