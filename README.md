@@ -441,6 +441,27 @@ the unversioned Homebrew `openjdk` formula tracks the newest release (26 at time
 of writing). `$JAVA_HOME/bin` leads `$PATH`, so nvim's `jdtls` and the shell
 always agree on a version. Bump both by editing the one `JAVA_HOME` line.
 
+**Lombok needs a javaagent, and it is not in this repo.** Lombok generates
+members during annotation processing, so `log` from `@Slf4j`, the accessors from
+`@Getter` / `@Data` and the constructors from `@RequiredArgsConstructor` are
+absent from the source jdtls reads — every one of them reports as unresolved
+while Maven builds the project happily. IntelliJ bundles Lombok support; jdtls
+needs the jar attached as a javaagent so it can patch the compiler it uses
+internally. `lsp/jdtls.lua` adds the argument when the jar is present and starts
+normally when it is not, so a fresh machine still gets a working Java setup —
+just one that cannot see Lombok members until you run:
+
+```sh
+mkdir -p ~/.local/share/lombok
+cp ~/.m2/repository/org/projectlombok/lombok/1.18.46/lombok-1.18.46.jar \
+   ~/.local/share/lombok/lombok.jar
+```
+
+The jar lives outside the repo on purpose — 2MB of binary does not belong in
+dotfiles. Any recent Lombok works; keep it new enough for the JDK in
+`JAVA_HOME`, since Lombok support for a major Java release usually lands a few
+versions behind.
+
 **macOS owns Ctrl+arrows.** This config used to bind them at the tmux root table
 to cross nvim splits and tmux panes with one keystroke: tmux inspected the
 pane's process list and either forwarded the key to nvim or moved the pane
