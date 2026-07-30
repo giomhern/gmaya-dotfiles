@@ -156,12 +156,21 @@ start typing" is a single keystroke, not `0` then `i`.
 | `f<char>` / `F<char>` | jump to next / previous `<char>` on this line |
 | `t<char>` / `T<char>` | jump just before / after it |
 | `;` / `,` | repeat the last `f`/`t` forward / backward |
-| `%` | jump to the matching bracket |
+| `%` | jump to the matching bracket, and back again |
+| `]}` / `[{` | end / start of the enclosing `{ }`, from anywhere inside |
+| `])` / `[(` | end / start of the enclosing `( )` |
+| `]m` / `[m` | next / previous method **start** |
+| `]M` / `[M` | next / previous method **end** |
 | `{` / `}` | previous / next blank line — paragraph hops |
 | `Ctrl-d` / `Ctrl-u` | half a screen down / up |
 | `Ctrl-f` / `Ctrl-b` | full page down / up |
 | `H` / `M` / `L` | top / middle / bottom of the visible screen |
 | `zz` / `zt` / `zb` | scroll so the cursor sits centre / top / bottom |
+
+`%` needs the cursor on a bracket — though if it is not, it jumps forward to
+the first one on the line and matches that. `]}` needs nothing: it finds the
+end of the block you are standing in. For "end of this function" in Java or Go,
+`]M` goes straight there.
 
 **A caveat specific to this config:** `j`, `k` and the up/down arrows are mapped
 to `gj`/`gk`, so they move by *visible* line rather than by real line. On a long
@@ -239,6 +248,41 @@ delimiters).
 `ci"` with the cursor anywhere inside a string replaces its contents. `ciw` with
 the cursor anywhere in a word replaces the word. Neither needs you to position
 precisely first.
+
+**On a whole block**, the same objects do the work without any jumping:
+
+| | |
+|---|---|
+| `di{` / `ci{` | delete / clear a function or block body |
+| `ya{` | yank the block including its braces |
+| `=i{` | reindent the body |
+| `gci{` | comment out the body |
+| `va{` | select the block — press `a{` again to expand to the enclosing one |
+
+That last one is the quick way to climb out of nested scopes.
+
+### Commenting
+
+| | |
+|---|---|
+| `gc` (visual) | toggle comments on the selection |
+| `gcc` | toggle the current line |
+| `gcap` | comment the whole paragraph |
+| `gci{` | comment the enclosing block |
+| `gc3j` | this line and the three below |
+| `3gcc` | three lines |
+
+`gc` is a Neovim built-in, not a plugin, and it toggles — press it again to
+uncomment. The comment string comes from the buffer's `commentstring`, so it is
+`//` in Java and Go, `--` in Lua, `#` in shell, and it stays correct inside
+nested contexts like a `<script>` block in HTML.
+
+`gcap` and `gci{` are the ones worth keeping: comment out a whole function body
+without counting lines or selecting anything.
+
+One limit — `gc` uses line comments, never block comments. In Java you get `//`
+on each line rather than a `/* */` wrapper. That toggles cleanly, which is
+usually the point, but a real block comment you write by hand.
 
 ### Copy and paste
 
@@ -341,13 +385,45 @@ cursors over *text* in this buffer. Reach for `grn` on anything the LSP knows.
 
 ### Completion
 
+Two independent systems run at once. All of these are insert mode.
+
+**The LSP menu** appears on its own as you type — every server attaches with
+`autotrigger`.
+
 | | |
 |---|---|
-| `Ctrl-Space` (insert) | trigger completion |
-| `Ctrl-Enter` (insert) | accept the Copilot inline suggestion |
-| `Ctrl-Right` (insert) | accept the suggestion one word at a time |
-| `Ctrl-Up` / `Ctrl-Down` (insert) | cycle inline suggestions |
-| `Tab` / `Shift-Tab` (insert) | jump between snippet placeholders |
+| `Ctrl-n` / `Ctrl-p` | next / previous item (arrows work too) |
+| `Ctrl-y` | **accept** |
+| `Ctrl-e` | dismiss, keeping what you typed |
+| `Ctrl-Space` | trigger it manually when the menu is not up |
+| `Ctrl-s` | signature help — parameter hints |
+
+Two things catch people out. **`Enter` accepts *and* inserts a newline** — use
+`Ctrl-y`. And **`Tab` does not cycle the menu**; it is bound to snippet jumping
+and falls through to a literal tab, so muscle memory from VS Code misfires here.
+
+Nothing is preselected (`completeopt` carries `noselect`), so a `Ctrl-n` always
+comes before the `Ctrl-y`. In exchange, typing never silently commits to a
+completion. Also in that option: `fuzzy` so `stro` matches `StreamObserver`,
+`nosort` to keep the server's own ranking, and `popup` for the documentation
+preview beside the selected item.
+
+**Copilot** is separate — greyed-out inline text, no menu.
+
+| | |
+|---|---|
+| `Ctrl-Enter` | accept the whole suggestion |
+| `Ctrl-Right` | accept one word at a time |
+| `Ctrl-Up` / `Ctrl-Down` | cycle alternatives |
+
+Word-by-word is the underrated one: take the first half of a suggestion and
+type the rest yourself.
+
+**Snippets.** Accepting a method completion usually inserts placeholders.
+
+| | |
+|---|---|
+| `Tab` / `Shift-Tab` | jump between snippet placeholders |
 
 ### Diagnostics and quickfix
 
