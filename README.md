@@ -3,6 +3,31 @@
 Personal macOS setup: zsh, tmux, Neovim, and the Catppuccin Macchiato theming
 that ties them together.
 
+## Contents
+
+- [Install](#install) · [What's here](#whats-here)
+- [Keys](#keys) — [a day at the keyboard](#a-day-at-the-keyboard) ·
+  [the rest of tmux](#the-rest-of-tmux)
+- [Vim fundamentals](#vim-fundamentals) — [modes](#modes) ·
+  [moving](#moving) · [jumping to a line](#jumping-to-a-line) ·
+  [searching in a file](#searching-in-a-file) ·
+  [changing text](#changing-text) · [text objects](#text-objects) ·
+  [commenting](#commenting) · [copy and paste](#copy-and-paste) ·
+  [visual mode](#visual-mode) · [counts](#counts) ·
+  [files, buffers, splits](#files-buffers-splits)
+- [Neovim reference](#neovim-reference) —
+  [moving around a codebase](#moving-around-a-codebase) ·
+  [searching](#searching) · [editing](#editing) ·
+  [completion](#completion) ·
+  [diagnostics and quickfix](#diagnostics-and-quickfix) · [git](#git) ·
+  [explorer buffers](#explorer-buffers-netrw) ·
+  [fzf pickers](#inside-any-fzf-picker) ·
+  [windows and misc](#windows-and-misc)
+- [Notes](#notes) · [Secrets](#secrets) · [Credit](#credit)
+
+New to Vim? Start with [Vim fundamentals](#vim-fundamentals). Everything under
+[Neovim reference](#neovim-reference) is specific to this config.
+
 ## Install
 
 ```sh
