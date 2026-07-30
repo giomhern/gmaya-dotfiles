@@ -14,11 +14,9 @@ vim.g.loaded_gzip = 1
 vim.g.loaded_logiPat = 1
 vim.g.loaded_matchit = 1
 vim.g.loaded_matchparen = 1
-vim.g.loaded_netrw = 1
-vim.g.loaded_netrw_gitignore = 1
-vim.g.loaded_netrwFileHandlers = 1
-vim.g.loaded_netrwPlugin = 1
-vim.g.loaded_netrwSettings = 1
+-- netrw is deliberately NOT disabled. It is the only directory browser Neovim
+-- ships, so switching it off leaves ":e <dir>" and "nvim ." opening an empty,
+-- filetype-less buffer. See the EXPLORER section below.
 vim.g.loaded_remote_plugins = 1
 vim.g.loaded_rplugin = 1
 vim.g.loaded_rrhelper = 1
@@ -430,17 +428,21 @@ vim.cmd.colorscheme("catppuccin-nvim")
 -- EXPLORER
 --------------------------------------------------------------------------------
 
--- Open the built-in directory browser (the "dir" plugin) for the directory of
--- the current buffer, or the current working directory when the buffer has no
--- name. Editing a directory path opens a read-only listing that can be
--- navigated with "<CR>" (open entry) and "-" (parent directory). The
--- "core.explorer" module adds file operations to these directory buffers:
--- "<Tab>" marks files, "<C-s>", "<C-v>" and "<C-t>" open the marked files (or
--- the entry under the cursor) in a split, vertical split or new tab, "<C-q>"
--- lists all marks in the quickfix list, "s" greps the directory, "n" creates a
--- new file, "d" deletes, "r" renames, "m" moves and "c" copies the marked files
--- into the current directory and "=" diffs two marked files.
-require("core.explorer").setup()
+-- Directory browsing is netrw, which Neovim ships. Editing a directory path
+-- ("nvim .", ":e src/", or "<leader>ee" below) opens a listing navigated with
+-- "<CR>" to open and "-" to go up. netrw's own file operations are "%" to
+-- create a file, "d" a directory, "D" to delete, "R" to rename.
+--
+-- "core.explorer" is NOT loaded. It was written against a directory browser
+-- that set "filetype=directory" and rendered one entry per line with no header
+-- -- a built-in that existed in a Neovim nightly but never shipped in a
+-- release. netrw sets "filetype=netrw" and draws a banner, so the module's
+-- line-to-path parsing does not apply to it. The file is kept because the
+-- marking, bulk move/copy and directory-grep it adds are worth reviving if
+-- this ever moves to oil.nvim or a hand-rolled listing.
+vim.g.netrw_banner = 0
+vim.g.netrw_liststyle = 1
+vim.g.netrw_sizestyle = "H"
 
 vim.keymap.set("n", "<leader>ee", function()
   local bufname = vim.api.nvim_buf_get_name(0)

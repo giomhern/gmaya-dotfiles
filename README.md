@@ -283,10 +283,9 @@ down five, `2ci"` — the grammar is `count` + `operator` + `motion`.
 | `Ctrl-w` `o` | close every split but this one |
 | `Ctrl-w` `q` | close this split |
 
-**One gotcha:** inside a directory buffer (the file explorer), `n`, `d`, `r`,
-`c`, `m` and `s` are rebound to create, delete, rename, copy, move and grep.
-They are file operations there, not motions. See
-[Explorer buffers](#explorer-buffers).
+**One gotcha:** inside a netrw directory listing, `d`, `D` and `R` create a
+directory, delete, and rename. They are file operations there, not motions. See
+[Explorer buffers](#explorer-buffers-netrw).
 
 ## Neovim reference
 
@@ -389,21 +388,30 @@ On a PR the `prlsp` client adds `<leader>ghc` to comment (works on a visual
 range), `<leader>ghr` to reply, `<leader>ghs` to show the thread, `<leader>ghu`
 to refresh.
 
-### Explorer buffers
+### Explorer buffers (netrw)
 
-Directory buffers open with `<leader>ee` or by editing a path. `<CR>` opens, `-`
-goes up.
+Open a listing with `<leader>ee` (the current file's directory), `nvim .`, or
+`:e <dir>`. The browser is netrw, Neovim's built-in.
 
 | | |
 |---|---|
-| `Tab` | mark a file (works over a visual range) |
-| `Esc` | clear all marks |
-| `n` / `d` / `r` | create / delete / rename |
-| `m` / `c` | move / copy the marked files here |
-| `Ctrl-s` / `Ctrl-v` / `Ctrl-t` | open in split / vsplit / tab |
-| `Ctrl-q` | marked files into the quickfix list |
-| `s` | grep this directory |
-| `=` | diff two marked files |
+| `Enter` | open the file or descend into the directory |
+| `-` | up to the parent directory |
+| `%` | create a new file here |
+| `d` | create a new directory |
+| `D` | delete the file or directory under the cursor |
+| `R` | rename it |
+| `o` / `v` | open in a horizontal / vertical split |
+| `t` | open in a new tab |
+| `i` | cycle the listing style — thin, long, wide, tree |
+| `gh` | toggle hidden files |
+| `Ctrl-l` | refresh the listing |
+
+The banner is off and the listing shows sizes and dates
+(`netrw_liststyle = 1`). Press `i` twice for the tree view if you prefer it.
+
+Note `D` and `R` are capitals. Lowercase `d` makes a directory — an easy way to
+create something you did not mean to.
 
 ### Inside any fzf picker
 
