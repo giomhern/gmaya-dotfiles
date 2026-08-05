@@ -351,7 +351,7 @@ vim.pack.add({
 -- Setup the Catppuccin theme, by disabling all default integrations and only
 -- activating the integrations we are really using.
 require("catppuccin").setup({
-  flavour = "macchiato",
+  flavour = "mocha",
   default_integrations = false,
   integrations = {
     gitsigns = true,

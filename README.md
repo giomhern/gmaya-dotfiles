@@ -1,6 +1,6 @@
 # dotfiles
 
-Personal macOS setup: zsh, tmux, Neovim, and the Catppuccin Macchiato theming
+Personal macOS setup: zsh, tmux, Neovim, and the Catppuccin Mocha theming
 that ties them together.
 
 ## Contents
@@ -596,7 +596,7 @@ closed.
 `confirm-before`, which takes over the status line and leaves the cursor
 blinking next to the window name. `prefix + x` and `prefix + &` open a small
 themed box in the middle of the screen; `y` still confirms. The `menu-*` styles
-near the top of `.tmux.conf` spell out the macchiato hexes rather than using
+near the top of `.tmux.conf` spell out the mocha hexes rather than using
 `#{@thm_*}`, because those only exist once catppuccin has loaded and tpm loads
 it asynchronously from the last line of the file.
 

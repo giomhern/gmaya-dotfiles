@@ -7,7 +7,7 @@
 #   05. History
 #   06. Keybindings
 #   07. Shell options
-#   08. Theme             shared catppuccin-macchiato palette (fzf, bat)
+#   08. Theme             shared catppuccin-mocha palette (fzf, bat)
 #   09. Completion styling
 #   10. Aliases
 #   11. Functions         archives, tmux
@@ -38,7 +38,7 @@ export NODE_OPTIONS="--dns-result-order=ipv4first"
 # AWS
 export AWS_PROFILE=cnd-gmaya-sandbox-Standard_Administrator
 
-export GLAMOUR_STYLE=$HOME/.config/glamour-catppuccin-macchiato.json
+export GLAMOUR_STYLE=$HOME/.config/glamour-catppuccin-mocha.json
 export ANTHROPIC_MODEL="claude-opus-5"
 
 # ------------------------------------------------------------------------------
@@ -133,7 +133,7 @@ setopt interactive_comments    # allow # comments at the prompt
 # 08. Theme
 # ------------------------------------------------------------------------------
 
-export BAT_THEME="Catppuccin Macchiato"
+export BAT_THEME="Catppuccin Mocha"
 
 # Shared by FZF_DEFAULT_OPTS and fzf-tab so both stay in sync.
 _FZF_BINDS=(
@@ -145,7 +145,7 @@ _FZF_BINDS=(
   --bind home:preview-top
   --bind end:preview-bottom
 )
-_FZF_COLORS='--color=fg:#cad3f5,fg+:#cad3f5,bg:#24273a,bg+:#363a4f,border:#6e738d,label:#6e738d,spinner:#c6a0f6,hl:#ed8796,hl+:#ed8796,header:#ed8796,info:#c6a0f6,pointer:#c6a0f6,marker:#f4dbd6,prompt:#c6a0f6'
+_FZF_COLORS='--color=fg:#cdd6f4,fg+:#cdd6f4,bg:#1e1e2e,bg+:#313244,border:#6c7086,label:#6c7086,spinner:#cba6f7,hl:#f38ba8,hl+:#f38ba8,header:#f38ba8,info:#cba6f7,pointer:#cba6f7,marker:#f5e0dc,prompt:#cba6f7'
 
 eval "$(fzf --zsh)"
 
