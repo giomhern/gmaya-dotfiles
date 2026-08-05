@@ -1,5 +1,5 @@
 # Theme
-theme = light:Catppuccin Latte,dark:Catppuccin Macchiato
+theme = "Catppuccin Macchiato"
 font-family = "Cascadia Mono NF"
 font-synthetic-style = false
 font-size = 12

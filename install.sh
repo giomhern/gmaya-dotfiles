@@ -23,7 +23,6 @@ FILES=(
   .tmux.conf
   .gitconfig
   .config/starship.toml
-  .config/starship-latte.toml
   .config/ghostty
   .config/nvim
   .config/btop

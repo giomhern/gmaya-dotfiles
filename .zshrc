@@ -7,7 +7,7 @@
 #   05. History
 #   06. Keybindings
 #   07. Shell options
-#   08. Theme             catppuccin latte/macchiato, chosen by macOS appearance
+#   08. Theme             shared catppuccin-macchiato palette (fzf, bat)
 #   09. Completion styling
 #   10. Aliases
 #   11. Functions         archives, tmux
@@ -38,6 +38,7 @@ export NODE_OPTIONS="--dns-result-order=ipv4first"
 # AWS
 export AWS_PROFILE=cnd-gmaya-sandbox-Standard_Administrator
 
+export GLAMOUR_STYLE=$HOME/.config/glamour-catppuccin-macchiato.json
 export ANTHROPIC_MODEL="claude-opus-5"
 
 # ------------------------------------------------------------------------------
@@ -132,41 +133,7 @@ setopt interactive_comments    # allow # comments at the prompt
 # 08. Theme
 # ------------------------------------------------------------------------------
 
-# The Catppuccin flavour follows the macOS appearance: latte when the system is
-# light, macchiato when it is dark. AppleInterfaceStyle only exists while dark
-# mode is on — in light mode the key is absent and `defaults read` fails, which
-# is the documented way to detect this.
-#
-# Ghostty and Neovim handle themselves and switch live (ghostty/config sets both
-# flavours at once; Neovim asks the terminal for its background color). The
-# tools below are configured through environment variables, so they are decided
-# once per shell: after flipping appearance, open a new shell to catch them up.
-if defaults read -g AppleInterfaceStyle &>/dev/null; then
-  export CATPPUCCIN_FLAVOR="macchiato"
-else
-  export CATPPUCCIN_FLAVOR="latte"
-fi
-
-export GLAMOUR_STYLE=$HOME/.config/glamour-catppuccin-$CATPPUCCIN_FLAVOR.json
-
-if [[ $CATPPUCCIN_FLAVOR == latte ]]; then
-  export BAT_THEME="Catppuccin Latte"
-  export STARSHIP_CONFIG=$HOME/.config/starship-latte.toml
-  _FZF_COLORS='--color=fg:#4c4f69,fg+:#4c4f69,bg:#eff1f5,bg+:#ccd0da,border:#9ca0b0,label:#9ca0b0,spinner:#8839ef,hl:#d20f39,hl+:#d20f39,header:#d20f39,info:#8839ef,pointer:#8839ef,marker:#dc8a78,prompt:#8839ef'
-else
-  export BAT_THEME="Catppuccin Macchiato"
-  export STARSHIP_CONFIG=$HOME/.config/starship.toml
-  _FZF_COLORS='--color=fg:#cad3f5,fg+:#cad3f5,bg:#24273a,bg+:#363a4f,border:#6e738d,label:#6e738d,spinner:#c6a0f6,hl:#ed8796,hl+:#ed8796,header:#ed8796,info:#c6a0f6,pointer:#c6a0f6,marker:#f4dbd6,prompt:#c6a0f6'
-fi
-
-# btop can only name one theme file in its config, so btop.conf points at
-# themes/current.theme and we repoint that symlink instead. Guarded so a shell
-# start does no disk write in the common case where it already matches.
-_btop_theme=$HOME/.config/btop/themes/current.theme
-if [[ "$(readlink $_btop_theme 2>/dev/null)" != "catppuccin_$CATPPUCCIN_FLAVOR.theme" ]]; then
-  ln -sfn "catppuccin_$CATPPUCCIN_FLAVOR.theme" "$_btop_theme" 2>/dev/null
-fi
-unset _btop_theme
+export BAT_THEME="Catppuccin Macchiato"
 
 # Shared by FZF_DEFAULT_OPTS and fzf-tab so both stay in sync.
 _FZF_BINDS=(
@@ -178,8 +145,7 @@ _FZF_BINDS=(
   --bind home:preview-top
   --bind end:preview-bottom
 )
-
-# _FZF_COLORS is set further up, with the rest of the flavour-dependent values.
+_FZF_COLORS='--color=fg:#cad3f5,fg+:#cad3f5,bg:#24273a,bg+:#363a4f,border:#6e738d,label:#6e738d,spinner:#c6a0f6,hl:#ed8796,hl+:#ed8796,header:#ed8796,info:#c6a0f6,pointer:#c6a0f6,marker:#f4dbd6,prompt:#c6a0f6'
 
 eval "$(fzf --zsh)"
 

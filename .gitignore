@@ -13,12 +13,6 @@
 .config/nvim/spell/
 .local/share/
 
-# btop has no way to pick a theme at launch, so btop.conf points at
-# themes/current.theme and .zshrc repoints that symlink at the latte or
-# macchiato theme to match macOS appearance. The target is machine state, not
-# configuration — both real theme files are tracked.
-.config/btop/themes/current.theme
-
 # Archives and binaries
 *.tar.gz
 *.zip

@@ -1,8 +1,7 @@
 # dotfiles
 
-Personal macOS setup: zsh, tmux, Neovim, and the Catppuccin theming that ties
-them together — Latte while macOS is in light mode, Macchiato while it is dark.
-See [Theming](#theming).
+Personal macOS setup: zsh, tmux, Neovim, and the Catppuccin Macchiato theming
+that ties them together.
 
 ## Contents
 
@@ -24,7 +23,6 @@ See [Theming](#theming).
   [explorer buffers](#explorer-buffers-netrw) ·
   [fzf pickers](#inside-any-fzf-picker) ·
   [windows and misc](#windows-and-misc)
-- [Theming](#theming)
 - [Notes](#notes) · [Secrets](#secrets) · [Credit](#credit)
 
 New to Vim? Start with [Vim fundamentals](#vim-fundamentals). Everything under
@@ -545,44 +543,6 @@ quickfix, then `<leader>rR` to rewrite every match across every file.
 `<leader>y` `→` *Git Url* is the fastest way to paste a permalink into Slack or
 a PR; it takes the visual selection into account and produces a line range.
 
-## Theming
-
-Everything is Catppuccin, and the flavour follows the macOS appearance: **Latte**
-in light mode, **Macchiato** in dark. There is no central switch — each tool
-tests the appearance the same way, because `AppleInterfaceStyle` only exists
-while dark mode is on:
-
-```sh
-defaults read -g AppleInterfaceStyle >/dev/null 2>&1   # true when dark
-```
-
-How quickly each tool notices depends on how it takes its colors:
-
-| | Tools | Picks up a flip |
-|---|---|---|
-| Terminal's own | Ghostty, Neovim | **Live.** `ghostty/config` names both flavours in one `theme = light:…,dark:…`; Neovim asks the terminal for its background color and maps `background` to a flavour, so it never hardcodes one. |
-| Environment variables | bat, fzf, glamour, starship | **New shell.** Chosen once in section 08 of `.zshrc`. |
-| Long-lived server | tmux | **`prefix + r`.** `.tmux.conf` tests appearance via `if-shell`, but the server outlives the change. |
-| File path in config | btop | **New shell**, then relaunch btop. |
-
-Two things are worth knowing if you touch this:
-
-**Neovim must not set `background`.** It is left unset on purpose. Neovim
-derives it from the terminal, and that is the whole mechanism — pinning it
-pins the flavour. An `OptionSet` autocmd re-runs `:colorscheme` when it
-changes, because catppuccin only picks a flavour at colorscheme time and an
-already-open editor would otherwise keep the old colors.
-
-**btop can only name one theme file.** So `btop.conf` points at
-`themes/current.theme`, a gitignored symlink that `.zshrc` repoints at the
-real Latte or Macchiato theme. Both real theme files are tracked; only the
-symlink is machine state.
-
-Starship is the one place with real duplication: its `palette` cannot be
-chosen at runtime, so `starship.toml` (Macchiato) and `starship-latte.toml`
-are two full files, selected by `STARSHIP_CONFIG`. Edits to prompt *format*
-need to be made in both.
-
 ## Notes
 
 **Java is pinned to 25.** `JAVA_HOME` targets `openjdk@25` explicitly, because
@@ -636,10 +596,9 @@ closed.
 `confirm-before`, which takes over the status line and leaves the cursor
 blinking next to the window name. `prefix + x` and `prefix + &` open a small
 themed box in the middle of the screen; `y` still confirms. The `menu-*` styles
-near the top of `.tmux.conf` spell out the palette hexes rather than using
+near the top of `.tmux.conf` spell out the macchiato hexes rather than using
 `#{@thm_*}`, because those only exist once catppuccin has loaded and tpm loads
-it asynchronously from the last line of the file — which is also why they get
-their own light/dark test instead of reading `@catppuccin_flavor` back.
+it asynchronously from the last line of the file.
 
 **Windows name themselves** after the directory of the active pane
 (`automatic-rename-format`). The previous `after-new-window` hook opened a

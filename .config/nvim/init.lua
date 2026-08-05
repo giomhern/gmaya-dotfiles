@@ -42,11 +42,7 @@ vim.g.have_nerd_font = true
 -- OPTIONS
 --------------------------------------------------------------------------------
 
--- 'background' is deliberately not set. Neovim queries the terminal for its
--- background color on startup (OSC 11) and sets this itself, so leaving it
--- alone is what makes the light/dark Catppuccin flavour follow macOS. Setting
--- it here would pin the flavour and defeat the switch. See the COLORSCHEME
--- section at the bottom.
+vim.opt.background = "dark"
 vim.opt.shada = "!,'100,<50,s10,h"
 vim.opt.cc = "80,120" -- Display rulers
 vim.opt.clipboard = "unnamedplus" -- Sync with system clipboard
@@ -355,13 +351,7 @@ vim.pack.add({
 -- Setup the Catppuccin theme, by disabling all default integrations and only
 -- activating the integrations we are really using.
 require("catppuccin").setup({
-  -- No "flavour" key: that would pin one flavour. "background" instead maps
-  -- each value of 'background' to a flavour, and Neovim derives 'background'
-  -- from the terminal, so Ghostty flipping to Latte carries through to here.
-  background = {
-    light = "latte",
-    dark = "macchiato",
-  },
+  flavour = "macchiato",
   default_integrations = false,
   integrations = {
     gitsigns = true,
@@ -442,18 +432,6 @@ require("catppuccin").setup({
 })
 
 vim.cmd.colorscheme("catppuccin-nvim")
-
--- Re-apply the colorscheme when 'background' changes. Ghostty tells Neovim its
--- background color changed when macOS flips appearance, which flips
--- 'background', but the flavour is only chosen at ":colorscheme" time — without
--- this an already-open Neovim keeps the old flavour's colors until restart.
-vim.api.nvim_create_autocmd("OptionSet", {
-  pattern = "background",
-  group = vim.api.nvim_create_augroup("CatppuccinFollowBackground", {}),
-  callback = function()
-    vim.cmd.colorscheme("catppuccin-nvim")
-  end,
-})
 
 --------------------------------------------------------------------------------
 -- EXPLORER
