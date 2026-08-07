@@ -14,9 +14,10 @@ vim.g.loaded_gzip = 1
 vim.g.loaded_logiPat = 1
 vim.g.loaded_matchit = 1
 vim.g.loaded_matchparen = 1
--- netrw is deliberately NOT disabled. It is the only directory browser Neovim
--- ships, so switching it off leaves ":e <dir>" and "nvim ." opening an empty,
--- filetype-less buffer. See the EXPLORER section below.
+-- netrw is not disabled here either. oil.nvim takes over ":e <dir>" and "nvim ."
+-- via "default_file_explorer", which hijacks netrw's autocmds rather than
+-- needing it unloaded; setting these would only break oil's fallbacks. See the
+-- EXPLORER section below.
 vim.g.loaded_remote_plugins = 1
 vim.g.loaded_rplugin = 1
 vim.g.loaded_rrhelper = 1
@@ -437,65 +438,60 @@ vim.cmd.colorscheme("catppuccin-nvim")
 -- EXPLORER
 --------------------------------------------------------------------------------
 
--- Directory browsing is netrw, which Neovim ships. Editing a directory path
--- ("nvim .", ":e src/", or "<leader>ee" below) opens a listing navigated with
--- "<CR>" to open and "-" to go up. netrw's own file operations are "%" to
--- create a file, "d" a directory, "D" to delete, "R" to rename.
+-- Directory browsing is oil.nvim. Editing a directory path ("nvim .", ":e src/",
+-- or "<leader>ee" below) opens the listing as a normal, editable buffer: rename
+-- a file by changing its line, create one by adding a line, delete by removing
+-- one, then ":w" to apply. "<CR>" opens, "-" goes up, "g?" lists every key.
 --
--- "core.explorer" is NOT loaded. It was written against a directory browser
--- that set "filetype=directory" and rendered one entry per line with no header
--- -- a built-in that existed in a Neovim nightly but never shipped in a
--- release. netrw sets "filetype=netrw" and draws a banner, so the module's
--- line-to-path parsing does not apply to it. The file is kept because the
--- marking, bulk move/copy and directory-grep it adds are worth reviving if
--- this ever moves to oil.nvim or a hand-rolled listing.
-vim.g.netrw_banner = 0
--- "3" is the nested tree, where directories expand in place. "1" was the long
--- listing, which spent two thirds of every line on a size and a timestamp.
-vim.g.netrw_liststyle = 3
-vim.g.netrw_sizestyle = "H"
--- Highlight executables, symlinks and archives distinctly. catppuccin already
--- ships the netrw groups these resolve to, so no extra highlight wiring.
-vim.g.netrw_special_syntax = 1
-
--- Always hide the git directory, and additionally whatever git ignores, so the
--- listing matches what "fd_find_files" below is willing to open.
+-- netrw is what this replaced. It cannot draw filetype icons at all, and its
+-- tree bars render in "Special", competing with the filenames. oil takes over
+-- directory editing through "default_file_explorer", which disables netrw.
 --
--- netrw_gitignore#Hide is not a pattern translator: it runs "git ls-files
--- --ignored" and returns the ignored paths that actually exist, so it is empty
--- in a clean checkout and only earns its keep in a repo carrying a node_modules.
--- Outside a repo it hands back git's "fatal: not a git repository" on stdout,
--- which would land in netrw_list_hide as a nonsense pattern -- hence the root
--- check rather than a pcall, since it returns that string instead of throwing.
-vim.api.nvim_create_autocmd("FileType", {
-  pattern = "netrw",
-  group = vim.api.nvim_create_augroup("netrw-hide", { clear = true }),
-  callback = function()
-    local hide = { [[^\.git/$]] }
-    if vim.fs.root(vim.fn.getcwd(), ".git") then
-      local ignored = vim.fn["netrw_gitignore#Hide"]()
-      if ignored ~= "" then
-        table.insert(hide, ignored)
-      end
-    end
-    vim.g.netrw_list_hide = table.concat(hide, ",")
-  end,
-})
+-- "core.explorer" is still NOT loaded, but it is now worth reviving: it was
+-- written against a browser that set "filetype=directory" and rendered one
+-- entry per line with no header, which is much closer to what oil produces than
+-- to netrw's banner-and-tree listing. Its marking, bulk move/copy and
+-- directory-grep are the parts worth porting.
+vim.pack.add({
+  { src = "https://github.com/stevearc/oil.nvim", name = "oil", version = "master" },
+  {
+    src = "https://github.com/echasnovski/mini.icons",
+    name = "mini-icons",
+    version = "main",
+  },
+}, { confirm = false, load = true })
 
--- A directory listing is not a file, so drop the editing chrome it inherits:
--- the "80,120" rulers and the listchars indent guides both draw straight
--- through the tree, and line numbers on a file list are noise.
-vim.api.nvim_create_autocmd("FileType", {
-  pattern = "netrw",
-  group = vim.api.nvim_create_augroup("netrw-appearance", { clear = true }),
-  callback = function()
-    vim.opt_local.colorcolumn = ""
-    vim.opt_local.list = false
-    vim.opt_local.number = false
-    vim.opt_local.relativenumber = false
-    vim.opt_local.signcolumn = "no"
-    vim.opt_local.cursorline = true
-  end,
+-- oil asks for icons through the nvim-web-devicons API, which mini.icons can
+-- answer once mocked. mini.icons is the lighter of the two and already themes
+-- itself from the colorscheme, so no icon highlight wiring here either.
+require("mini.icons").setup()
+MiniIcons.mock_nvim_web_devicons()
+
+require("oil").setup({
+  default_file_explorer = true,
+  columns = { "icon" },
+  delete_to_trash = true,
+  watch_for_changes = true,
+  view_options = {
+    -- Show dotfiles: this is a dotfiles repo, hiding them would hide the point.
+    -- "g." toggles at runtime. The git directory is the one thing always hidden,
+    -- since nothing in it should be edited through a file listing.
+    show_hidden = true,
+    is_always_hidden = function(name, _)
+      return name == ".git"
+    end,
+  },
+  -- A directory listing is not a file, so drop the editing chrome it would
+  -- inherit: the "80,120" rulers and the listchars indent guides both draw
+  -- straight through the listing, and line numbers on a file list are noise.
+  win_options = {
+    colorcolumn = "",
+    list = false,
+    number = false,
+    relativenumber = false,
+    signcolumn = "no",
+    cursorline = true,
+  },
 })
 
 vim.keymap.set("n", "<leader>ee", function()
@@ -508,7 +504,13 @@ vim.keymap.set("n", "<leader>ee", function()
   else
     dir = vim.fn.fnamemodify(bufname, ":p:h")
   end
-  vim.cmd.edit(vim.fn.fnameescape(dir))
+  require("oil").open(dir)
+end)
+
+-- The listing in a centered float, for when it should not disturb the window
+-- layout. "<leader>ee" keeps the full-window listing.
+vim.keymap.set("n", "<leader>ef", function()
+  require("oil").open_float()
 end)
 
 -- Keymap to save a file without running any auto commands and with creating
