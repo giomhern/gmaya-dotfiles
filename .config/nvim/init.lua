@@ -450,8 +450,53 @@ vim.cmd.colorscheme("catppuccin-nvim")
 -- marking, bulk move/copy and directory-grep it adds are worth reviving if
 -- this ever moves to oil.nvim or a hand-rolled listing.
 vim.g.netrw_banner = 0
-vim.g.netrw_liststyle = 1
+-- "3" is the nested tree, where directories expand in place. "1" was the long
+-- listing, which spent two thirds of every line on a size and a timestamp.
+vim.g.netrw_liststyle = 3
 vim.g.netrw_sizestyle = "H"
+-- Highlight executables, symlinks and archives distinctly. catppuccin already
+-- ships the netrw groups these resolve to, so no extra highlight wiring.
+vim.g.netrw_special_syntax = 1
+
+-- Always hide the git directory, and additionally whatever git ignores, so the
+-- listing matches what "fd_find_files" below is willing to open.
+--
+-- netrw_gitignore#Hide is not a pattern translator: it runs "git ls-files
+-- --ignored" and returns the ignored paths that actually exist, so it is empty
+-- in a clean checkout and only earns its keep in a repo carrying a node_modules.
+-- Outside a repo it hands back git's "fatal: not a git repository" on stdout,
+-- which would land in netrw_list_hide as a nonsense pattern -- hence the root
+-- check rather than a pcall, since it returns that string instead of throwing.
+vim.api.nvim_create_autocmd("FileType", {
+  pattern = "netrw",
+  group = vim.api.nvim_create_augroup("netrw-hide", { clear = true }),
+  callback = function()
+    local hide = { [[^\.git/$]] }
+    if vim.fs.root(vim.fn.getcwd(), ".git") then
+      local ignored = vim.fn["netrw_gitignore#Hide"]()
+      if ignored ~= "" then
+        table.insert(hide, ignored)
+      end
+    end
+    vim.g.netrw_list_hide = table.concat(hide, ",")
+  end,
+})
+
+-- A directory listing is not a file, so drop the editing chrome it inherits:
+-- the "80,120" rulers and the listchars indent guides both draw straight
+-- through the tree, and line numbers on a file list are noise.
+vim.api.nvim_create_autocmd("FileType", {
+  pattern = "netrw",
+  group = vim.api.nvim_create_augroup("netrw-appearance", { clear = true }),
+  callback = function()
+    vim.opt_local.colorcolumn = ""
+    vim.opt_local.list = false
+    vim.opt_local.number = false
+    vim.opt_local.relativenumber = false
+    vim.opt_local.signcolumn = "no"
+    vim.opt_local.cursorline = true
+  end,
+})
 
 vim.keymap.set("n", "<leader>ee", function()
   local bufname = vim.api.nvim_buf_get_name(0)
