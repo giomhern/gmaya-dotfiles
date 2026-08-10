@@ -75,7 +75,7 @@ vim.opt.sessionoptions = { "buffers", "curdir", "folds", "tabpages", "winsize" }
 vim.opt.shiftround = true -- Round indent
 vim.opt.shiftwidth = 2 -- Size of an indent
 vim.opt.shortmess = "I" -- Disable the intro message
-vim.opt.showtabline = 0 -- Disable tabline
+-- showtabline is set to 2 in the BUFFERLINE section, which owns that row.
 vim.opt.sidescrolloff = 8 -- Columns of context
 vim.opt.signcolumn = "yes" -- Always show the signcolumn, otherwise it would shift the text each time
 vim.opt.smartcase = true -- Don't ignore case with capitals
@@ -1086,6 +1086,77 @@ end, {})
 --------------------------------------------------------------------------------
 
 require("core.statusline")
+
+--------------------------------------------------------------------------------
+-- BUFFERLINE
+--------------------------------------------------------------------------------
+
+-- One tab per open buffer along the top. Buffers, not tabpages: Neovim's own
+-- ":tabs" are separate window layouts, and this config barely uses them, so the
+-- row tracks what is actually open. Icons come from the mini.icons devicons
+-- mock set up in the EXPLORER section above, which is why this block has to
+-- follow it.
+--
+-- This catppuccin build ships no bufferline integration, so bufferline derives
+-- its palette from the colorscheme instead. Only the fills are pinned below, to
+-- the same base / mantle split the oil confirmation and the fzf picker use:
+-- the row sits on mantle so it reads as chrome, and the selected tab on base so
+-- it lines up with the buffer beneath it.
+vim.pack.add({
+  {
+    src = "https://github.com/akinsho/bufferline.nvim",
+    name = "bufferline",
+    version = "main",
+  },
+}, { confirm = false, load = true })
+
+vim.opt.showtabline = 2
+
+require("bufferline").setup({
+  options = {
+    mode = "buffers",
+    always_show_bufferline = true,
+    -- Counts from the native LSP client, so a file with errors is visible
+    -- without opening it.
+    diagnostics = "nvim_lsp",
+    -- No mouse-oriented chrome: there is no close button to click in a config
+    -- driven entirely from the keyboard. "<leader>bd" closes a buffer.
+    show_buffer_close_icons = false,
+    show_close_icon = false,
+    separator_style = "thin",
+    -- No "offsets" entry for oil. Offsets reserve room for a sidebar window, and
+    -- "<leader>ee" opens the listing in the full window, so the reservation never
+    -- has anything to sit beside -- verified: the label simply never rendered.
+  },
+  highlights = {
+    fill = { bg = "#181825" },
+    background = { bg = "#181825" },
+    buffer_selected = { bg = "#1e1e2e", bold = true },
+    separator = { fg = "#181825", bg = "#181825" },
+    separator_selected = { fg = "#181825", bg = "#1e1e2e" },
+  },
+})
+
+-- "[b" / "]b" walk the row, matching "[c" / "]c" on git hunks.
+--
+-- Deliberately NOT "Shift + h/l", the common binding for this: "H" and "L" are
+-- already top-of-screen and bottom-of-screen motions, documented as such in the
+-- README's Vim fundamentals. Nor "<Tab>", which the terminal delivers as
+-- "Ctrl-i", the jumplist-forward key.
+vim.keymap.set("n", "[b", "<cmd>BufferLineCyclePrev<cr>")
+vim.keymap.set("n", "]b", "<cmd>BufferLineCycleNext<cr>")
+
+-- Jump straight to a tab by letter, the same idea as the fzf pickers: it labels
+-- each tab and waits for the keystroke.
+vim.keymap.set("n", "<leader>bb", "<cmd>BufferLinePick<cr>")
+
+-- Reorder the row without changing which buffer is current.
+vim.keymap.set("n", "<leader>b,", "<cmd>BufferLineMovePrev<cr>")
+vim.keymap.set("n", "<leader>b.", "<cmd>BufferLineMoveNext<cr>")
+
+-- Close the current buffer, or everything except it.
+vim.keymap.set("n", "<leader>bd", "<cmd>bdelete<cr>")
+vim.keymap.set("n", "<leader>bo", "<cmd>BufferLineCloseOthers<cr>")
 
 --------------------------------------------------------------------------------
 -- GIT

@@ -20,7 +20,8 @@ that ties them together.
   [searching](#searching) · [editing](#editing) ·
   [completion](#completion) ·
   [diagnostics and quickfix](#diagnostics-and-quickfix) · [git](#git) ·
-  [explorer buffers](#explorer-buffers-netrw) ·
+  [explorer buffers](#explorer-buffers-oil) ·
+  [buffer tabs](#buffer-tabs) ·
   [fzf pickers](#inside-any-fzf-picker) ·
   [windows and misc](#windows-and-misc)
 - [Notes](#notes) · [Secrets](#secrets) · [Credit](#credit)
@@ -347,14 +348,15 @@ down five, `2ci"` — the grammar is `count` + `operator` + `motion`.
 | `:q!` | quit, discarding changes |
 | `:e <file>` | open a file |
 | `:bn` / `:bp` / `:bd` | next / previous / close buffer |
+| `]b` / `[b` | next / previous buffer, via the tab row |
 | `Ctrl-w` `s` / `v` | split horizontally / vertically |
 | `Ctrl-w` + `h` `j` `k` `l` | move between splits |
 | `Ctrl-w` `o` | close every split but this one |
 | `Ctrl-w` `q` | close this split |
 
-**One gotcha:** inside a netrw directory listing, `d`, `D` and `R` create a
-directory, delete, and rename. They are file operations there, not motions. See
-[Explorer buffers](#explorer-buffers-netrw).
+**One gotcha:** inside an explorer listing, the normal editing keys are the file
+operations — `dd` deletes a file, and changing a line's text renames it. Nothing
+happens until you `:w`. See [Explorer buffers](#explorer-buffers-oil).
 
 ## Neovim reference
 
@@ -489,30 +491,61 @@ On a PR the `prlsp` client adds `<leader>ghc` to comment (works on a visual
 range), `<leader>ghr` to reply, `<leader>ghs` to show the thread, `<leader>ghu`
 to refresh.
 
-### Explorer buffers (netrw)
+### Explorer buffers (oil)
 
-Open a listing with `<leader>ee` (the current file's directory), `nvim .`, or
-`:e <dir>`. The browser is netrw, Neovim's built-in.
+Open a listing with `<leader>ee` (the current file's directory), `<leader>ef`
+(the same in a float), `nvim .`, or `:e <dir>`. The browser is
+[oil.nvim](https://github.com/stevearc/oil.nvim), and the listing is a normal
+buffer — you edit it like text and write it to apply.
 
 | | |
 |---|---|
 | `Enter` | open the file or descend into the directory |
 | `-` | up to the parent directory |
-| `%` | create a new file here |
-| `d` | create a new directory |
-| `D` | delete the file or directory under the cursor |
-| `R` | rename it |
-| `o` / `v` | open in a horizontal / vertical split |
-| `t` | open in a new tab |
-| `i` | cycle the listing style — thin, long, wide, tree |
-| `gh` | toggle hidden files |
+| `Ctrl-s` / `Ctrl-h` | open in a vertical / horizontal split |
+| `Ctrl-t` | open in a new tab |
+| `Ctrl-p` | preview the file without leaving the listing |
 | `Ctrl-l` | refresh the listing |
+| `Ctrl-c` | close the listing |
+| `g.` | toggle hidden files |
+| `g\` | toggle the trash bin |
+| `gs` | change the sort order |
+| `gx` | open in the system default application |
+| `g?` | show every key |
 
-The banner is off and the listing shows sizes and dates
-(`netrw_liststyle = 1`). Press `i` twice for the tree view if you prefer it.
+To **create, rename or delete**, edit the buffer and `:w`:
 
-Note `D` and `R` are capitals. Lowercase `d` makes a directory — an easy way to
-create something you did not mean to.
+| | |
+|---|---|
+| add a line with a name | creates that file |
+| add a line ending in `/` | creates a directory |
+| add `a/b/c.lua` | creates the intervening directories too |
+| change a line's text | renames |
+| delete a line (`dd`) | deletes, to `~/.Trash` |
+
+Writing shows a confirmation listing the pending operations — `y` applies. You
+can stack several creates, renames and deletes into one `:w`. Icons come from
+`mini.icons`; dotfiles are shown by default and `.git` is always hidden.
+
+### Buffer tabs
+
+The row along the top is one tab per open buffer, from
+[bufferline.nvim](https://github.com/akinsho/bufferline.nvim). These are
+buffers, not Neovim tabpages — opening a file adds a tab, and nothing needs a
+`:tabnew`.
+
+| | |
+|---|---|
+| `]b` / `[b` | next / previous buffer, matching `]c` / `[c` on git hunks |
+| `<leader>bb` | label every tab and jump to the one you press |
+| `<leader>bd` | close this buffer |
+| `<leader>bo` | close every buffer but this one |
+| `<leader>b.` / `<leader>b,` | move this tab right / left in the row |
+| `<leader>fb` | the buffer list as an fzf picker, with preview |
+
+A tab shows the filetype icon, and an LSP error or warning count when the file
+has diagnostics. `<leader>fb` is still the faster way through a large set — the
+row is for seeing what is open, the picker for searching it.
 
 ### Inside any fzf picker
 
