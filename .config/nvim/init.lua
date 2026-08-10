@@ -481,6 +481,27 @@ require("oil").setup({
       return name == ".git"
     end,
   },
+  -- The popup that lists pending changes on ":w". Its defaults are a min_width
+  -- of "the greater of 40 columns or 40% of the editor" and a min_height of 5,
+  -- so creating one file drew a half-screen box holding a single line. These
+  -- floors let it shrink to its content. Rounded to match the tmux kill menus.
+  confirmation = {
+    min_width = 30,
+    max_width = 0.6,
+    min_height = 3,
+    max_height = 0.6,
+    border = "rounded",
+    win_options = {
+      -- Floats default to NormalFloat, which catppuccin paints mantle (#181825)
+      -- against an editor of base (#1e1e2e). Point it at Normal so the box sits
+      -- on the same background as the buffer behind it and as the fzf picker,
+      -- which hardcodes base in "core.picker". FloatBorder is already the same
+      -- blue the picker uses, so only the fill needed redirecting. "EndOfBuffer:"
+      -- is oil's own entry, kept because setting win_options replaces the lot.
+      winhighlight = "Normal:Normal,FloatBorder:FloatBorder,EndOfBuffer:",
+      winblend = 0,
+    },
+  },
   -- A directory listing is not a file, so drop the editing chrome it would
   -- inherit: the "80,120" rulers and the listchars indent guides both draw
   -- straight through the listing, and line numbers on a file list are noise.
