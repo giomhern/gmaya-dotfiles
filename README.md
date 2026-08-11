@@ -404,6 +404,7 @@ only where it isn't normal.
 | `<` / `>` (visual) | indent, keeping the selection |
 | `<leader>rr` / `rw` | substitute in this buffer, blank / word under cursor |
 | `<leader>rR` / `rW` | the same across every quickfix file, then save |
+| `gqip` / `gwip` | reflow this paragraph to the width; `gw` keeps the cursor |
 | `Esc` | clear search highlight |
 
 `grn` versus `Ctrl-n` is the distinction worth internalising: `grn` asks jdtls or
@@ -577,6 +578,31 @@ quickfix, then `<leader>rR` to rewrite every match across every file.
 a PR; it takes the visual selection into account and produces a line range.
 
 ## Notes
+
+**Wrapping is 80, and it wraps prose and comments but never code.** The rulers
+`cc = "80,120"` draws only paint — `textwidth` is what wraps, and it is the
+option that was missing, which is why `t` and `c` sat in `formatoptions` doing
+nothing for a long time. Now:
+
+- **Comments** wrap as you type, in every filetype, and the `--` or `//` prefix
+  carries onto the next line.
+- **Code** never auto-wraps. `t` is deliberately absent from `formatoptions`, so
+  a long string or call chain is left alone mid-edit; width is the formatter's
+  job on save.
+- **Markdown, text and commit messages** wrap as you type, and also soft-wrap
+  into the window (`wrap` + `linebreak` + `breakindent`) so an existing long line
+  folds at a space instead of running off the edge. Commit bodies use 72, git's
+  convention, with the ruler moved to match.
+- `gqip` reflows a paragraph on demand; `gwip` does it without moving the cursor.
+- `l` in `formatoptions` means setting all this cannot reflow an existing file
+  behind your back — only lines you are actively editing are touched.
+
+The on-save formatters enforce the same 80: `prettier --print-width=80` and
+`stylua.toml`'s `column_width = 80`. That `stylua.toml` is also what *enables*
+Lua formatting at all — efm only runs stylua when it finds one, so before it
+existed Lua was the single configured language that was never formatted. Its
+settings match the Lua already committed here exactly, verified as zero rewritten
+lines across all 23 files, so adding it reformatted nothing.
 
 **Java is pinned to 25.** `JAVA_HOME` targets `openjdk@25` explicitly, because
 the unversioned Homebrew `openjdk` formula tracks the newest release (26 at time

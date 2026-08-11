@@ -46,6 +46,10 @@ vim.g.have_nerd_font = true
 vim.opt.background = "dark"
 vim.opt.shada = "!,'100,<50,s10,h"
 vim.opt.cc = "80,120" -- Display rulers
+-- The width the rulers above are drawn at, and the one stylua.toml and prettier
+-- are both set to. The rulers only paint; textwidth is what actually wraps, and
+-- it is 0 unless set, which is why "t" and "c" in formatoptions did nothing.
+vim.opt.textwidth = 80
 vim.opt.clipboard = "unnamedplus" -- Sync with system clipboard
 vim.opt.completeopt = { "menuone", "noselect", "fuzzy", "nosort", "popup" } -- Better completion experience
 vim.opt.pumheight = 10 -- Cap the completion menu; unbounded it blankets the file when completing near the bottom
@@ -60,7 +64,14 @@ vim.opt.messagesopt = "hit-enter,history:500,progress:"
 vim.opt.cursorline = true -- Enable highlighting of the current line
 vim.opt.expandtab = true -- Use spaces instead of tabs
 vim.opt.exrc = true -- Look for .nvim.lua files in the project directory
-vim.opt.formatoptions = "jcroqlnt" -- Automatic formatting behavior
+-- "jcroqln", i.e. the old "jcroqlnt" minus "t". "c" wraps comments at textwidth
+-- while typing, which is what an IDE does; "t" wrapped code as well, which no
+-- formatter expects and which mangles a long string or call chain mid-edit. Code
+-- width is the formatter's job on save. "l" leaves already-long lines alone, so
+-- setting textwidth cannot reflow existing files behind your back, and "q" is
+-- what lets "gq" reflow a paragraph on demand. Prose filetypes add "t" back in
+-- the AUTO COMMANDS section below.
+vim.opt.formatoptions = "jcroqln" -- Automatic formatting behavior
 vim.opt.hlsearch = true -- Set highlight on search
 vim.opt.ignorecase = true -- Ignore case
 vim.opt.inccommand = "split" -- Show live preview of substitution
@@ -172,6 +183,29 @@ vim.api.nvim_create_autocmd("TextYankPost", {
   group = vim.api.nvim_create_augroup("highlight-yank", { clear = true }),
   callback = function()
     vim.highlight.on_yank({ higroup = "IncSearch", timeout = 250 })
+  end,
+})
+
+-- Prose wraps as you type; code does not. Adding "t" back means a paragraph
+-- breaks at textwidth while writing it, the way it already does for comments
+-- everywhere else. "wrap" plus "linebreak" also folds any line that is already
+-- long into the window instead of running it off the right edge, breaking at a
+-- space rather than mid-word, and "breakindent" keeps the continuation lined up
+-- under the list marker it belongs to.
+vim.api.nvim_create_autocmd("FileType", {
+  pattern = { "markdown", "markdown.mdx", "text", "gitcommit" },
+  group = vim.api.nvim_create_augroup("prose-wrap", { clear = true }),
+  callback = function(args)
+    vim.opt_local.formatoptions:append("t")
+    vim.opt_local.wrap = true
+    vim.opt_local.linebreak = true
+    vim.opt_local.breakindent = true
+    -- A commit message is the one place the convention is not 80: git wraps the
+    -- body at 72 so "git log" stays readable under its four-space indent.
+    if args.match == "gitcommit" then
+      vim.opt_local.textwidth = 72
+      vim.opt_local.colorcolumn = "72"
+    end
   end,
 })
 
@@ -453,7 +487,11 @@ vim.cmd.colorscheme("catppuccin-nvim")
 -- to netrw's banner-and-tree listing. Its marking, bulk move/copy and
 -- directory-grep are the parts worth porting.
 vim.pack.add({
-  { src = "https://github.com/stevearc/oil.nvim", name = "oil", version = "master" },
+  {
+    src = "https://github.com/stevearc/oil.nvim",
+    name = "oil",
+    version = "master",
+  },
   {
     src = "https://github.com/echasnovski/mini.icons",
     name = "mini-icons",

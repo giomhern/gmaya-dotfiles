@@ -1,0 +1,10 @@
+# Matches the Lua already in this repo, so enabling format-on-save reformats
+# nothing: verified stylua rewrites 0 lines across all 23 files. column_width is
+# the 80 that "vim.opt.cc" draws its first ruler at.
+#
+# This file is also the switch that turns Lua formatting on. efm only runs stylua
+# when it finds a "stylua.toml" or ".stylua.toml" (see "lsp/efm.lua"), so before
+# this existed Lua was the one configured language that never got formatted.
+column_width = 80
+indent_type = "Spaces"
+indent_width = 2
