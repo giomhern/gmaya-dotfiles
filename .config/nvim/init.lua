@@ -530,13 +530,22 @@ require("oil").setup({
     max_height = 0.6,
     border = "rounded",
     win_options = {
-      -- Floats default to NormalFloat, which catppuccin paints mantle (#181825)
-      -- against an editor of base (#1e1e2e). Point it at Normal so the box sits
-      -- on the same background as the buffer behind it and as the fzf picker,
-      -- which hardcodes base in "core.picker". FloatBorder is already the same
-      -- blue the picker uses, so only the fill needed redirecting. "EndOfBuffer:"
-      -- is oil's own entry, kept because setting win_options replaces the lot.
-      winhighlight = "Normal:Normal,FloatBorder:FloatBorder,EndOfBuffer:",
+      -- The same groups "core.picker" gives its float, so the two popups are one
+      -- style: both base, both a blue stroke. Defined in catppuccin's
+      -- custom_highlights, so a colorscheme reload cannot drop them.
+      --
+      -- Redirecting Normal alone is not enough, and looks worse than doing
+      -- nothing: stock FloatBorder carries a mantle background, and a box
+      -- drawing glyph is a thin stroke inside a full cell, so that darker
+      -- background shows around the border and reads as a shadow banding the box.
+      -- NormalFloat needs naming too, since it, not Normal, is what a float fills
+      -- with by default.
+      winhighlight = table.concat({
+        "Normal:PickerNormal",
+        "NormalFloat:PickerNormal",
+        "FloatBorder:PickerBorder",
+        "EndOfBuffer:PickerNormal",
+      }, ","),
       winblend = 0,
     },
   },
