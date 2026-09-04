@@ -3,7 +3,6 @@ tap "azure/kubelogin", trusted: true
 tap "fluxcd/tap", trusted: true
 tap "hashicorp/tap", trusted: true
 tap "jetbrains/utils", trusted: true
-tap "segmentio/packages", "git@github.com:segmentio/homebrew-packages.git", trusted: true
 # Mozilla CA certificate store
 brew "ca-certificates"
 # Display directories as trees (with optional color/HTML output)
@@ -120,14 +119,6 @@ brew "fluxcd/tap/flux", trusted: true
 brew "hashicorp/tap/terraform", trusted: true
 # Terraform Language Server
 brew "hashicorp/tap/terraform-ls", trusted: true
-# Simple YAML-based task runner written in Go
-brew "segmentio/packages/robo", trusted: true
-# Tooling's self-service tools for devs
-brew "segmentio/packages/robo-tooling", trusted: true
-# Robo config for development, staging, and production
-brew "segmentio/packages/robofiles", trusted: true
-# Connect to EC2 instances with SSM session manager
-brew "segmentio/packages/ssm-scripts", trusted: true
 # OpenJDK distribution from Amazon
 cask "corretto@17"
 # Docker Desktop — provides the docker CLI at /usr/local/bin/docker
