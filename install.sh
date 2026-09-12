@@ -6,16 +6,27 @@
 # the file the tool reads. Edit either path and both are current, and git
 # always sees the change. There is no separate "capture" step to forget.
 #
-#   ./install.sh          link everything, skipping anything already correct
-#   ./install.sh --force  replace existing real files (backed up first)
+#   ./install.sh          report what would happen; change nothing
+#   ./install.sh --apply  link only paths that do not already exist
 #
 set -euo pipefail
 
 REPO="$(cd "$(dirname "${BASH_SOURCE[0]}")" && pwd)"
-FORCE=0
-[[ "${1:-}" == "--force" ]] && FORCE=1
-
-STAMP="$(date +%Y%m%d-%H%M%S)"
+MODE=check
+case "${1:-}" in
+  ""|--check|--dry-run) ;;
+  --apply) MODE=apply ;;
+  -h|--help)
+    printf 'Usage: %s [--check|--dry-run|--apply]\n' "$0"
+    printf '  --check, --dry-run  report without changing anything (default)\n'
+    printf '  --apply             link missing paths; never replace existing paths\n'
+    exit 0
+    ;;
+  *)
+    printf 'Unknown option: %s\n' "$1" >&2
+    exit 2
+    ;;
+esac
 
 FILES=(
   .zshrc
@@ -28,7 +39,7 @@ FILES=(
   .config/btop
 )
 
-link() {
+check_or_link() {
   local rel="$1"
   local src="$REPO/$rel"
   local dst="$HOME/$rel"
@@ -41,15 +52,15 @@ link() {
     return
   fi
 
-  # Something real is in the way. Never destroy it silently.
+  # Any existing path is a conflict. The installer never moves or replaces it.
   if [[ -e "$dst" || -L "$dst" ]]; then
-    if (( FORCE )); then
-      mv "$dst" "$dst.bak.$STAMP"
-      printf '  backed   %s -> %s.bak.%s\n' "$rel" "$rel" "$STAMP"
-    else
-      printf '  CONFLICT %s already exists — rerun with --force to replace\n' "$rel"
-      return
-    fi
+    printf '  CONFLICT %s already exists — left unchanged\n' "$rel"
+    return
+  fi
+
+  if [[ "$MODE" == check ]]; then
+    printf '  would link %s\n' "$rel"
+    return
   fi
 
   mkdir -p "$(dirname "$dst")"
@@ -57,8 +68,13 @@ link() {
   printf '  linked   %s\n' "$rel"
 }
 
-printf 'Linking dotfiles from %s\n\n' "$REPO"
-for f in "${FILES[@]}"; do link "$f"; done
+if [[ "$MODE" == check ]]; then
+  printf 'Checking dotfiles from %s (read-only)\n\n' "$REPO"
+else
+  printf 'Linking missing dotfiles from %s\n\n' "$REPO"
+fi
+for f in "${FILES[@]}"; do check_or_link "$f"; done
 
-printf '\nDone. Secrets are not managed here — .zshrc reads ~/.secrets/github.com\n'
-printf 'and ~/.zshsecrets if they exist, both deliberately gitignored.\n'
+printf '\n%s. Secrets and account credentials are not managed here.\n' \
+  "$([[ "$MODE" == check ]] && printf 'Check complete; nothing changed' || printf 'Done')"
+printf '~/.zshsecrets is sourced when present and remains deliberately gitignored.\n'

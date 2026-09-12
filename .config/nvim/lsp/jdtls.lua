@@ -1,5 +1,5 @@
--- Eclipse JDT language server. Pinned to the same JDK the shell exports
--- (openjdk@25, the team standard) so nvim and the build agree on a version.
+-- Eclipse JDT language server. JAVA_HOME is discovered from Homebrew by the
+-- shared shell config when an OpenJDK installation is available.
 
 -- Lombok generates members during annotation processing, so "log" from @Slf4j,
 -- the accessors from @Getter / @Data and the constructors from
@@ -31,15 +31,6 @@ return {
   },
   settings = {
     java = {
-      configuration = {
-        runtimes = {
-          {
-            name = "JavaSE-25",
-            path = vim.env.JAVA_HOME,
-            default = true,
-          },
-        },
-      },
       format = { enabled = true },
       signatureHelp = { enabled = true },
       sources = {

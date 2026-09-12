@@ -440,7 +440,7 @@ end
 
 local EXPECT = "ctrl-q,ctrl-s,ctrl-v,ctrl-t"
 
--- Build the fzf prompt for a picker, styled after the "fzfjira" script: an icon
+-- Build a compact fzf prompt for a picker: an icon
 -- followed by the label.
 local function styled(icon, title)
   return {

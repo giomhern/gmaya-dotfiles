@@ -21,16 +21,8 @@ return {
       hover = true,
       validate = true,
       schemas = {
-        kubernetes = {
-          "/kubernetes/**/*.yml",
-          "/kubernetes/**/*.yaml",
-          "/k8s/**/*.yml",
-          "/k8s/**/*.yaml",
-        },
-        ["https://www.schemastore.org/kustomization.json"] = "kustomization.{yml,yaml}",
         ["https://www.schemastore.org/github-action.json"] = ".github/action.{yml,yaml}",
         ["https://www.schemastore.org/github-workflow.json"] = ".github/workflows/*.{yml,yaml}",
-        ["https://www.schemastore.org/chart.json"] = "Chart.{yml,yaml}",
         ["https://www.schemastore.org/dependabot-2.0.json"] = ".github/dependabot.{yml,yaml}",
         ["https://www.schemastore.org/prettierrc.json"] = ".prettierrc.{yml,yaml}",
         ["https://raw.githubusercontent.com/compose-spec/compose-go/master/schema/compose-spec.json"] = "*docker-compose*.{yml,yaml}",

@@ -788,7 +788,6 @@ local ts_parsers = {
   "go",
   "gomod",
   "gosum",
-  "helm",
   "html",
   "javascript",
   "json",
@@ -800,7 +799,6 @@ local ts_parsers = {
   "regex",
   "rust",
   "sql",
-  "terraform",
   "toml",
   "tsx",
   "typescript",
@@ -877,7 +875,6 @@ vim.lsp.enable({
   "prlsp",
   "pyright",
   "sourcekit",
-  "terraformls",
   "yamlls",
 })
 

@@ -3,7 +3,7 @@
 add_newline = false
 
 format = "[█](surface0)$os$username[](bg:blue fg:surface0)$directory[](fg:blue bg:green)$git_branch$git_status[](fg:green) "
-right_format = "[](fg:surface0)$status[](bg:surface0 fg:text)$kubernetes[](bg:surface0 fg:text)$time"
+right_format = "[](fg:surface0)$status[](bg:surface0 fg:text)$time"
 
 palette = 'catppuccin_mocha'
 
@@ -94,11 +94,6 @@ not_found_symbol = ""
 sigint_symbol = ""
 signal_symbol = ""
 format = '[ $symbol $status ]($style)'
-
-[kubernetes]
-disabled = false
-style = "bg:surface0 fg:text"
-format = '[ $symbol$context( \($namespace\) )]($style)'
 
 [time]
 disabled = false

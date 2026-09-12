@@ -1,0 +1,8 @@
+[user]
+	name = Your Name
+	email = you@example.com
+	# signingkey = KEY_ID
+
+# Add account- or machine-specific settings here, for example:
+# [commit]
+# 	gpgsign = true

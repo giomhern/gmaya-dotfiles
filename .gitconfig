@@ -1,9 +1,4 @@
-[user]
-	name = Giovanni Maya
-	email = gmaya@twilio.com
-
 [core]
-  excludesfile = ~/.gitignore
   editor = nvim
   ignorecase = false
 
@@ -45,7 +40,12 @@
   rebase = false
 
 [alias]
-	st = "!$HOME/.local/bin/git-status"
 	wta = "!f() { git worktree add -b \"$1\" \"./.worktrees/$1\"; }; f"
 	wtr = "!f() { git worktree remove \"./.worktrees/$1\"; }; f"
 	wtl = "!f() { git worktree list; }; f"
+
+# Keep identity, signing keys, credential helpers, and other machine/account
+# settings outside the public dotfiles repository. Load this last so local
+# choices can override shared defaults.
+[include]
+	path = ~/.gitconfig.local

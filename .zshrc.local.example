@@ -1,0 +1,4 @@
+# Machine-specific, non-secret shell settings. Copy the settings you need to
+# ~/.zshrc.local. Keep credentials in ~/.zshsecrets or another secret manager.
+
+# export PROJECTS_DIR="$HOME/Developer"

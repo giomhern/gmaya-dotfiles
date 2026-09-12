@@ -32,15 +32,25 @@ New to Vim? Start with [Vim fundamentals](#vim-fundamentals). Everything under
 ## Install
 
 ```sh
-git clone https://github.com/gmayahern/gmaya-dotfiles.git ~/dotfiles-gmaya
-cd ~/dotfiles-gmaya
-./install.sh          # add --force to replace existing files (backed up first)
+git clone https://github.com/giomhern/gmaya-dotfiles.git ~/gmaya-dotfiles
+cd ~/gmaya-dotfiles
+./install.sh          # read-only preflight; reports conflicts and missing paths
+./install.sh --apply  # link missing paths; existing paths are never replaced
 brew bundle           # restore the toolchain
 ```
 
 `install.sh` **symlinks** rather than copies. The file in this repo is the file
 the tool reads, so editing either path changes both and `git status` always
 reflects reality. There is no sync step to forget.
+
+The default run changes nothing. `--apply` links only paths that are absent;
+every file, directory, or symlink already in `$HOME` is reported as a conflict
+and left untouched. Review and migrate conflicts by hand after comparing them.
+
+Git identity and account settings live in `~/.gitconfig.local`, which is
+included by the tracked `.gitconfig` but never committed. Start from
+`.gitconfig.local.example` on a new laptop. Machine-specific shell settings
+belong in `~/.zshrc.local`; `.zshrc.local.example` contains examples.
 
 ## What's here
 
@@ -125,7 +135,7 @@ and log.
 
 **Scratch work goes in the popup.** `Alt-t` floats a shell over whatever you
 are doing, in the same directory. Run the one-off `docker compose logs`, the
-`mvn dependency:tree`, the `kubectl get pods`; `Alt-t` again dismisses it. Your
+`mvn dependency:tree`, or `git log --oneline`; `Alt-t` again dismisses it. Your
 pane layout is never disturbed for a throwaway command.
 
 **Copy something out.** `prefix + [` enters copy mode with vi keys — `v`
@@ -604,10 +614,10 @@ existed Lua was the single configured language that was never formatted. Its
 settings match the Lua already committed here exactly, verified as zero rewritten
 lines across all 23 files, so adding it reformatted nothing.
 
-**Java is pinned to 25.** `JAVA_HOME` targets `openjdk@25` explicitly, because
-the unversioned Homebrew `openjdk` formula tracks the newest release (26 at time
-of writing). `$JAVA_HOME/bin` leads `$PATH`, so nvim's `jdtls` and the shell
-always agree on a version. Bump both by editing the one `JAVA_HOME` line.
+**Java follows Homebrew's current OpenJDK.** When `openjdk` is installed,
+`.zshrc` discovers its prefix and puts `$JAVA_HOME/bin` on `$PATH`. Projects
+that require another JDK can select it in `~/.zshrc.local` without changing the
+shared configuration.
 
 **Lombok needs a javaagent, and it is not in this repo.** Lombok generates
 members during annotation processing, so `log` from `@Slf4j`, the accessors from
@@ -673,11 +683,12 @@ is `Ctrl-a`.
 
 ## Secrets
 
-Not in this repo, and gitignored so they can't be added by accident. `.zshrc`
-reads them if present and stays quiet if not:
+Not in this repo, and gitignored so they cannot be added by accident. `.zshrc`
+reads `~/.zshsecrets` if present and stays quiet if it is missing.
 
-- `~/.secrets/github.com` — a token, read into `GITHUB_TOKEN`
-- `~/.zshsecrets` — sourced if it exists
+GitHub CLI authentication remains in `~/.config/gh`, and SSH keys remain in
+`~/.ssh`; neither path is managed or sourced by this repository. Use
+`gh auth login` or your preferred credential manager on each laptop.
 
 ## Credit
 

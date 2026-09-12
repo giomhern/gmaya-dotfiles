@@ -1,6 +1,7 @@
-# Never track secrets. .zshrc sources both of these at startup; they hold
-# credentials and must stay on the machine only.
+# Never track secrets or machine-specific configuration.
 .zshsecrets
+.zshrc.local
+.gitconfig.local
 .secrets/
 *.token
 *_rsa

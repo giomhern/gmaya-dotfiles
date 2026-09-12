@@ -21,42 +21,39 @@ export EDITOR="nvim"
 export MANPAGER="nvim +Man!"
 
 export HOMEBREW_NO_ANALYTICS=1
-export DISABLE_AUTO_UPDATE=true
 
-# Java — pinned to 25 (team standard). The unversioned `openjdk` formula is 26,
-# so target openjdk@25 explicitly rather than letting brew decide.
-export JAVA_HOME=/opt/homebrew/opt/openjdk@25/libexec/openjdk.jdk/Contents/Home
+# Use Homebrew toolchains when present, on either Apple Silicon or Intel Macs.
+if command -v brew >/dev/null 2>&1; then
+  _brew_prefix=$(brew --prefix)
+  _java_prefix=$(brew --prefix openjdk 2>/dev/null) || _java_prefix=""
+  [[ -n $_java_prefix ]] && export JAVA_HOME="$_java_prefix/libexec/openjdk.jdk/Contents/Home"
+else
+  _brew_prefix=""
+fi
 
 # Go
-export GOROOT=/opt/homebrew/opt/go/libexec
+if [[ -n $_brew_prefix && -d $_brew_prefix/opt/go/libexec ]]; then
+  export GOROOT="$_brew_prefix/opt/go/libexec"
+fi
 export GOPATH=$HOME/go
 export GO111MODULE=on
-
-# Node — prefer IPv4 to avoid slow/failing AAAA lookups
-export NODE_OPTIONS="--dns-result-order=ipv4first"
-
-# AWS
-export AWS_PROFILE=cnd-gmaya-sandbox-Standard_Administrator
-
-export GLAMOUR_STYLE=$HOME/.config/glamour-catppuccin-mocha.json
-export ANTHROPIC_MODEL="claude-opus-5"
 
 # ------------------------------------------------------------------------------
 # 02. Path
 # ------------------------------------------------------------------------------
 
 path=(
-  $JAVA_HOME/bin
+  ${JAVA_HOME:+$JAVA_HOME/bin}
   $HOME/.docker/bin
   $HOME/.local/bin
-  $GOROOT/bin
+  ${GOROOT:+$GOROOT/bin}
   $GOPATH/bin
   $path
 )
 
 # Homebrew ruby ahead of the system one, plus its user gem bin dir
-if [[ -d /opt/homebrew/opt/ruby/bin ]]; then
-  path=(/opt/homebrew/opt/ruby/bin "$(gem environment gemdir)/bin" $path)
+if [[ -n $_brew_prefix && -d $_brew_prefix/opt/ruby/bin ]]; then
+  path=("$_brew_prefix/opt/ruby/bin" "$(gem environment gemdir)/bin" $path)
 fi
 
 typeset -U path PATH   # drop duplicate entries
@@ -67,8 +64,10 @@ typeset -U path PATH   # drop duplicate entries
 
 [[ -f $HOME/.zshsecrets ]] && source $HOME/.zshsecrets
 
-# Guarded so a missing file doesn't error on every shell start.
-[[ -r $HOME/.secrets/github.com ]] && export GITHUB_TOKEN=$(<$HOME/.secrets/github.com)
+# Machine-specific, non-secret settings belong here.
+[[ -f $HOME/.zshrc.local ]] && source $HOME/.zshrc.local
+
+unset _brew_prefix _java_prefix
 
 # ------------------------------------------------------------------------------
 # 04. Plugins

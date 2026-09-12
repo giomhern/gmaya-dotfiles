@@ -47,11 +47,6 @@ local stylua = {
   rootMarkers = { "stylua.toml", ".stylua.toml" },
 }
 
-local terraformfmt = {
-  formatCommand = "terraform fmt -",
-  formatStdin = true,
-}
-
 local languages = {
   css = { prettier },
   dart = { dartfmt },
@@ -64,7 +59,6 @@ local languages = {
   markdown = { prettier },
   python = { ruff },
   rust = { rustfmt },
-  terraform = { terraformfmt },
   typescript = { prettier },
   typescriptreact = { prettier },
   yaml = { prettier },
