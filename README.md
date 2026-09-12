@@ -35,8 +35,10 @@ New to Vim? Start with [Vim fundamentals](#vim-fundamentals). Everything under
 git clone https://github.com/giomhern/gmaya-dotfiles.git ~/gmaya-dotfiles
 cd ~/gmaya-dotfiles
 ./install.sh          # read-only preflight; reports conflicts and missing paths
-./install.sh --apply  # link missing paths; existing paths are never replaced
-brew bundle           # restore the toolchain
+# Choose one after reviewing the preflight:
+./install.sh --apply   # link missing paths and leave conflicts active
+./install.sh --migrate # preserve conflicts, then make this setup authoritative
+# Optional: review the Brewfile first, then install its tools with brew bundle
 ```
 
 `install.sh` **symlinks** rather than copies. The file in this repo is the file
@@ -45,7 +47,20 @@ reflects reality. There is no sync step to forget.
 
 The default run changes nothing. `--apply` links only paths that are absent;
 every file, directory, or symlink already in `$HOME` is reported as a conflict
-and left untouched. Review and migrate conflicts by hand after comparing them.
+and left untouched. Review the conflicts before choosing `--migrate`.
+
+`--migrate` is the explicit path for making this setup authoritative on a
+laptop that already has configuration. Before linking, it copies the existing
+shell, login-shell, and Git configuration to `~/.zshrc.local`,
+`~/.zprofile.local`, and `~/.gitconfig.local`. It moves all conflicting managed
+targets into `~/.dotfiles-backups/<timestamp>/`. If a local file already exists,
+the preflight aborts before changing anything so two configurations are never
+silently merged. A linking failure restores the original targets.
+
+Credential and account stores—including `~/.ssh`, `~/.gnupg`, `~/.config/gh`,
+`~/.aws`, `~/.kube`, `~/.netrc`, `~/.git-credentials`, `~/.zshsecrets`, and
+`~/.secrets`—are outside the managed target list. The installer neither reads
+nor modifies them.
 
 To try this Neovim setup without replacing an existing `~/.config/nvim`, link
 it under another app name and launch it explicitly:
@@ -58,7 +73,8 @@ NVIM_APPNAME=nvim-gmaya nvim
 Git identity and account settings live in `~/.gitconfig.local`, which is
 included by the tracked `.gitconfig` but never committed. Start from
 `.gitconfig.local.example` on a new laptop. Machine-specific shell settings
-belong in `~/.zshrc.local`; `.zshrc.local.example` contains examples.
+belong in `~/.zshrc.local` and `~/.zprofile.local`; the matching `.example`
+files contain examples.
 
 ## What's here
 
@@ -67,7 +83,7 @@ belong in `~/.zshrc.local`; `.zshrc.local.example` contains examples.
 | `.zshrc` | Shell config, sectioned and indexed at the top |
 | `.zprofile` | Login shell — sets up the Homebrew environment |
 | `.tmux.conf` | tmux + tpm plugins |
-| `.gitconfig` | Git identity, colors, aliases |
+| `.gitconfig` | Shared Git behavior; identity stays local |
 | `.config/nvim/` | Neovim config — `init.lua`, `lsp/`, `lua/core/` |
 | `.config/starship.toml` | Prompt |
 | `.config/ghostty/` | Terminal |
@@ -697,6 +713,10 @@ reads `~/.zshsecrets` if present and stays quiet if it is missing.
 GitHub CLI authentication remains in `~/.config/gh`, and SSH keys remain in
 `~/.ssh`; neither path is managed or sourced by this repository. Use
 `gh auth login` or your preferred credential manager on each laptop.
+
+Repository automation must follow the safety contract in `AGENTS.md`. Its
+required test suite exercises migration, collision refusal, rollback, private
+backup permissions, and protected credential paths using temporary homes.
 
 ## Credit
 

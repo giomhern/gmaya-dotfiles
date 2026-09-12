@@ -1,0 +1,3 @@
+# Machine-specific login-shell settings. This file is optional.
+
+# path=("$HOME/bin" $path)

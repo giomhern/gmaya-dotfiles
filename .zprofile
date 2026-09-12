@@ -6,3 +6,5 @@ fi
 
 # User-installed tools such as Codex.
 [[ -d $HOME/.local/bin ]] && path=($HOME/.local/bin $path)
+
+[[ -f $HOME/.zprofile.local ]] && source $HOME/.zprofile.local

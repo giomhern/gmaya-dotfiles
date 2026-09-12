@@ -1,6 +1,7 @@
 # Never track secrets or machine-specific configuration.
 .zshsecrets
 .zshrc.local
+.zprofile.local
 .gitconfig.local
 .secrets/
 *.token

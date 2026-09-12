@@ -75,18 +75,22 @@ unset _brew_prefix _java_prefix
 
 ZINIT_HOME="${XDG_DATA_HOME:-$HOME/.local/share}/zinit/zinit.git"
 
-if [[ ! -d $ZINIT_HOME ]]; then
+if [[ ! -r $ZINIT_HOME/zinit.zsh ]] && command -v git >/dev/null 2>&1; then
   mkdir -p "$(dirname $ZINIT_HOME)"
-  git clone https://github.com/zdharma-continuum/zinit.git "$ZINIT_HOME"
+  git clone https://github.com/zdharma-continuum/zinit.git "$ZINIT_HOME" || \
+    print -u2 "Zinit bootstrap failed; continuing without shell plugins."
 fi
-source "${ZINIT_HOME}/zinit.zsh"
 
-zinit light zsh-users/zsh-completions
-zinit light zsh-users/zsh-autosuggestions
-zinit light Aloxaf/fzf-tab
+if [[ -r $ZINIT_HOME/zinit.zsh ]]; then
+  source "$ZINIT_HOME/zinit.zsh"
 
-autoload -Uz compinit && compinit
-zinit cdreplay -q
+  zinit light zsh-users/zsh-completions
+  zinit light zsh-users/zsh-autosuggestions
+  zinit light Aloxaf/fzf-tab
+
+  autoload -Uz compinit && compinit
+  zinit cdreplay -q
+fi
 
 # ------------------------------------------------------------------------------
 # 05. History
@@ -146,7 +150,9 @@ _FZF_BINDS=(
 )
 _FZF_COLORS='--color=fg:#cdd6f4,fg+:#cdd6f4,bg:#1e1e2e,bg+:#313244,border:#6c7086,label:#6c7086,spinner:#cba6f7,hl:#f38ba8,hl+:#f38ba8,header:#f38ba8,info:#cba6f7,pointer:#cba6f7,marker:#f5e0dc,prompt:#cba6f7'
 
-eval "$(fzf --zsh)"
+if command -v fzf >/dev/null 2>&1; then
+  eval "$(fzf --zsh)"
+fi
 
 export FZF_DEFAULT_COMMAND='fd --full-path --hidden --color never --type f --exclude .git --exclude node_modules --exclude dist --exclude .DS_Store'
 export FZF_DEFAULT_OPTS="${_FZF_BINDS[*]} $_FZF_COLORS"
@@ -164,8 +170,8 @@ zstyle ':fzf-tab:*' fzf-flags $_FZF_BINDS $_FZF_COLORS
 # 10. Aliases
 # ------------------------------------------------------------------------------
 
-alias ls='ls --color'
-alias la='ls -la --color'
+alias ls='ls -G'
+alias la='ls -laG'
 alias watch='watch '                     # trailing space: expand aliases after watch
 alias chrome='/Applications/Google\ Chrome.app/Contents/MacOS/Google\ Chrome --remote-debugging-port=9222'
 alias gg="git log --abbrev-commit --decorate --format=format:'%C(bold blue)%h%C(reset) - %C(bold green)(%ar)%C(reset) %C(white)%s%C(reset) %C(dim white)- %an%C(reset)%C(auto)%d%C(reset)'"
@@ -206,4 +212,6 @@ tdm() { tmux display-message $1; }
 # 12. Tooling init  (keep last — these hook the prompt and precmd)
 # ------------------------------------------------------------------------------
 
-type starship_zle-keymap-select >/dev/null || eval "$(starship init zsh)"
+if command -v starship >/dev/null 2>&1; then
+  type starship_zle-keymap-select >/dev/null || eval "$(starship init zsh)"
+fi
