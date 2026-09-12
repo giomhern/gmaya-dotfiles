@@ -6,11 +6,11 @@ local state = {
   job = nil,
 }
 
--- Catppuccin Mocha colors for fzf, so it matches the terminal window.
+-- TokyoNight Moon colors for fzf, so it matches the terminal window.
 local FZF_COLORS = table.concat({
-  "--color=bg+:#313244,bg:#1e1e2e,spinner:#cba6f7,hl:#f38ba8",
-  "fg:#cdd6f4,header:#f38ba8,info:#cba6f7,pointer:#cba6f7",
-  "marker:#f5e0dc,fg+:#cdd6f4,prompt:#cba6f7,hl+:#f38ba8,border:#89b4fa,label:#6c7086",
+  "--color=bg+:#2d3f76,bg:#222436,spinner:#b4f9f8,hl:#ff757f",
+  "fg:#c8d3f5,header:#ff757f,info:#b4f9f8,pointer:#b4f9f8",
+  "marker:#fca7ea,fg+:#c8d3f5,prompt:#b4f9f8,hl+:#ff757f,border:#82aaff,label:#444a73",
 }, ",")
 
 -- Preview command for the file pickers. "{}" is the selected line, i.e. the
@@ -71,7 +71,7 @@ local function get_window_config()
 end
 
 -- The "PickerNormal" and "PickerBorder" highlight groups are defined in the
--- Catppuccin "custom_highlights" in init.lua.
+-- The shared theme's custom highlights in init.lua.
 local function create_fzf_window()
   local buf = vim.api.nvim_create_buf(false, true)
   vim.api.nvim_set_option_value("bufhidden", "wipe", { buf = buf })

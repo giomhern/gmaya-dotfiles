@@ -5,35 +5,35 @@ add_newline = false
 format = "[█](surface0)$os$username[](bg:blue fg:surface0)$directory[](fg:blue bg:green)$git_branch$git_status[](fg:green) "
 right_format = "[](fg:surface0)$status[](bg:surface0 fg:text)$time"
 
-palette = 'catppuccin_mocha'
+palette = 'tokyonight_moon'
 
-[palettes.catppuccin_mocha]
-rosewater = "#f5e0dc"
-flamingo = "#f2cdcd"
-pink = "#f5c2e7"
-mauve = "#cba6f7"
-red = "#f38ba8"
-maroon = "#eba0ac"
-peach = "#fab387"
-yellow = "#f9e2af"
-green = "#a6e3a1"
-teal = "#94e2d5"
-sky = "#89dceb"
-sapphire = "#74c7ec"
-blue = "#89b4fa"
-lavender = "#b4befe"
-text = "#cdd6f4"
-subtext1 = "#bac2de"
-subtext0 = "#a6adc8"
-overlay2 = "#9399b2"
-overlay1 = "#7f849c"
-overlay0 = "#6c7086"
-surface2 = "#585b70"
-surface1 = "#45475a"
-surface0 = "#313244"
-base = "#1e1e2e"
-mantle = "#181825"
-crust = "#11111b"
+[palettes.tokyonight_moon]
+rosewater = "#fca7ea"
+flamingo = "#c099ff"
+pink = "#ff007c"
+mauve = "#b4f9f8"
+red = "#ff757f"
+maroon = "#c53b53"
+peach = "#ff966c"
+yellow = "#ffc777"
+green = "#c3e88d"
+teal = "#4fd6be"
+sky = "#86e1fc"
+sapphire = "#65bcff"
+blue = "#82aaff"
+lavender = "#89ddff"
+text = "#c8d3f5"
+subtext1 = "#737aa2"
+subtext0 = "#828bb8"
+overlay2 = "#636da6"
+overlay1 = "#545c7e"
+overlay0 = "#444a73"
+surface2 = "#3b4261"
+surface1 = "#394b70"
+surface0 = "#2d3f76"
+base = "#222436"
+mantle = "#1e2030"
+crust = "#191B29"
 
 [os]
 disabled = false
@@ -97,6 +97,6 @@ format = '[ $symbol $status ]($style)'
 
 [time]
 disabled = false
-time_format = "%Y-%m-%d %H:%M:%S"
+time_format = "%H:%M"
 style = "bg:blue"
 format = '[[  $time ](fg:text bg:surface0)]($style)'

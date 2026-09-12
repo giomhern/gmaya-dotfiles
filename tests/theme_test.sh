@@ -25,22 +25,35 @@ cp "$REPO/theme.sh" "$FIXTURE/theme.sh"
 chmod +x "$FIXTURE/theme.sh"
 
 before="$(for rel in "${FILES[@]}"; do cksum "$FIXTURE/$rel"; done)"
+original_theme="$(tr -d '[:space:]' < "$FIXTURE/.theme")"
 "$FIXTURE/theme.sh" status >/dev/null
 "$FIXTURE/theme.sh" macchiato >/dev/null
 "$FIXTURE/theme.sh" status | grep -Fq 'Catppuccin Macchiato'
 grep -Fq '#24273a' "$FIXTURE/.zshrc"
 grep -Fq 'BAT_THEME="Catppuccin Macchiato"' "$FIXTURE/.zshrc"
 grep -Fq '#8aadf4' "$FIXTURE/.config/nvim/lua/core/picker.lua"
-"$FIXTURE/theme.sh" mocha >/dev/null
+"$FIXTURE/theme.sh" tokyonight-moon >/dev/null
+"$FIXTURE/theme.sh" status | grep -Fq 'TokyoNight Moon'
+grep -Fq 'theme = "TokyoNight Moon"' "$FIXTURE/.config/ghostty/config"
+grep -Fq 'selected_theme = "tokyonight-moon"' \
+  "$FIXTURE/.config/nvim/init.lua"
+grep -Fq 'color_theme = "tokyonight_moon"' \
+  "$FIXTURE/.config/btop/btop.conf"
+grep -Fq 'BAT_THEME="ansi"' "$FIXTURE/.zshrc"
+grep -Fq '#222436' "$FIXTURE/.config/starship.toml"
+"$FIXTURE/theme.sh" "$original_theme" >/dev/null
 after="$(for rel in "${FILES[@]}"; do cksum "$FIXTURE/$rel"; done)"
-[[ $before == "$after" ]]
+if [[ $before != "$after" ]]; then
+  printf 'Theme round trip did not restore the original files.\n' >&2
+  exit 1
+fi
 
 if "$FIXTURE/theme.sh" unsupported >/dev/null 2>&1; then
   exit 1
 fi
 
 printf '\n# local theme edit\n' >> "$FIXTURE/.config/ghostty/config"
-sed 's/Catppuccin Mocha/Catppuccin Macchiato/' \
+sed 's/^theme = .*/theme = "Definitely Inconsistent"/' \
   "$FIXTURE/.config/ghostty/config" > "$FIXTURE/ghostty.changed"
 cat "$FIXTURE/ghostty.changed" > "$FIXTURE/.config/ghostty/config"
 before_refusal="$(for rel in "${FILES[@]}"; do cksum "$FIXTURE/$rel"; done)"
@@ -50,4 +63,4 @@ fi
 after_refusal="$(for rel in "${FILES[@]}"; do cksum "$FIXTURE/$rel"; done)"
 [[ $before_refusal == "$after_refusal" ]]
 
-printf 'ok - theme switch propagates, round-trips, and refuses inconsistent input\n'
+printf 'ok - cross-family theme switch propagates, round-trips, and refuses inconsistent input\n'

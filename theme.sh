@@ -15,8 +15,8 @@ FILES=(
 )
 
 usage() {
-  printf 'Usage: %s [status|mocha|macchiato]\n' "$0"
-  printf 'Change the Catppuccin flavor in every themed application.\n'
+  printf 'Usage: %s [status|mocha|macchiato|tokyonight-moon]\n' "$0"
+  printf 'Change the shared theme in every configured application.\n'
 }
 
 palette() {
@@ -27,34 +27,58 @@ palette() {
     macchiato)
       printf '%s' '#f4dbd6|#f0c6c6|#f5bde6|#c6a0f6|#ed8796|#ee99a0|#f5a97f|#eed49f|#a6da95|#8bd5ca|#91d7e3|#7dc4e4|#8aadf4|#b7bdf8|#cad3f5|#b8c0e0|#a5adcb|#939ab7|#8087a2|#6e738d|#5b6078|#494d64|#363a4f|#24273a|#1e2030|#181926'
       ;;
+    tokyonight-moon)
+      # Semantic equivalents from Tokyo Night's official Moon palette.
+      printf '%s' '#fca7ea|#c099ff|#ff007c|#b4f9f8|#ff757f|#c53b53|#ff966c|#ffc777|#c3e88d|#4fd6be|#86e1fc|#65bcff|#82aaff|#89ddff|#c8d3f5|#737aa2|#828bb8|#636da6|#545c7e|#444a73|#3b4261|#394b70|#2d3f76|#222436|#1e2030|#191B29'
+      ;;
     *) return 1 ;;
   esac
 }
 
-title() {
+display_name() {
   case "$1" in
-    mocha) printf 'Mocha' ;;
-    macchiato) printf 'Macchiato' ;;
+    mocha) printf 'Catppuccin Mocha' ;;
+    macchiato) printf 'Catppuccin Macchiato' ;;
+    tokyonight-moon) printf 'TokyoNight Moon' ;;
+    *) return 1 ;;
+  esac
+}
+
+config_slug() {
+  case "$1" in
+    mocha|macchiato) printf 'catppuccin_%s' "$1" ;;
+    tokyonight-moon) printf 'tokyonight_moon' ;;
+    *) return 1 ;;
+  esac
+}
+
+bat_theme() {
+  case "$1" in
+    mocha) printf 'Catppuccin Mocha' ;;
+    macchiato) printf 'Catppuccin Macchiato' ;;
+    tokyonight-moon) printf 'ansi' ;;
     *) return 1 ;;
   esac
 }
 
 verify_selection() {
-  local root="$1" flavor="$2" display
-  display="$(title "$flavor")"
-  [[ $(tr -d '[:space:]' < "$root/.theme") == "$flavor" ]] || return 1
-  grep -Fq "BAT_THEME=\"Catppuccin $display\"" "$root/.zshrc" || return 1
-  grep -Fq "palette = 'catppuccin_$flavor'" \
+  local root="$1" theme="$2" display slug bat
+  display="$(display_name "$theme")"
+  slug="$(config_slug "$theme")"
+  bat="$(bat_theme "$theme")"
+  [[ $(tr -d '[:space:]' < "$root/.theme") == "$theme" ]] || return 1
+  grep -Fq "BAT_THEME=\"$bat\"" "$root/.zshrc" || return 1
+  grep -Fq "palette = '$slug'" \
     "$root/.config/starship.toml" || return 1
-  grep -Fq "[palettes.catppuccin_$flavor]" \
+  grep -Fq "[palettes.$slug]" \
     "$root/.config/starship.toml" || return 1
-  grep -Fq "flavour = \"$flavor\"" \
+  grep -Fq "selected_theme = \"$theme\"" \
     "$root/.config/nvim/init.lua" || return 1
-  grep -Fq "@catppuccin_flavor \"$flavor\"" \
+  grep -Fq "@gmaya_theme \"$theme\"" \
     "$root/.tmux.conf" || return 1
-  grep -Fq "theme = \"Catppuccin $display\"" \
+  grep -Fq "theme = \"$display\"" \
     "$root/.config/ghostty/config" || return 1
-  grep -Fq "color_theme = \"catppuccin_$flavor\"" \
+  grep -Fq "color_theme = \"$slug\"" \
     "$root/.config/btop/btop.conf" || return 1
 }
 
@@ -72,7 +96,7 @@ fi
 
 if [[ $ACTION == status ]]; then
   if verify_selection "$REPO" "$CURRENT"; then
-    printf 'Catppuccin %s is selected everywhere.\n' "$(title "$CURRENT")"
+    printf '%s is selected everywhere.\n' "$(display_name "$CURRENT")"
   else
     printf 'Theme files do not agree with %s. Run %s %s to repair them.\n' \
       "$THEME_FILE" "$0" "$CURRENT" >&2
@@ -94,14 +118,18 @@ verify_selection "$REPO" "$CURRENT" || {
 }
 
 if [[ $ACTION == "$CURRENT" ]]; then
-  printf 'Catppuccin %s is already selected everywhere.\n' "$(title "$CURRENT")"
+  printf '%s is already selected everywhere.\n' "$(display_name "$CURRENT")"
   exit 0
 fi
 
 FROM_COLORS="$(palette "$CURRENT")"
 TO_COLORS="$(palette "$ACTION")"
-FROM_TITLE="$(title "$CURRENT")"
-TO_TITLE="$(title "$ACTION")"
+FROM_DISPLAY="$(display_name "$CURRENT")"
+TO_DISPLAY="$(display_name "$ACTION")"
+FROM_SLUG="$(config_slug "$CURRENT")"
+TO_SLUG="$(config_slug "$ACTION")"
+FROM_BAT="$(bat_theme "$CURRENT")"
+TO_BAT="$(bat_theme "$ACTION")"
 STAGE="$(mktemp -d "${TMPDIR:-/tmp}/gmaya-theme.XXXXXX")"
 trap 'rm -rf "$STAGE"' EXIT
 
@@ -114,19 +142,25 @@ for rel in "${FILES[@]}"; do
   awk \
     -v from_colors="$FROM_COLORS" \
     -v to_colors="$TO_COLORS" \
-    -v from_flavor="$CURRENT" \
-    -v to_flavor="$ACTION" \
-    -v from_title="$FROM_TITLE" \
-    -v to_title="$TO_TITLE" '
+    -v from_theme="$CURRENT" \
+    -v to_theme="$ACTION" \
+    -v from_display="$FROM_DISPLAY" \
+    -v to_display="$TO_DISPLAY" \
+    -v from_slug="$FROM_SLUG" \
+    -v to_slug="$TO_SLUG" \
+    -v from_bat="$FROM_BAT" \
+    -v to_bat="$TO_BAT" '
       BEGIN {
         count_from = split(from_colors, old, "|")
         count_to = split(to_colors, new, "|")
         if (count_from != count_to) exit 70
       }
       {
-        gsub("catppuccin_" from_flavor, "catppuccin_" to_flavor)
-        gsub("Catppuccin " from_title, "Catppuccin " to_title)
-        gsub("\"" from_flavor "\"", "\"" to_flavor "\"")
+        gsub("BAT_THEME=\"" from_bat "\"", "BAT_THEME=\"" to_bat "\"")
+        gsub(from_slug, to_slug)
+        gsub(from_display, to_display)
+        gsub("selected_theme = \"" from_theme "\"", "selected_theme = \"" to_theme "\"")
+        gsub("@gmaya_theme \"" from_theme "\"", "@gmaya_theme \"" to_theme "\"")
         for (i = 1; i <= count_from; i++) {
           gsub(old[i], "__GMAYA_THEME_COLOR_" i "__")
         }
@@ -149,6 +183,5 @@ for rel in "${FILES[@]}"; do
 done
 cat "$STAGE/.theme" > "$THEME_FILE"
 
-printf 'Changed every configured application to Catppuccin %s.\n' \
-  "$TO_TITLE"
+printf 'Changed every configured application to %s.\n' "$TO_DISPLAY"
 printf 'Reload the shell and tmux config; restart other open applications.\n'

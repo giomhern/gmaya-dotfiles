@@ -1,6 +1,6 @@
 # dotfiles
 
-Personal macOS setup: zsh, tmux, Neovim, and shared Catppuccin theming
+Personal macOS setup: zsh, tmux, Neovim, and synchronized terminal theming
 that ties them together.
 
 ## Contents
@@ -88,7 +88,7 @@ files contain examples.
 | `.config/starship.toml` | Prompt |
 | `.config/ghostty/` | Terminal |
 | `.config/btop/` | System monitor |
-| `.theme`, `theme.sh` | Shared Catppuccin flavor and synchronized switcher |
+| `.theme`, `theme.sh` | Shared visual theme and synchronized switcher |
 | `Brewfile` | Everything installed via Homebrew |
 
 ## Keys
@@ -690,9 +690,7 @@ closed.
 `confirm-before`, which takes over the status line and leaves the cursor
 blinking next to the window name. `prefix + x` and `prefix + &` open a small
 themed box in the middle of the screen; `y` still confirms. The `menu-*` styles
-near the top of `.tmux.conf` spell out the mocha hexes rather than using
-`#{@thm_*}`, because those only exist once catppuccin has loaded and tpm loads
-it asynchronously from the last line of the file.
+are updated with the rest of tmux by `theme.sh`.
 
 **Windows name themselves** after the directory of the active pane
 (`automatic-rename-format`). The previous `after-new-window` hook opened a
@@ -721,20 +719,22 @@ backup permissions, and protected credential paths using temporary homes.
 
 ## Change the theme everywhere
 
-The terminal tools share one Catppuccin flavor. Check or change it from the
+The terminal tools share one visual theme. Check or change it from the
 repository root:
 
 ```sh
 ./theme.sh status
+./theme.sh tokyonight-moon
 ./theme.sh macchiato
 ./theme.sh mocha
 ```
 
 The command updates Ghostty, Neovim, tmux, Starship, fzf (both shell and
-Neovim), and btop together. Reload the shell with `exec zsh`, reload tmux with
-prefix + `r`, and restart other open applications. The selected flavor is
+Neovim), bat, and btop together. Reload the shell with `exec zsh`, reload tmux
+with prefix + `r`, and restart other open applications. The selected theme is
 stored in `.theme`; commit that change to carry the same look to another
-laptop.
+laptop. Tokyo Night uses bat's ANSI theme so syntax colors follow the terminal
+palette.
 
 ## Credit
 

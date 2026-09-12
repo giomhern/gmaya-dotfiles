@@ -7,7 +7,7 @@
 #   05. History
 #   06. Keybindings
 #   07. Shell options
-#   08. Theme             shared Catppuccin palette (fzf, bat)
+#   08. Theme             shared palette (fzf, bat)
 #   09. Completion styling
 #   10. Aliases
 #   11. Functions         archives, tmux
@@ -136,7 +136,7 @@ setopt interactive_comments    # allow # comments at the prompt
 # 08. Theme
 # ------------------------------------------------------------------------------
 
-export BAT_THEME="Catppuccin Mocha"
+export BAT_THEME="ansi"
 
 # Shared by FZF_DEFAULT_OPTS and fzf-tab so both stay in sync.
 _FZF_BINDS=(
@@ -148,7 +148,7 @@ _FZF_BINDS=(
   --bind home:preview-top
   --bind end:preview-bottom
 )
-_FZF_COLORS='--color=fg:#cdd6f4,fg+:#cdd6f4,bg:#1e1e2e,bg+:#313244,border:#6c7086,label:#6c7086,spinner:#cba6f7,hl:#f38ba8,hl+:#f38ba8,header:#f38ba8,info:#cba6f7,pointer:#cba6f7,marker:#f5e0dc,prompt:#cba6f7'
+_FZF_COLORS='--color=fg:#c8d3f5,fg+:#c8d3f5,bg:#222436,bg+:#2d3f76,border:#444a73,label:#444a73,spinner:#b4f9f8,hl:#ff757f,hl+:#ff757f,header:#ff757f,info:#b4f9f8,pointer:#b4f9f8,marker:#fca7ea,prompt:#b4f9f8'
 
 if command -v fzf >/dev/null 2>&1; then
   eval "$(fzf --zsh)"

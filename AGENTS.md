@@ -74,8 +74,8 @@ git diff --check
 
 Run `tests/theme_test.sh` after changing palettes or theme integration. Theme
 changes must go through `theme.sh` so Ghostty, Neovim, tmux, Starship, both fzf
-interfaces, and btop stay in sync. Keep `.theme` consistent with the generated
-application settings.
+interfaces, bat, and btop stay in sync. Keep `.theme` consistent with the
+generated application settings.
 
 The test suite must cover read-only default behavior, conflict-safe apply,
 backup migration, exact local-file preservation, credential-store preservation,

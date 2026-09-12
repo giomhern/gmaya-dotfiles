@@ -371,102 +371,135 @@ vim.api.nvim_set_keymap(
 vim.opt.winborder = "single"
 vim.opt.pumborder = "single"
 
--- Use the built-in plugin manager to install the Catppuccin theme
---
+-- The selected family is changed by theme.sh. Both setup paths normalize their
+-- palettes so the custom picker, explorer, and statusline styling stays shared.
+local selected_theme = "tokyonight-moon"
+
+local function custom_theme_highlights(colors)
+  local highlights = {
+    Pmenu = { bg = colors.mantle },
+    PmenuBorder = { bg = colors.mantle, fg = colors.blue },
+
+    -- Picker (see "lua/core/picker.lua").
+    PickerNormal = { bg = colors.base },
+    PickerBorder = { bg = colors.base, fg = colors.blue },
+
+    -- Explorer marks (see "lua/core/explorer.lua").
+    ExplorerMark = { fg = colors.rosewater },
+    ExplorerMarkLine = { bg = colors.surface0 },
+
+    -- Statusline (see "lua/core/statusline.lua").
+    StatuslineC = { fg = colors.text, bg = colors.mantle },
+    StatuslineCompSepB = { fg = colors.overlay1, bg = colors.surface0 },
+    StatuslineCompSepC = { fg = colors.text, bg = colors.mantle },
+    StatuslineSepBC = { fg = colors.surface0, bg = colors.mantle },
+    StatuslineSepXY = { fg = colors.surface0, bg = colors.mantle },
+    StatuslineDiagError = { fg = colors.red, bg = colors.surface0 },
+    StatuslineDiagWarn = { fg = colors.yellow, bg = colors.surface0 },
+    StatuslineDiagInfo = { fg = colors.sky, bg = colors.surface0 },
+    StatuslineDiagHint = { fg = colors.teal, bg = colors.surface0 },
+    StatuslineDiffAdd = { fg = colors.green, bg = colors.surface0 },
+    StatuslineDiffChange = { fg = colors.yellow, bg = colors.surface0 },
+    StatuslineDiffDelete = { fg = colors.red, bg = colors.surface0 },
+  }
+
+  -- Mode-dependent statusline groups, one set per mode color. The key
+  -- (e.g. "blue") is used as the highlight group suffix in statusline.lua.
+  local mode_colors = {
+    blue = colors.blue,
+    green = colors.green,
+    mauve = colors.mauve,
+    red = colors.red,
+    peach = colors.peach,
+  }
+  for key, color in pairs(mode_colors) do
+    highlights["StatuslineA_" .. key] =
+      { fg = colors.mantle, bg = color, bold = true }
+    highlights["StatuslineZ_" .. key] =
+      { fg = colors.mantle, bg = color, bold = true }
+    highlights["StatuslineB_" .. key] = { fg = color, bg = colors.surface0 }
+    highlights["StatuslineSepAB_" .. key] = { fg = color, bg = colors.surface0 }
+    highlights["StatuslineSepYZ_" .. key] = { fg = color, bg = colors.surface0 }
+    highlights["StatuslineSepAC_" .. key] = { fg = color, bg = colors.mantle }
+  end
+
+  return highlights
+end
+
 -- See: https://neovim.io/doc/user/pack.html#_plugin-manager
 -- To update all plugins run ":lua vim.pack.update()"
-vim.pack.add({
-  {
-    src = "https://github.com/catppuccin/nvim",
-    name = "catppuccin",
-    version = "main",
-  },
-}, { confirm = false, load = true })
-
--- Setup the Catppuccin theme, by disabling all default integrations and only
--- activating the integrations we are really using.
-require("catppuccin").setup({
-  flavour = "mocha",
-  default_integrations = false,
-  integrations = {
-    gitsigns = true,
-    native_lsp = {
-      enabled = true,
-      virtual_text = {
-        errors = { "italic" },
-        hints = { "italic" },
-        warnings = { "italic" },
-        information = { "italic" },
-        ok = { "italic" },
-      },
-      underlines = {
-        errors = { "undercurl" },
-        hints = { "undercurl" },
-        warnings = { "undercurl" },
-        information = { "undercurl" },
-        ok = { "undercurl" },
-      },
-      inlay_hints = {
-        background = true,
-      },
+if selected_theme == "tokyonight-moon" then
+  vim.pack.add({
+    {
+      src = "https://github.com/folke/tokyonight.nvim",
+      name = "tokyonight",
+      version = "main",
     },
-    treesitter = true,
-  },
-  custom_highlights = function(colors)
-    local highlights = {
-      Pmenu = { bg = colors.mantle },
-      PmenuBorder = { bg = colors.mantle, fg = colors.blue },
+  }, { confirm = false, load = true })
 
-      -- Picker (see "lua/core/picker.lua").
-      PickerNormal = { bg = colors.base },
-      PickerBorder = { bg = colors.base, fg = colors.blue },
+  require("tokyonight").setup({
+    style = "moon",
+    on_highlights = function(highlights, palette)
+      local colors = {
+        mantle = palette.bg_dark,
+        base = palette.bg,
+        surface0 = palette.bg_highlight,
+        overlay1 = palette.comment,
+        text = palette.fg,
+        rosewater = palette.purple,
+        blue = palette.blue,
+        green = palette.green,
+        mauve = palette.magenta,
+        red = palette.red,
+        peach = palette.orange,
+        yellow = palette.yellow,
+        sky = palette.cyan,
+        teal = palette.teal,
+      }
+      for group, spec in pairs(custom_theme_highlights(colors)) do
+        highlights[group] = spec
+      end
+    end,
+  })
+  vim.cmd.colorscheme("tokyonight-moon")
+else
+  vim.pack.add({
+    {
+      src = "https://github.com/catppuccin/nvim",
+      name = "catppuccin",
+      version = "main",
+    },
+  }, { confirm = false, load = true })
 
-      -- Explorer marks (see "lua/core/explorer.lua").
-      ExplorerMark = { fg = colors.rosewater },
-      ExplorerMarkLine = { bg = colors.surface0 },
-
-      -- Statusline (see "lua/core/statusline.lua").
-      StatuslineC = { fg = colors.text, bg = colors.mantle },
-      StatuslineCompSepB = { fg = colors.overlay1, bg = colors.surface0 },
-      StatuslineCompSepC = { fg = colors.text, bg = colors.mantle },
-      StatuslineSepBC = { fg = colors.surface0, bg = colors.mantle },
-      StatuslineSepXY = { fg = colors.surface0, bg = colors.mantle },
-      StatuslineDiagError = { fg = colors.red, bg = colors.surface0 },
-      StatuslineDiagWarn = { fg = colors.yellow, bg = colors.surface0 },
-      StatuslineDiagInfo = { fg = colors.sky, bg = colors.surface0 },
-      StatuslineDiagHint = { fg = colors.teal, bg = colors.surface0 },
-      StatuslineDiffAdd = { fg = colors.green, bg = colors.surface0 },
-      StatuslineDiffChange = { fg = colors.yellow, bg = colors.surface0 },
-      StatuslineDiffDelete = { fg = colors.red, bg = colors.surface0 },
-    }
-
-    -- Mode-dependent statusline groups, one set per mode color. The key
-    -- (e.g. "blue") is used as the highlight group suffix in statusline.lua.
-    local mode_colors = {
-      blue = colors.blue,
-      green = colors.green,
-      mauve = colors.mauve,
-      red = colors.red,
-      peach = colors.peach,
-    }
-    for key, color in pairs(mode_colors) do
-      highlights["StatuslineA_" .. key] =
-        { fg = colors.mantle, bg = color, bold = true }
-      highlights["StatuslineZ_" .. key] =
-        { fg = colors.mantle, bg = color, bold = true }
-      highlights["StatuslineB_" .. key] = { fg = color, bg = colors.surface0 }
-      highlights["StatuslineSepAB_" .. key] =
-        { fg = color, bg = colors.surface0 }
-      highlights["StatuslineSepYZ_" .. key] =
-        { fg = color, bg = colors.surface0 }
-      highlights["StatuslineSepAC_" .. key] = { fg = color, bg = colors.mantle }
-    end
-
-    return highlights
-  end,
-})
-
-vim.cmd.colorscheme("catppuccin-nvim")
+  require("catppuccin").setup({
+    flavour = selected_theme,
+    default_integrations = false,
+    integrations = {
+      gitsigns = true,
+      native_lsp = {
+        enabled = true,
+        virtual_text = {
+          errors = { "italic" },
+          hints = { "italic" },
+          warnings = { "italic" },
+          information = { "italic" },
+          ok = { "italic" },
+        },
+        underlines = {
+          errors = { "undercurl" },
+          hints = { "undercurl" },
+          warnings = { "undercurl" },
+          information = { "undercurl" },
+          ok = { "undercurl" },
+        },
+        inlay_hints = { background = true },
+      },
+      treesitter = true,
+    },
+    custom_highlights = custom_theme_highlights,
+  })
+  vim.cmd.colorscheme("catppuccin-nvim")
+end
 
 --------------------------------------------------------------------------------
 -- EXPLORER
@@ -531,7 +564,7 @@ require("oil").setup({
     border = "rounded",
     win_options = {
       -- The same groups "core.picker" gives its float, so the two popups are one
-      -- style: both base, both a blue stroke. Defined in catppuccin's
+      -- style: both base, both a blue stroke. Defined in the theme's
       -- custom_highlights, so a colorscheme reload cannot drop them.
       --
       -- Redirecting Normal alone is not enough, and looks worse than doing
@@ -1141,8 +1174,8 @@ require("core.statusline")
 -- mock set up in the EXPLORER section above, which is why this block has to
 -- follow it.
 --
--- This catppuccin build ships no bufferline integration, so bufferline derives
--- its palette from the colorscheme instead. Only the fills are pinned below, to
+-- Bufferline derives its palette from the colorscheme. Only the fills are
+-- pinned below, to
 -- the same base / mantle split the oil confirmation and the fzf picker use:
 -- the row sits on mantle so it reads as chrome, and the selected tab on base so
 -- it lines up with the buffer beneath it.
@@ -1173,11 +1206,11 @@ require("bufferline").setup({
     -- has anything to sit beside -- verified: the label simply never rendered.
   },
   highlights = {
-    fill = { bg = "#181825" },
-    background = { bg = "#181825" },
-    buffer_selected = { bg = "#1e1e2e", bold = true },
-    separator = { fg = "#181825", bg = "#181825" },
-    separator_selected = { fg = "#181825", bg = "#1e1e2e" },
+    fill = { bg = "#1e2030" },
+    background = { bg = "#1e2030" },
+    buffer_selected = { bg = "#222436", bold = true },
+    separator = { fg = "#1e2030", bg = "#1e2030" },
+    separator_selected = { fg = "#1e2030", bg = "#222436" },
   },
 })
 
