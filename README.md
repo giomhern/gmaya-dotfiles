@@ -106,14 +106,13 @@ no single key for both.
 ### A day at the keyboard
 
 **Start.** `ts` attaches the `main` session, or creates it. You almost never
-start a second one; you make windows instead. tmux-continuum has been
-autosaving every 15 minutes, so a reboot costs you nothing — panes, layouts and
-working directories come back on their own.
+start a second one; you make windows instead. Save and restore intentionally
+with `prefix + Ctrl-s` and `prefix + Ctrl-r` when you want a layout to persist.
 
 **One window per repo.** `prefix + c` opens a window in the current directory
-and it names itself after that directory, so the status bar reads `payments-api`
-rather than `zsh`. `prefix + 1…9` jumps straight to one. If you have more than
-about six open you have too many; `prefix + &` closes one.
+and names it after that directory. The status bar is hidden by default so it
+does not stack under Neovim; `prefix + b` shows or hides it when you need the
+window list. `prefix + 1…9` jumps straight to one, and `prefix + &` closes one.
 
 **Split for the job, not for the aesthetic.** `prefix + |` puts a pane to the
 right, `prefix + -` below. The useful shape for a service is editor left, and
@@ -138,7 +137,7 @@ see *macOS owns Ctrl+arrows*.
 | `<leader>ss` | grep the project |
 | `<leader>sw` | grep the word under the cursor |
 | `<leader>fb` / `<leader>fr` | open buffers / recent files |
-| `<leader>ee` | toggle the Neo-tree project sidebar |
+| `<leader>ee` | open or focus the Neo-tree project sidebar |
 | `<leader>d` | diagnostics for the buffer into the location list |
 
 The ordering matters. `gW` beats everything else in a Java or Go codebase
@@ -174,6 +173,7 @@ also copies and no longer snaps the view back to the prompt.
 | `prefix` + `,` | rename this window by hand (overrides the auto-name) |
 | `prefix` + `n` / `p` | next / previous window — repeatable |
 | `prefix` + `x` / `&` | kill the pane / the window — `y` confirms, `Esc` backs out |
+| `prefix` + `b` | show or hide the tmux status bar |
 | `prefix` + `d` | detach; everything keeps running |
 | `prefix` + `r` | reload `~/.tmux.conf` |
 | `prefix` + `I` | install plugins — once, after a fresh clone |
@@ -410,7 +410,8 @@ only where it isn't normal.
 | `K` | hover docs |
 | `Ctrl-s` | signature help (also insert mode) |
 | `<leader>ff` / `fb` / `fr` | files / open buffers / recent files |
-| `<leader>ee` | toggle Neo-tree and reveal the current file |
+| `<leader>ee` | open/focus Neo-tree and reveal the current file |
+| `<leader>et` / `<leader>ec` | toggle / close Neo-tree |
 | `<leader>eo` / `<leader>ef` | editable directory / floating directory |
 | `<leader>ew` | write, no autocommands, creating parent dirs |
 | `Ctrl-o` / `Ctrl-i` | back / forward in the jump list |
@@ -530,15 +531,17 @@ to refresh.
 
 ### File explorers
 
-`<leader>ee` toggles the [Neo-tree](https://github.com/nvim-neo-tree/neo-tree.nvim)
-sidebar and reveals the current file. It follows the active buffer, shows Git
-and diagnostic state, shows dotfiles, and hides Git-ignored items and `.git`.
+`<leader>ee` opens or focuses the
+[Neo-tree](https://github.com/nvim-neo-tree/neo-tree.nvim) sidebar and reveals
+the current file. If the sidebar is already visible beside a file, the same key
+moves focus into it. `<leader>et` toggles it and `<leader>ec` closes it. It shows
+Git and diagnostic state, shows dotfiles, and hides Git-ignored items and `.git`.
 The buffer tab row leaves an aligned Explorer header above the sidebar.
 
 Inside Neo-tree, `Enter` or `l` opens or toggles an item, `h` closes a
 directory, `P` previews, and `?` shows the complete key reference. The default
 `a`, `d`, and `r` mappings add, delete, and rename. Space remains available as
-the global leader, so `<leader>ee` also closes the sidebar while it has focus.
+the global leader inside the sidebar.
 
 Oil remains available when the file list itself should be editable. Open it
 with `<leader>eo` (the current file's directory), `<leader>ef` (the same in a

@@ -677,6 +677,23 @@ local function current_file_or_cwd()
 end
 
 vim.keymap.set("n", "<leader>ee", function()
+  for _, win in ipairs(vim.api.nvim_tabpage_list_wins(0)) do
+    local buf = vim.api.nvim_win_get_buf(win)
+    if vim.bo[buf].filetype == "neo-tree" then
+      vim.api.nvim_set_current_win(win)
+      return
+    end
+  end
+  require("neo-tree.command").execute({
+    action = "focus",
+    source = "filesystem",
+    position = "left",
+    reveal_file = current_file_or_cwd(),
+    reveal_force_cwd = true,
+  })
+end, { desc = "Focus explorer and reveal current file" })
+
+vim.keymap.set("n", "<leader>et", function()
   require("neo-tree.command").execute({
     toggle = true,
     source = "filesystem",
@@ -684,7 +701,11 @@ vim.keymap.set("n", "<leader>ee", function()
     reveal_file = current_file_or_cwd(),
     reveal_force_cwd = true,
   })
-end, { desc = "Toggle explorer and reveal current file" })
+end, { desc = "Toggle explorer" })
+
+vim.keymap.set("n", "<leader>ec", "<cmd>Neotree close<cr>", {
+  desc = "Close explorer",
+})
 
 vim.keymap.set("n", "<leader>eo", function()
   local path = current_file_or_cwd()

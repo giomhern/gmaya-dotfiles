@@ -2,8 +2,8 @@
 
 add_newline = false
 
-format = "[█](surface0)$os$username[](bg:blue fg:surface0)$directory[](fg:blue bg:green)$git_branch$git_status[](fg:green) "
-right_format = "[](fg:surface0)$status[](bg:surface0 fg:text)$time"
+format = "$username$directory$git_branch$git_status$character"
+right_format = "$status$time"
 
 palette = 'tokyonight_moon'
 
@@ -61,42 +61,46 @@ Redhat = "󱄛"
 RedHatEnterprise = "󱄛"
 
 [username]
-show_always = true
-style_user = "bg:surface0 fg:text"
-style_root = "bg:surface0 fg:text"
-format = '[ $user ]($style)'
+show_always = false
+style_user = "subtext0"
+style_root = "bold red"
+format = '[$user]($style) '
 
 [directory]
-style = "fg:mantle bg:blue"
-format = "[ $path ]($style)"
+style = "bold blue"
+format = "[$path]($style) "
 truncation_length = 10
 truncation_symbol = "…/"
 truncate_to_repo = false
 
 [git_branch]
 symbol = ""
-style = "bg:teal"
-format = '[[ $symbol $branch ](fg:base bg:green)]($style)'
+style = "mauve"
+format = '[$symbol $branch]($style) '
 
 [git_status]
-style = "bg:teal"
-format = '[[($all_status$ahead_behind )](fg:base bg:green)]($style)'
+style = "yellow"
+format = '[$all_status$ahead_behind]($style) '
+
+[character]
+success_symbol = "[❯](bold blue)"
+error_symbol = "[❯](bold red)"
+vimcmd_symbol = "[❮](bold green)"
 
 [status]
 disabled = false
-style = 'bg:surface0'
-failure_style = 'bg:surface0 fg:red'
-success_style = 'bg:surface0 fg:green'
+style = "red"
+success_style = "green"
 success_symbol = ""
 symbol = ""
 not_executable_symbol = ""
 not_found_symbol = ""
 sigint_symbol = ""
 signal_symbol = ""
-format = '[ $symbol $status ]($style)'
+format = '[$symbol $status]($style) '
 
 [time]
 disabled = false
 time_format = "%H:%M"
-style = "bg:blue"
-format = '[[  $time ](fg:text bg:surface0)]($style)'
+style = "subtext0"
+format = '[$time]($style)'
