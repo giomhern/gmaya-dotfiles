@@ -1,6 +1,6 @@
 # dotfiles
 
-Personal macOS setup: zsh, tmux, Neovim, and the Catppuccin Mocha theming
+Personal macOS setup: zsh, tmux, Neovim, and shared Catppuccin theming
 that ties them together.
 
 ## Contents
@@ -88,6 +88,7 @@ files contain examples.
 | `.config/starship.toml` | Prompt |
 | `.config/ghostty/` | Terminal |
 | `.config/btop/` | System monitor |
+| `.theme`, `theme.sh` | Shared Catppuccin flavor and synchronized switcher |
 | `Brewfile` | Everything installed via Homebrew |
 
 ## Keys
@@ -717,6 +718,23 @@ GitHub CLI authentication remains in `~/.config/gh`, and SSH keys remain in
 Repository automation must follow the safety contract in `AGENTS.md`. Its
 required test suite exercises migration, collision refusal, rollback, private
 backup permissions, and protected credential paths using temporary homes.
+
+## Change the theme everywhere
+
+The terminal tools share one Catppuccin flavor. Check or change it from the
+repository root:
+
+```sh
+./theme.sh status
+./theme.sh macchiato
+./theme.sh mocha
+```
+
+The command updates Ghostty, Neovim, tmux, Starship, fzf (both shell and
+Neovim), and btop together. Reload the shell with `exec zsh`, reload tmux with
+prefix + `r`, and restart other open applications. The selected flavor is
+stored in `.theme`; commit that change to carry the same look to another
+laptop.
 
 ## Credit
 

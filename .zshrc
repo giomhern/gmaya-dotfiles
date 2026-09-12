@@ -7,7 +7,7 @@
 #   05. History
 #   06. Keybindings
 #   07. Shell options
-#   08. Theme             shared catppuccin-mocha palette (fzf, bat)
+#   08. Theme             shared Catppuccin palette (fzf, bat)
 #   09. Completion styling
 #   10. Aliases
 #   11. Functions         archives, tmux

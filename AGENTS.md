@@ -65,11 +65,17 @@ Never add a protected credential path or a parent directory such as `~/.config`.
 Run these checks after changing installation or local-include behavior:
 
 ```sh
-bash -n install.sh tests/install_test.sh
+bash -n install.sh theme.sh tests/install_test.sh tests/theme_test.sh
 zsh -n .zshrc .zprofile
 tests/install_test.sh
+tests/theme_test.sh
 git diff --check
 ```
+
+Run `tests/theme_test.sh` after changing palettes or theme integration. Theme
+changes must go through `theme.sh` so Ghostty, Neovim, tmux, Starship, both fzf
+interfaces, and btop stay in sync. Keep `.theme` consistent with the generated
+application settings.
 
 The test suite must cover read-only default behavior, conflict-safe apply,
 backup migration, exact local-file preservation, credential-store preservation,
