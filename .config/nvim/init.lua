@@ -388,6 +388,15 @@ local function custom_theme_highlights(colors)
     ExplorerMark = { fg = colors.rosewater },
     ExplorerMarkLine = { bg = colors.surface0 },
 
+    -- Neo-tree sidebar.
+    NeoTreeNormal = { bg = colors.mantle },
+    NeoTreeNormalNC = { bg = colors.mantle },
+    NeoTreeEndOfBuffer = { bg = colors.mantle },
+    NeoTreeWinSeparator = { fg = colors.surface0, bg = colors.mantle },
+    NeoTreeDirectoryName = { fg = colors.blue },
+    NeoTreeDirectoryIcon = { fg = colors.blue },
+    NeoTreeRootName = { fg = colors.mauve, bold = true },
+
     -- Statusline (see "lua/core/statusline.lua").
     StatuslineC = { fg = colors.text, bg = colors.mantle },
     StatuslineCompSepB = { fg = colors.overlay1, bg = colors.surface0 },
@@ -505,21 +514,24 @@ end
 -- EXPLORER
 --------------------------------------------------------------------------------
 
--- Directory browsing is oil.nvim. Editing a directory path ("nvim .", ":e src/",
--- or "<leader>ee" below) opens the listing as a normal, editable buffer: rename
--- a file by changing its line, create one by adding a line, delete by removing
--- one, then ":w" to apply. "<CR>" opens, "-" goes up, "g?" lists every key.
---
--- netrw is what this replaced. It cannot draw filetype icons at all, and its
--- tree bars render in "Special", competing with the filenames. oil takes over
--- directory editing through "default_file_explorer", which disables netrw.
---
--- "core.explorer" is still NOT loaded, but it is now worth reviving: it was
--- written against a browser that set "filetype=directory" and rendered one
--- entry per line with no header, which is much closer to what oil produces than
--- to netrw's banner-and-tree listing. Its marking, bulk move/copy and
--- directory-grep are the parts worth porting.
+-- Neo-tree is the persistent project sidebar. Oil remains the editable
+-- directory view used by "nvim .", ":e path/", and the explicit Oil mappings.
 vim.pack.add({
+  {
+    src = "https://github.com/nvim-neo-tree/neo-tree.nvim",
+    name = "neo-tree",
+    version = vim.version.range("3"),
+  },
+  {
+    src = "https://github.com/nvim-lua/plenary.nvim",
+    name = "plenary",
+    version = "master",
+  },
+  {
+    src = "https://github.com/MunifTanjim/nui.nvim",
+    name = "nui",
+    version = "main",
+  },
   {
     src = "https://github.com/stevearc/oil.nvim",
     name = "oil",
@@ -537,6 +549,64 @@ vim.pack.add({
 -- itself from the colorscheme, so no icon highlight wiring here either.
 require("mini.icons").setup()
 MiniIcons.mock_nvim_web_devicons()
+
+require("neo-tree").setup({
+  close_if_last_window = false,
+  popup_border_style = "rounded",
+  enable_git_status = true,
+  enable_diagnostics = true,
+  default_component_configs = {
+    indent = {
+      with_expanders = true,
+      expander_collapsed = "",
+      expander_expanded = "",
+      with_markers = true,
+      indent_marker = "│",
+      last_indent_marker = "└",
+    },
+    git_status = {
+      symbols = {
+        added = "✚",
+        modified = "",
+        deleted = "✖",
+        renamed = "󰁕",
+        untracked = "",
+        ignored = "",
+        unstaged = "󰄱",
+        staged = "",
+        conflict = "",
+      },
+    },
+  },
+  window = {
+    position = "left",
+    width = 34,
+    mappings = {
+      -- Leader is Space, so do not let Neo-tree consume it before mappings such
+      -- as <leader>ee can complete.
+      ["<space>"] = "none",
+      ["h"] = "close_node",
+      ["l"] = "open",
+      ["P"] = {
+        "toggle_preview",
+        config = { use_float = true },
+      },
+    },
+  },
+  filesystem = {
+    hijack_netrw_behavior = "disabled",
+    follow_current_file = {
+      enabled = true,
+      leave_dirs_open = false,
+    },
+    filtered_items = {
+      visible = false,
+      hide_dotfiles = false,
+      hide_gitignored = true,
+      never_show = { ".git" },
+    },
+  },
+})
 
 require("oil").setup({
   default_file_explorer = true,
@@ -595,24 +665,39 @@ require("oil").setup({
   },
 })
 
-vim.keymap.set("n", "<leader>ee", function()
-  local bufname = vim.api.nvim_buf_get_name(0)
-  local dir
-  if bufname == "" then
-    dir = vim.fn.getcwd()
-  elseif vim.fn.isdirectory(bufname) == 1 then
-    dir = bufname
-  else
-    dir = vim.fn.fnamemodify(bufname, ":p:h")
+local function current_file_or_cwd()
+  if vim.bo.filetype == "neo-tree" then
+    return vim.fn.getcwd()
   end
+  local bufname = vim.api.nvim_buf_get_name(0)
+  if bufname == "" then
+    return vim.fn.getcwd()
+  end
+  return bufname
+end
+
+vim.keymap.set("n", "<leader>ee", function()
+  require("neo-tree.command").execute({
+    toggle = true,
+    source = "filesystem",
+    position = "left",
+    reveal_file = current_file_or_cwd(),
+    reveal_force_cwd = true,
+  })
+end, { desc = "Toggle explorer and reveal current file" })
+
+vim.keymap.set("n", "<leader>eo", function()
+  local path = current_file_or_cwd()
+  local dir = vim.fn.isdirectory(path) == 1 and path
+    or vim.fn.fnamemodify(path, ":p:h")
   require("oil").open(dir)
-end)
+end, { desc = "Open editable directory" })
 
 -- The listing in a centered float, for when it should not disturb the window
--- layout. "<leader>ee" keeps the full-window listing.
+-- layout.
 vim.keymap.set("n", "<leader>ef", function()
   require("oil").open_float()
-end)
+end, { desc = "Open editable directory in a float" })
 
 -- Keymap to save a file without running any auto commands and with creating
 -- directories.
@@ -1201,9 +1286,14 @@ require("bufferline").setup({
     show_buffer_close_icons = false,
     show_close_icon = false,
     separator_style = "thin",
-    -- No "offsets" entry for oil. Offsets reserve room for a sidebar window, and
-    -- "<leader>ee" opens the listing in the full window, so the reservation never
-    -- has anything to sit beside -- verified: the label simply never rendered.
+    offsets = {
+      {
+        filetype = "neo-tree",
+        text = " Explorer",
+        text_align = "left",
+        highlight = "Directory",
+      },
+    },
   },
   highlights = {
     fill = { bg = "#1e2030" },

@@ -20,7 +20,7 @@ that ties them together.
   [searching](#searching) · [editing](#editing) ·
   [completion](#completion) ·
   [diagnostics and quickfix](#diagnostics-and-quickfix) · [git](#git) ·
-  [explorer buffers](#explorer-buffers-oil) ·
+  [file explorers](#file-explorers) ·
   [buffer tabs](#buffer-tabs) ·
   [fzf pickers](#inside-any-fzf-picker) ·
   [windows and misc](#windows-and-misc)
@@ -138,7 +138,7 @@ see *macOS owns Ctrl+arrows*.
 | `<leader>ss` | grep the project |
 | `<leader>sw` | grep the word under the cursor |
 | `<leader>fb` / `<leader>fr` | open buffers / recent files |
-| `<leader>ee` | file explorer, only when you genuinely want to browse |
+| `<leader>ee` | toggle the Neo-tree project sidebar |
 | `<leader>d` | diagnostics for the buffer into the location list |
 
 The ordering matters. `gW` beats everything else in a Java or Go codebase
@@ -389,9 +389,9 @@ down five, `2ci"` — the grammar is `count` + `operator` + `motion`.
 | `Ctrl-w` `o` | close every split but this one |
 | `Ctrl-w` `q` | close this split |
 
-**One gotcha:** inside an explorer listing, the normal editing keys are the file
+**One gotcha:** inside an Oil listing, the normal editing keys are the file
 operations — `dd` deletes a file, and changing a line's text renames it. Nothing
-happens until you `:w`. See [Explorer buffers](#explorer-buffers-oil).
+happens until you `:w`. See [File explorers](#file-explorers).
 
 ## Neovim reference
 
@@ -410,7 +410,8 @@ only where it isn't normal.
 | `K` | hover docs |
 | `Ctrl-s` | signature help (also insert mode) |
 | `<leader>ff` / `fb` / `fr` | files / open buffers / recent files |
-| `<leader>ee` | explorer at this file's directory |
+| `<leader>ee` | toggle Neo-tree and reveal the current file |
+| `<leader>eo` / `<leader>ef` | editable directory / floating directory |
 | `<leader>ew` | write, no autocommands, creating parent dirs |
 | `Ctrl-o` / `Ctrl-i` | back / forward in the jump list |
 
@@ -527,12 +528,23 @@ On a PR the `prlsp` client adds `<leader>ghc` to comment (works on a visual
 range), `<leader>ghr` to reply, `<leader>ghs` to show the thread, `<leader>ghu`
 to refresh.
 
-### Explorer buffers (oil)
+### File explorers
 
-Open a listing with `<leader>ee` (the current file's directory), `<leader>ef`
-(the same in a float), `nvim .`, or `:e <dir>`. The browser is
+`<leader>ee` toggles the [Neo-tree](https://github.com/nvim-neo-tree/neo-tree.nvim)
+sidebar and reveals the current file. It follows the active buffer, shows Git
+and diagnostic state, shows dotfiles, and hides Git-ignored items and `.git`.
+The buffer tab row leaves an aligned Explorer header above the sidebar.
+
+Inside Neo-tree, `Enter` or `l` opens or toggles an item, `h` closes a
+directory, `P` previews, and `?` shows the complete key reference. The default
+`a`, `d`, and `r` mappings add, delete, and rename. Space remains available as
+the global leader, so `<leader>ee` also closes the sidebar while it has focus.
+
+Oil remains available when the file list itself should be editable. Open it
+with `<leader>eo` (the current file's directory), `<leader>ef` (the same in a
+float), `nvim .`, or `:e <dir>`. The browser is
 [oil.nvim](https://github.com/stevearc/oil.nvim), and the listing is a normal
-buffer — you edit it like text and write it to apply.
+buffer: edit it like text and write it to apply.
 
 | | |
 |---|---|
