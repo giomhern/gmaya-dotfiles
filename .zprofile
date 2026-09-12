@@ -3,3 +3,6 @@ if [[ -x /opt/homebrew/bin/brew ]]; then
 elif [[ -x /usr/local/bin/brew ]]; then
   eval "$(/usr/local/bin/brew shellenv)"
 fi
+
+# User-installed tools such as Codex.
+[[ -d $HOME/.local/bin ]] && path=($HOME/.local/bin $path)

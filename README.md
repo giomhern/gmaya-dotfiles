@@ -47,6 +47,14 @@ The default run changes nothing. `--apply` links only paths that are absent;
 every file, directory, or symlink already in `$HOME` is reported as a conflict
 and left untouched. Review and migrate conflicts by hand after comparing them.
 
+To try this Neovim setup without replacing an existing `~/.config/nvim`, link
+it under another app name and launch it explicitly:
+
+```sh
+ln -s "$PWD/.config/nvim" ~/.config/nvim-gmaya
+NVIM_APPNAME=nvim-gmaya nvim
+```
+
 Git identity and account settings live in `~/.gitconfig.local`, which is
 included by the tracked `.gitconfig` but never committed. Start from
 `.gitconfig.local.example` on a new laptop. Machine-specific shell settings
