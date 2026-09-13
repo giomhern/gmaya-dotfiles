@@ -542,11 +542,50 @@ vim.pack.add({
 require("mini.icons").setup()
 MiniIcons.mock_nvim_web_devicons()
 
+-- Keep tmux's window row below ordinary shells, but move it away from
+-- Neovim's bottom statusline while Neo-tree is visible. vim.system avoids
+-- blocking the editor, and this is a no-op when Neovim is not running in tmux.
+local function set_tmux_status_position(position)
+  if not vim.env.TMUX or vim.env.TMUX == "" then
+    return
+  end
+  vim.system({ "tmux", "set-option", "-g", "status-position", position }, {
+    detach = true,
+  })
+end
+
+local function sync_tmux_status_with_neo_tree()
+  for _, win in ipairs(vim.api.nvim_list_wins()) do
+    local buf = vim.api.nvim_win_get_buf(win)
+    if vim.bo[buf].filetype == "neo-tree" then
+      set_tmux_status_position("top")
+      return
+    end
+  end
+  set_tmux_status_position("bottom")
+end
+
 require("neo-tree").setup({
   close_if_last_window = false,
   popup_border_style = "rounded",
   enable_git_status = true,
   enable_diagnostics = true,
+  event_handlers = {
+    {
+      event = "neo_tree_window_after_open",
+      handler = function()
+        set_tmux_status_position("top")
+      end,
+    },
+    {
+      event = "neo_tree_window_before_close",
+      handler = function()
+        -- The event fires before the window disappears. Check on the next event
+        -- loop so another visible Neo-tree tab can keep the tmux row on top.
+        vim.schedule(sync_tmux_status_with_neo_tree)
+      end,
+    },
+  },
   default_component_configs = {
     indent = {
       with_expanders = true,
@@ -598,6 +637,13 @@ require("neo-tree").setup({
       never_show = { ".git" },
     },
   },
+})
+
+vim.api.nvim_create_autocmd("VimLeavePre", {
+  callback = function()
+    set_tmux_status_position("bottom")
+  end,
+  desc = "Restore tmux status bar below Neovim",
 })
 
 local function current_file_or_cwd()
