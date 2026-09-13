@@ -110,9 +110,8 @@ start a second one; you make windows instead. Save and restore intentionally
 with `prefix + Ctrl-s` and `prefix + Ctrl-r` when you want a layout to persist.
 
 **One window per repo.** `prefix + c` opens a window in the current directory
-and names it after that directory. The status bar is hidden by default so it
-does not stack under Neovim; `prefix + b` shows or hides it when you need the
-window list. `prefix + 1…9` jumps straight to one, and `prefix + &` closes one.
+and names it after that directory. The bottom status bar keeps the window list
+visible. `prefix + 1…9` jumps straight to one, and `prefix + &` closes one.
 
 **Split for the job, not for the aesthetic.** `prefix + |` puts a pane to the
 right, `prefix + -` below. The useful shape for a service is editor left, and
@@ -173,7 +172,6 @@ also copies and no longer snaps the view back to the prompt.
 | `prefix` + `,` | rename this window by hand (overrides the auto-name) |
 | `prefix` + `n` / `p` | next / previous window — repeatable |
 | `prefix` + `x` / `&` | kill the pane / the window — `y` confirms, `Esc` backs out |
-| `prefix` + `b` | show or hide the tmux status bar |
 | `prefix` + `d` | detach; everything keeps running |
 | `prefix` + `r` | reload `~/.tmux.conf` |
 | `prefix` + `I` | install plugins — once, after a fresh clone |
@@ -389,10 +387,6 @@ down five, `2ci"` — the grammar is `count` + `operator` + `motion`.
 | `Ctrl-w` `o` | close every split but this one |
 | `Ctrl-w` `q` | close this split |
 
-**One gotcha:** inside an Oil listing, the normal editing keys are the file
-operations — `dd` deletes a file, and changing a line's text renames it. Nothing
-happens until you `:w`. See [File explorers](#file-explorers).
-
 ## Neovim reference
 
 Everything below is specific to this config. Leader is `Space`. Mode is noted
@@ -412,7 +406,6 @@ only where it isn't normal.
 | `<leader>ff` / `fb` / `fr` | files / open buffers / recent files |
 | `<leader>ee` | open/focus Neo-tree and reveal the current file |
 | `<leader>et` / `<leader>ec` | toggle / close Neo-tree |
-| `<leader>eo` / `<leader>ef` | editable directory / floating directory |
 | `<leader>ew` | write, no autocommands, creating parent dirs |
 | `Ctrl-o` / `Ctrl-i` | back / forward in the jump list |
 
@@ -536,47 +529,15 @@ to refresh.
 the current file. If the sidebar is already visible beside a file, the same key
 moves focus into it. `<leader>et` toggles it and `<leader>ec` closes it. It shows
 Git and diagnostic state, shows dotfiles, and hides Git-ignored items and `.git`.
-The buffer tab row leaves an aligned Explorer header above the sidebar.
+The buffer tab row leaves an aligned Explorer header above the sidebar. Opening
+Neovim with a directory (`nvim .`) or editing one (`:e path/`) opens Neo-tree in
+the current window as well.
 
 Inside Neo-tree, `Enter` or `l` opens or toggles an item, `h` closes a
 directory, `P` previews, and `?` shows the complete key reference. The default
 `a`, `d`, and `r` mappings add, delete, and rename. Space remains available as
-the global leader inside the sidebar.
-
-Oil remains available when the file list itself should be editable. Open it
-with `<leader>eo` (the current file's directory), `<leader>ef` (the same in a
-float), `nvim .`, or `:e <dir>`. The browser is
-[oil.nvim](https://github.com/stevearc/oil.nvim), and the listing is a normal
-buffer: edit it like text and write it to apply.
-
-| | |
-|---|---|
-| `Enter` | open the file or descend into the directory |
-| `-` | up to the parent directory |
-| `Ctrl-s` / `Ctrl-h` | open in a vertical / horizontal split |
-| `Ctrl-t` | open in a new tab |
-| `Ctrl-p` | preview the file without leaving the listing |
-| `Ctrl-l` | refresh the listing |
-| `Ctrl-c` | close the listing |
-| `g.` | toggle hidden files |
-| `g\` | toggle the trash bin |
-| `gs` | change the sort order |
-| `gx` | open in the system default application |
-| `g?` | show every key |
-
-To **create, rename or delete**, edit the buffer and `:w`:
-
-| | |
-|---|---|
-| add a line with a name | creates that file |
-| add a line ending in `/` | creates a directory |
-| add `a/b/c.lua` | creates the intervening directories too |
-| change a line's text | renames |
-| delete a line (`dd`) | deletes, to `~/.Trash` |
-
-Writing shows a confirmation listing the pending operations — `y` applies. You
-can stack several creates, renames and deletes into one `:w`. Icons come from
-`mini.icons`; dotfiles are shown by default and `.git` is always hidden.
+the global leader inside the sidebar. Neo-tree is the only directory explorer,
+so its behavior is consistent whether it opens as a sidebar or from a directory.
 
 ### Buffer tabs
 

@@ -14,10 +14,8 @@ vim.g.loaded_gzip = 1
 vim.g.loaded_logiPat = 1
 vim.g.loaded_matchit = 1
 vim.g.loaded_matchparen = 1
--- netrw is not disabled here either. oil.nvim takes over ":e <dir>" and "nvim ."
--- via "default_file_explorer", which hijacks netrw's autocmds rather than
--- needing it unloaded; setting these would only break oil's fallbacks. See the
--- EXPLORER section below.
+-- Neo-tree replaces netrw for directory buffers. It handles both ":e <dir>"
+-- and "nvim ." through its netrw hijack; see the EXPLORER section below.
 vim.g.loaded_remote_plugins = 1
 vim.g.loaded_rplugin = 1
 vim.g.loaded_rrhelper = 1
@@ -514,8 +512,8 @@ end
 -- EXPLORER
 --------------------------------------------------------------------------------
 
--- Neo-tree is the persistent project sidebar. Oil remains the editable
--- directory view used by "nvim .", ":e path/", and the explicit Oil mappings.
+-- Neo-tree is the single project and directory explorer. Keeping one explorer
+-- makes "nvim .", ":e path/", and the sidebar use the same keys and behavior.
 vim.pack.add({
   {
     src = "https://github.com/nvim-neo-tree/neo-tree.nvim",
@@ -533,20 +531,14 @@ vim.pack.add({
     version = "main",
   },
   {
-    src = "https://github.com/stevearc/oil.nvim",
-    name = "oil",
-    version = "master",
-  },
-  {
     src = "https://github.com/echasnovski/mini.icons",
     name = "mini-icons",
     version = "main",
   },
 }, { confirm = false, load = true })
 
--- oil asks for icons through the nvim-web-devicons API, which mini.icons can
--- answer once mocked. mini.icons is the lighter of the two and already themes
--- itself from the colorscheme, so no icon highlight wiring here either.
+-- Neo-tree asks for icons through the nvim-web-devicons API, which mini.icons
+-- can answer once mocked. mini.icons themes itself from the colorscheme.
 require("mini.icons").setup()
 MiniIcons.mock_nvim_web_devicons()
 
@@ -594,7 +586,7 @@ require("neo-tree").setup({
     },
   },
   filesystem = {
-    hijack_netrw_behavior = "disabled",
+    hijack_netrw_behavior = "open_current",
     follow_current_file = {
       enabled = true,
       leave_dirs_open = false,
@@ -605,63 +597,6 @@ require("neo-tree").setup({
       hide_gitignored = true,
       never_show = { ".git" },
     },
-  },
-})
-
-require("oil").setup({
-  default_file_explorer = true,
-  columns = { "icon" },
-  delete_to_trash = true,
-  watch_for_changes = true,
-  view_options = {
-    -- Show dotfiles: this is a dotfiles repo, hiding them would hide the point.
-    -- "g." toggles at runtime. The git directory is the one thing always hidden,
-    -- since nothing in it should be edited through a file listing.
-    show_hidden = true,
-    is_always_hidden = function(name, _)
-      return name == ".git"
-    end,
-  },
-  -- The popup that lists pending changes on ":w". Its defaults are a min_width
-  -- of "the greater of 40 columns or 40% of the editor" and a min_height of 5,
-  -- so creating one file drew a half-screen box holding a single line. These
-  -- floors let it shrink to its content. Rounded to match the tmux kill menus.
-  confirmation = {
-    min_width = 30,
-    max_width = 0.6,
-    min_height = 3,
-    max_height = 0.6,
-    border = "rounded",
-    win_options = {
-      -- The same groups "core.picker" gives its float, so the two popups are one
-      -- style: both base, both a blue stroke. Defined in the theme's
-      -- custom_highlights, so a colorscheme reload cannot drop them.
-      --
-      -- Redirecting Normal alone is not enough, and looks worse than doing
-      -- nothing: stock FloatBorder carries a mantle background, and a box
-      -- drawing glyph is a thin stroke inside a full cell, so that darker
-      -- background shows around the border and reads as a shadow banding the box.
-      -- NormalFloat needs naming too, since it, not Normal, is what a float fills
-      -- with by default.
-      winhighlight = table.concat({
-        "Normal:PickerNormal",
-        "NormalFloat:PickerNormal",
-        "FloatBorder:PickerBorder",
-        "EndOfBuffer:PickerNormal",
-      }, ","),
-      winblend = 0,
-    },
-  },
-  -- A directory listing is not a file, so drop the editing chrome it would
-  -- inherit: the "80,120" rulers and the listchars indent guides both draw
-  -- straight through the listing, and line numbers on a file list are noise.
-  win_options = {
-    colorcolumn = "",
-    list = false,
-    number = false,
-    relativenumber = false,
-    signcolumn = "no",
-    cursorline = true,
   },
 })
 
@@ -706,19 +641,6 @@ end, { desc = "Toggle explorer" })
 vim.keymap.set("n", "<leader>ec", "<cmd>Neotree close<cr>", {
   desc = "Close explorer",
 })
-
-vim.keymap.set("n", "<leader>eo", function()
-  local path = current_file_or_cwd()
-  local dir = vim.fn.isdirectory(path) == 1 and path
-    or vim.fn.fnamemodify(path, ":p:h")
-  require("oil").open(dir)
-end, { desc = "Open editable directory" })
-
--- The listing in a centered float, for when it should not disturb the window
--- layout.
-vim.keymap.set("n", "<leader>ef", function()
-  require("oil").open_float()
-end, { desc = "Open editable directory in a float" })
 
 -- Keymap to save a file without running any auto commands and with creating
 -- directories.
@@ -1282,7 +1204,7 @@ require("core.statusline")
 --
 -- Bufferline derives its palette from the colorscheme. Only the fills are
 -- pinned below, to
--- the same base / mantle split the oil confirmation and the fzf picker use:
+-- the same base / mantle split the fzf picker uses:
 -- the row sits on mantle so it reads as chrome, and the selected tab on base so
 -- it lines up with the buffer beneath it.
 vim.pack.add({
