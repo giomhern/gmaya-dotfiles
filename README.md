@@ -110,7 +110,7 @@ start a second one; you make windows instead. Save and restore intentionally
 with `prefix + Ctrl-s` and `prefix + Ctrl-r` when you want a layout to persist.
 
 **One window per repo.** `prefix + c` opens a window in the current directory
-and names it after that directory. The bottom status bar keeps the window list
+and names it after that directory. The top status bar keeps the window list
 visible. `prefix + 1…9` jumps straight to one, and `prefix + &` closes one.
 
 **Split for the job, not for the aesthetic.** `prefix + |` puts a pane to the
