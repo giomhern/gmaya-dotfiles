@@ -24,7 +24,9 @@ that ties them together.
   [buffer tabs](#buffer-tabs) ·
   [fzf pickers](#inside-any-fzf-picker) ·
   [windows and misc](#windows-and-misc)
-- [Notes](#notes) · [Secrets](#secrets) · [Credit](#credit)
+- [Notes](#notes) · [Secrets](#secrets) ·
+  [Change the theme everywhere](#change-the-theme-everywhere) ·
+  [Credit](#credit)
 
 New to Vim? Start with [Vim fundamentals](#vim-fundamentals). Everything under
 [Neovim reference](#neovim-reference) is specific to this config.
@@ -526,6 +528,22 @@ to refresh.
 
 ### File explorers
 
+Neo-tree is the only directory explorer. These commands cover opening it,
+moving between it and a file, and managing entries:
+
+| | |
+|---|---|
+| `nvim .` | start Neovim with Neo-tree at the current directory |
+| `:e path/` | open a directory in Neo-tree |
+| `<leader>ee` | open or focus the sidebar and reveal the current file |
+| `<leader>et` / `<leader>ec` | toggle / close the sidebar |
+| `Ctrl-w` `h` / `Ctrl-w` `l` | move into Neo-tree / back to the file window |
+| `Enter` or `l` | open a file or expand a directory |
+| `h` | collapse the selected directory |
+| `a` / `d` / `r` | add / delete / rename an entry |
+| `P` | toggle the floating file preview |
+| `?` | show Neo-tree's complete key reference |
+
 `<leader>ee` opens or focuses the
 [Neo-tree](https://github.com/nvim-neo-tree/neo-tree.nvim) sidebar and reveals
 the current file. If the sidebar is already visible beside a file, the same key
@@ -535,11 +553,8 @@ The buffer tab row leaves an aligned Explorer header above the sidebar. Opening
 Neovim with a directory (`nvim .`) or editing one (`:e path/`) opens Neo-tree in
 the current window as well.
 
-Inside Neo-tree, `Enter` or `l` opens or toggles an item, `h` closes a
-directory, `P` previews, and `?` shows the complete key reference. The default
-`a`, `d`, and `r` mappings add, delete, and rename. Space remains available as
-the global leader inside the sidebar. Neo-tree is the only directory explorer,
-so its behavior is consistent whether it opens as a sidebar or from a directory.
+Space remains available as the global leader inside the sidebar. Its behavior
+is consistent whether it opens as a sidebar or from a directory.
 
 ### Buffer tabs
 
@@ -556,10 +571,17 @@ buffers, not Neovim tabpages — opening a file adds a tab, and nothing needs a
 | `<leader>bo` | close every buffer but this one |
 | `<leader>b.` / `<leader>b,` | move this tab right / left in the row |
 | `<leader>fb` | the buffer list as an fzf picker, with preview |
+| `:ls` | list every open buffer and its number |
+| `:buffer <number-or-name>` | switch to a buffer directly |
+| `:tabs` | list real Neovim tabpages and their windows |
 
 A tab shows the filetype icon, and an LSP error or warning count when the file
 has diagnostics. `<leader>fb` is still the faster way through a large set — the
 row is for seeing what is open, the picker for searching it.
+
+Use `Enter` in Neo-tree or an fzf picker for the normal buffer workflow.
+`Ctrl-t` in an fzf picker deliberately creates a real Neovim tabpage with its
+own window layout; `:tabs` shows whether any exist.
 
 ### Inside any fzf picker
 
