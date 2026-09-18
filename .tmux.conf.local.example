@@ -1,0 +1,8 @@
+# Optional machine-specific tmux styling. Copy to ~/.tmux.conf.local; it is
+# loaded after the shared theme and is never managed or committed.
+
+# A quieter window row with plain spacing and locally chosen colors.
+set -g status-style "fg=#4c4f69,bg=#eff1f5"
+setw -g window-status-separator " "
+setw -g window-status-format " #I #W #F "
+setw -g window-status-current-format "#[fg=#eff1f5,bg=#1e66f5,bold] #I #W #F #[default]"

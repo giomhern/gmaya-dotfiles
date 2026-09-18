@@ -3,6 +3,7 @@
 .zshrc.local
 .zprofile.local
 .gitconfig.local
+.tmux.conf.local
 .secrets/
 *.token
 *_rsa

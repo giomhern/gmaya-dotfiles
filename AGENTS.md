@@ -24,6 +24,11 @@ identity, credentials, machine-specific settings, and a complete rollback path.
   `.gitconfig` includes it last so local choices win.
 - Keep machine shell settings in `~/.zshrc.local` and login-shell settings in
   `~/.zprofile.local`. These files stay outside Git.
+- In the `--work` profile, never manage, inspect, copy, move, back up, or link
+  `~/.zshrc`, `~/.zprofile`, or `~/.gitconfig`. The optional work shell fragment
+  must remain a separate, manually sourced file under `~/.config/gmaya`.
+- Keep machine tmux styling in `~/.tmux.conf.local`. The shared config may
+  source it, but installation and theme tooling must not create or rewrite it.
 - Do not run `brew bundle`, uninstall packages, change Homebrew ownership, or
   authenticate an account as part of a dotfiles migration unless the user asks.
 - Do not rewrite repository history to remove old identifiers without explicit
@@ -44,6 +49,11 @@ identity, credentials, machine-specific settings, and a complete rollback path.
 7. Initialize optional plugin managers separately. Their state belongs under
    `~/.local/share/nvim` and `~/.tmux/plugins`, outside this repository.
 
+On a managed work laptop, use `./install.sh --work` for preflight and combine
+`--work` with `--apply` or `--migrate`. Verify the three company configuration
+paths remain byte-for-byte and mode-for-mode unchanged. Source
+`~/.config/gmaya/work-shell.zsh` manually only after company initialization.
+
 `--apply` creates links only for absent targets. It leaves every conflict
 untouched. `--migrate` preserves `.zshrc`, `.zprofile`, and `.gitconfig` as local
 files, moves every conflict into `~/.dotfiles-backups/<timestamp>/`, and rolls
@@ -56,6 +66,9 @@ The managed target list is defined once in `install.sh` and currently contains:
 - `~/.zshrc`, `~/.zprofile`, `~/.tmux.conf`, and `~/.gitconfig`
 - `~/.config/starship.toml`
 - `~/.config/ghostty`, `~/.config/nvim`, and `~/.config/btop`
+
+The work profile excludes `.zshrc`, `.zprofile`, and `.gitconfig`, and adds
+`~/.config/gmaya/work-shell.zsh`. It must never weaken the protected-path rules.
 
 Adding a target requires updating the installer, README, and tests together.
 Never add a protected credential path or a parent directory such as `~/.config`.
@@ -80,10 +93,11 @@ generated application settings.
 The test suite must cover read-only default behavior, conflict-safe apply,
 backup migration, exact local-file preservation, credential-store preservation,
 private permissions, idempotency, local collision/self-include refusal, rollback
-after failure, parent-path obstruction, and unsafe `HOME` rejection. Tests must
-use temporary home directories and must never point a mutating mode at the real
-home directory. The shared shell must also start when optional tools such as
-Git, Zinit, and starship are unavailable.
+after failure, parent-path obstruction, unsafe `HOME` rejection, work-profile
+protection in every mode, and work-shell composition after company startup.
+Tests must use temporary home directories and must never point a mutating mode
+at the real home directory. The shared shell must also start when optional tools
+such as Git, Zinit, and starship are unavailable.
 
 Before committing, search the current tree for employer names, email addresses,
 tokens, private-key headers, cloud profiles, and absolute `/Users/...` paths.

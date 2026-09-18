@@ -40,6 +40,9 @@ cd ~/gmaya-dotfiles
 # Choose one after reviewing the preflight:
 ./install.sh --apply   # link missing paths and leave conflicts active
 ./install.sh --migrate # preserve conflicts, then make this setup authoritative
+# On a managed work laptop, add --work to any mode:
+./install.sh --work             # protected, read-only preflight
+./install.sh --work --migrate   # install UI tools; preserve company shell/Git
 # Optional: review the Brewfile first, then install its tools with brew bundle
 ```
 
@@ -78,6 +81,27 @@ included by the tracked `.gitconfig` but never committed. Start from
 belong in `~/.zshrc.local` and `~/.zprofile.local`; the matching `.example`
 files contain examples.
 
+### Managed work laptops
+
+The `--work` profile removes `~/.zshrc`, `~/.zprofile`, and `~/.gitconfig` from
+the managed target list before preflight begins. Check, apply, and migrate never
+read, copy, move, link, back up, or change those three paths. This leaves
+company initialization, credentials, Git includes, signing, and account policy
+in place while installing tmux, Ghostty, Neovim, Starship, and btop.
+
+The profile links an optional interactive layer at
+`~/.config/gmaya/work-shell.zsh`. After the company shell has completed its own
+initialization, source it from an approved local hook:
+
+```zsh
+source ~/.config/gmaya/work-shell.zsh
+```
+
+That fragment adds the shared Starship prompt, bat/fzf colors, aliases, and
+tmux helper functions. It does not alter `PATH`, load secrets, configure Git,
+install shell plugins, or edit a startup file. The source line is deliberately
+manual so the installer cannot modify company-owned shell startup.
+
 ## What's here
 
 | Path | |
@@ -85,7 +109,9 @@ files contain examples.
 | `.zshrc` | Shell config, sectioned and indexed at the top |
 | `.zprofile` | Login shell — sets up the Homebrew environment |
 | `.tmux.conf` | tmux + tpm plugins |
+| `.tmux.conf.local.example` | optional machine-only tmux style overrides |
 | `.gitconfig` | Shared Git behavior; identity stays local |
+| `.config/gmaya/work-shell.zsh` | opt-in shell presentation for work laptops |
 | `.config/nvim/` | Neovim config — `init.lua`, `lsp/`, `lua/core/` |
 | `.config/starship.toml` | Prompt |
 | `.config/ghostty/` | Terminal |
@@ -183,6 +209,11 @@ also copies and no longer snaps the view back to the prompt.
 
 Windows and panes are both 1-indexed, and windows renumber themselves when one
 closes, so `prefix + 3` always means the third window you can see.
+
+For machine-specific colors or separators, copy
+`.tmux.conf.local.example` to `~/.tmux.conf.local` and edit the copy. The shared
+config loads it after the synchronized theme, so local values win. The file is
+gitignored and the installer never manages it. Reload with `prefix + r`.
 
 ## Vim fundamentals
 

@@ -9,6 +9,7 @@ trap 'rm -rf "$FIXTURE"' EXIT
 FILES=(
   .theme
   .zshrc
+  .config/gmaya/work-shell.zsh
   .tmux.conf
   .config/ghostty/config
   .config/starship.toml
@@ -44,6 +45,8 @@ grep -Fq 'color_theme = "catppuccin_latte"' \
 grep -Fq 'theme[main_bg]="#eff1f5"' \
   "$FIXTURE/.config/btop/themes/catppuccin_latte.theme"
 grep -Fq 'BAT_THEME="Catppuccin Latte"' "$FIXTURE/.zshrc"
+grep -Fq 'BAT_THEME="Catppuccin Latte"' \
+  "$FIXTURE/.config/gmaya/work-shell.zsh"
 grep -Fq '#eff1f5' "$FIXTURE/.config/nvim/lua/core/picker.lua"
 "$FIXTURE/theme.sh" macchiato >/dev/null
 "$FIXTURE/theme.sh" status | grep -Fq 'Catppuccin Macchiato'

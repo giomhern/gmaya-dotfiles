@@ -5,6 +5,7 @@
 #   ./install.sh            read-only preflight (default)
 #   ./install.sh --apply    link only targets that do not exist
 #   ./install.sh --migrate  preserve conflicts, back them up, then link
+#   ./install.sh --work ... skip shell startup and Git configuration
 #
 # The installer never deletes a target. It never reads, moves, or links secret
 # and account stores such as ~/.ssh, ~/.config/gh, ~/.aws, or ~/.zshsecrets.
@@ -13,34 +14,52 @@ set -Eeuo pipefail
 
 REPO="$(cd "$(dirname "${BASH_SOURCE[0]}")" && pwd)"
 MODE=check
+PROFILE=personal
+MODE_SET=0
 
 usage() {
-  printf 'Usage: %s [--check|--dry-run|--apply|--migrate]\n' "$0"
+  printf 'Usage: %s [--work] [--check|--dry-run|--apply|--migrate]\n' "$0"
   printf '  --check, --dry-run  report without changing anything (default)\n'
   printf '  --apply             link missing targets; leave conflicts unchanged\n'
   printf '  --migrate           preserve and back up conflicts, then link them\n'
+  printf '  --work              never manage shell startup or Git configuration\n'
 }
 
-case "${1:-}" in
-  ""|--check|--dry-run) ;;
-  --apply) MODE=apply ;;
-  --migrate) MODE=migrate ;;
-  -h|--help)
-    usage
-    exit 0
-    ;;
-  *)
-    printf 'Unknown option: %s\n\n' "$1" >&2
-    usage >&2
-    exit 2
-    ;;
-esac
-
-if (( $# > 1 )); then
-  printf 'Only one option may be supplied.\n\n' >&2
-  usage >&2
-  exit 2
-fi
+while (( $# )); do
+  case "$1" in
+    --work)
+      [[ $PROFILE == personal ]] || {
+        printf 'Option may be supplied only once: %s\n\n' "$1" >&2
+        usage >&2
+        exit 2
+      }
+      PROFILE=work
+      ;;
+    --check|--dry-run|--apply|--migrate)
+      (( ! MODE_SET )) || {
+        printf 'Choose only one install mode.\n\n' >&2
+        usage >&2
+        exit 2
+      }
+      case "$1" in
+        --apply) MODE=apply ;;
+        --migrate) MODE=migrate ;;
+        *) MODE=check ;;
+      esac
+      MODE_SET=1
+      ;;
+    -h|--help)
+      usage
+      exit 0
+      ;;
+    *)
+      printf 'Unknown option: %s\n\n' "$1" >&2
+      usage >&2
+      exit 2
+      ;;
+  esac
+  shift
+done
 
 if [[ -z ${HOME:-} || $HOME == / ]]; then
   printf 'Refusing to run with an empty HOME or HOME=/.\n' >&2
@@ -52,20 +71,34 @@ if [[ ! -d $HOME ]]; then
 fi
 HOME="$(cd "$HOME" && pwd -P)"
 
-FILES=(
-  .zshrc
-  .zprofile
-  .tmux.conf
-  .gitconfig
-  .config/starship.toml
-  .config/ghostty
-  .config/nvim
-  .config/btop
-)
+WORK_SHELL=.config/gmaya/work-shell.zsh
 
-# Existing files whose contents must continue loading after migration. Keep the
-# mapping in a function so the installer works with macOS's Bash 3.2.
-LOCAL_COPY_SOURCES=(.zshrc .zprofile .gitconfig)
+if [[ $PROFILE == work ]]; then
+  FILES=(
+    .tmux.conf
+    "$WORK_SHELL"
+    .config/starship.toml
+    .config/ghostty
+    .config/nvim
+    .config/btop
+  )
+  LOCAL_COPY_SOURCES=()
+else
+  FILES=(
+    .zshrc
+    .zprofile
+    .tmux.conf
+    .gitconfig
+    .config/starship.toml
+    .config/ghostty
+    .config/nvim
+    .config/btop
+  )
+  # Existing files whose contents must continue loading after migration.
+  LOCAL_COPY_SOURCES=(.zshrc .zprofile .gitconfig)
+fi
+
+# Keep the mapping in a function so the installer works with macOS's Bash 3.2.
 
 local_copy_for() {
   case "$1" in
@@ -74,6 +107,13 @@ local_copy_for() {
     .gitconfig) printf '.gitconfig.local' ;;
     *) return 1 ;;
   esac
+}
+
+print_work_notice() {
+  [[ $PROFILE == work ]] || return 0
+  printf '  protected  ~/.zshrc, ~/.zprofile, and ~/.gitconfig (work profile)\n'
+  printf '  opt-in     source ~/%s after company shell initialization\n\n' \
+    "$WORK_SHELL"
 }
 
 has_path() {
@@ -121,6 +161,10 @@ validate_destination_parents() {
 preflight_migration() {
   local rel dst local_rel local_dst
 
+  # The work profile has no startup or Git files to preserve. Avoid expanding
+  # an empty array under Bash 3.2 with nounset enabled.
+  [[ $PROFILE == work ]] && return 0
+
   for rel in "${LOCAL_COPY_SOURCES[@]}"; do
     dst="$HOME/$rel"
     local_rel="$(local_copy_for "$rel")"
@@ -157,6 +201,7 @@ check_targets() {
   local rel dst
   validate_destination_parents
   printf 'Checking dotfiles from %s (read-only)\n\n' "$REPO"
+  print_work_notice
 
   for rel in "${FILES[@]}"; do
     dst="$HOME/$rel"
@@ -176,6 +221,7 @@ link_missing() {
   local rel dst
   validate_destination_parents
   printf 'Linking missing dotfiles from %s\n\n' "$REPO"
+  print_work_notice
 
   for rel in "${FILES[@]}"; do
     dst="$HOME/$rel"
@@ -283,24 +329,26 @@ migrate_targets() {
 
   # Preserve shell and Git behavior outside the repository before moving any
   # managed target. -L follows an existing symlink and copies its contents.
-  for rel in "${LOCAL_COPY_SOURCES[@]}"; do
-    dst="$HOME/$rel"
-    if is_installed "$rel" || ! has_path "$dst"; then
-      continue
-    fi
-    local_rel="$(local_copy_for "$rel")"
-    local_dst="$HOME/$local_rel"
-    cp -npL "$dst" "$local_dst"
-    if [[ ! -f $local_dst ]] || ! cmp -s "$dst" "$local_dst"; then
-      printf 'Could not create an exact local copy at %s.\n' \
-        "$local_dst" >&2
-      return 1
-    fi
-    chmod 600 "$local_dst"
-    created_locals+=("$local_rel")
-    created_local_count=$((created_local_count + 1))
-    printf '  preserved  %s -> ~/%s\n' "$rel" "$local_rel"
-  done
+  if [[ $PROFILE == personal ]]; then
+    for rel in "${LOCAL_COPY_SOURCES[@]}"; do
+      dst="$HOME/$rel"
+      if is_installed "$rel" || ! has_path "$dst"; then
+        continue
+      fi
+      local_rel="$(local_copy_for "$rel")"
+      local_dst="$HOME/$local_rel"
+      cp -npL "$dst" "$local_dst"
+      if [[ ! -f $local_dst ]] || ! cmp -s "$dst" "$local_dst"; then
+        printf 'Could not create an exact local copy at %s.\n' \
+          "$local_dst" >&2
+        return 1
+      fi
+      chmod 600 "$local_dst"
+      created_locals+=("$local_rel")
+      created_local_count=$((created_local_count + 1))
+      printf '  preserved  %s -> ~/%s\n' "$rel" "$local_rel"
+    done
+  fi
 
   # Move every conflict into one timestamped rollback tree.
   for rel in "${FILES[@]}"; do
@@ -341,4 +389,9 @@ case "$MODE" in
 esac
 
 printf '\nSecrets and account credentials are outside the managed target list.\n'
-printf '~/.zshsecrets remains local and is sourced only when present.\n'
+if [[ $PROFILE == work ]]; then
+  printf 'Work profile left ~/.zshrc, ~/.zprofile, and ~/.gitconfig untouched.\n'
+  printf 'To opt in after company initialization: source ~/%s\n' "$WORK_SHELL"
+else
+  printf '~/.zshsecrets remains local and is sourced only when present.\n'
+fi

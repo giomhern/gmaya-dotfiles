@@ -263,6 +263,75 @@ test_shell_starts_without_optional_tools() {
   pass 'shell starts before Git, Zinit, or starship is installed'
 }
 
+test_work_profile_protects_company_configs_in_every_mode() {
+  local mode name home output backup
+  for mode in --check --apply --migrate; do
+    name="work-${mode#--}"
+    home="$(new_home "$name")"
+    mkdir -p "$home/.config/nvim" "$home/.config/gh" "$home/.ssh"
+    printf 'company shell startup\n' > "$home/.zshrc"
+    printf 'company login startup\n' > "$home/.zprofile"
+    printf '[include]\n\tpath = ~/.gitconfig.company\n' > "$home/.gitconfig"
+    printf 'company nvim\n' > "$home/.config/nvim/init.lua"
+    printf 'company-gh-secret\n' > "$home/.config/gh/hosts.yml"
+    printf 'company-ssh-secret\n' > "$home/.ssh/id_company"
+    chmod 640 "$home/.zshrc" "$home/.zprofile" "$home/.gitconfig"
+
+    output="$(HOME="$home" "$INSTALL" --work "$mode")"
+    [[ $output == *'work profile'* ]]
+    assert_file_text "$home/.zshrc" 'company shell startup'
+    assert_file_text "$home/.zprofile" 'company login startup'
+    assert_file_text "$home/.gitconfig" \
+      $'[include]\n\tpath = ~/.gitconfig.company'
+    [[ $(file_mode "$home/.zshrc") == 640 ]]
+    [[ $(file_mode "$home/.zprofile") == 640 ]]
+    [[ $(file_mode "$home/.gitconfig") == 640 ]]
+    [[ ! -e $home/.zshrc.local && ! -e $home/.zprofile.local \
+      && ! -e $home/.gitconfig.local ]]
+    assert_file_text "$home/.config/gh/hosts.yml" 'company-gh-secret'
+    assert_file_text "$home/.ssh/id_company" 'company-ssh-secret'
+
+    if [[ $mode == --check ]]; then
+      [[ ! -e $home/.config/gmaya ]]
+      assert_file_text "$home/.config/nvim/init.lua" 'company nvim'
+    else
+      assert_installed "$home" .config/gmaya/work-shell.zsh
+    fi
+
+    if [[ $mode == --migrate ]]; then
+      assert_installed "$home" .config/nvim
+      backup="$(find "$home/.dotfiles-backups" \
+        -mindepth 1 -maxdepth 1 -type d -print)"
+      assert_file_text "$backup/.config/nvim/init.lua" 'company nvim'
+      [[ ! -e $backup/.zshrc && ! -e $backup/.zprofile \
+        && ! -e $backup/.gitconfig ]]
+    fi
+  done
+  pass 'work profile protects shell startup and Git configs in every mode'
+}
+
+test_work_shell_loads_after_company_initialization() {
+  local home fake_bin output
+  home="$(new_home work-shell)"
+  fake_bin="$home/fake-bin"
+  mkdir -p "$fake_bin"
+  cat > "$fake_bin/starship" <<'EOF'
+#!/bin/sh
+if [ "$1" = init ] && [ "$2" = zsh ]; then
+  printf 'typeset -g GMAYA_STARSHIP_READY=1\n'
+fi
+EOF
+  chmod +x "$fake_bin/starship"
+
+  output="$(PATH="$fake_bin:/usr/bin:/bin" HOME="$home" /bin/zsh -dfic \
+    "typeset -g COMPANY_INIT=ready; source '$REPO/.config/gmaya/work-shell.zsh'; \
+    [[ \$COMPANY_INIT == ready && \$GMAYA_STARSHIP_READY == 1 ]]; \
+    [[ \$BAT_THEME == 'Catppuccin Latte' ]]; alias gg >/dev/null; \
+    whence -w ts >/dev/null; print work-shell-ok" 2>&1)"
+  [[ $output == *work-shell-ok* ]]
+  pass 'work shell adds theme and helpers after company initialization'
+}
+
 test_default_is_read_only
 test_apply_links_only_missing_targets
 test_migrate_clean_home_needs_no_backup
@@ -274,5 +343,7 @@ test_symlinked_backup_root_is_rejected
 test_migrate_rolls_back_link_failure
 test_invalid_home_is_rejected
 test_shell_starts_without_optional_tools
+test_work_profile_protects_company_configs_in_every_mode
+test_work_shell_loads_after_company_initialization
 
 printf '1..%d\n' "$PASS_COUNT"

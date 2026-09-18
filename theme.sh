@@ -6,6 +6,7 @@ REPO="$(cd "$(dirname "${BASH_SOURCE[0]}")" && pwd)"
 THEME_FILE="$REPO/.theme"
 FILES=(
   .zshrc
+  .config/gmaya/work-shell.zsh
   .tmux.conf
   .config/ghostty/config
   .config/starship.toml
@@ -73,6 +74,8 @@ verify_selection() {
   bat="$(bat_theme "$theme")"
   [[ $(tr -d '[:space:]' < "$root/.theme") == "$theme" ]] || return 1
   grep -Fq "BAT_THEME=\"$bat\"" "$root/.zshrc" || return 1
+  grep -Fq "BAT_THEME=\"$bat\"" \
+    "$root/.config/gmaya/work-shell.zsh" || return 1
   grep -Fq "palette = '$slug'" \
     "$root/.config/starship.toml" || return 1
   grep -Fq "[palettes.$slug]" \
