@@ -542,9 +542,8 @@ vim.pack.add({
 require("mini.icons").setup()
 MiniIcons.mock_nvim_web_devicons()
 
--- Keep tmux's window row below ordinary shells, but move it away from
--- Neovim's bottom statusline for every editor session. vim.system avoids
--- blocking the editor, and this is a no-op when Neovim is not running in tmux.
+-- Keep tmux's window row at the top only while Neo-tree is visible. vim.system
+-- avoids blocking the editor, and this is a no-op outside tmux.
 local function set_tmux_status_position(position)
   if not vim.env.TMUX or vim.env.TMUX == "" then
     return
@@ -554,13 +553,101 @@ local function set_tmux_status_position(position)
   })
 end
 
-set_tmux_status_position("top")
+local function neo_tree_window()
+  for _, win in ipairs(vim.api.nvim_tabpage_list_wins(0)) do
+    local buf = vim.api.nvim_win_get_buf(win)
+    if vim.bo[buf].filetype == "neo-tree" then
+      return win
+    end
+  end
+end
+
+local function sync_tmux_status_with_neo_tree()
+  set_tmux_status_position(neo_tree_window() and "top" or "bottom")
+end
+
+-- Reset stale state left by a previously interrupted editor. A directory
+-- startup moves it back to the top as soon as Neo-tree opens.
+sync_tmux_status_with_neo_tree()
+
+local function is_file_buffer(buf)
+  if not vim.api.nvim_buf_is_valid(buf) then
+    return false
+  end
+  local name = vim.api.nvim_buf_get_name(buf)
+  return vim.bo[buf].buflisted
+    and vim.bo[buf].buftype == ""
+    and name ~= ""
+    and vim.fn.isdirectory(name) == 0
+end
+
+local function file_buffers()
+  local buffers = {}
+  for _, buf in ipairs(vim.api.nvim_list_bufs()) do
+    if is_file_buffer(buf) then
+      buffers[#buffers + 1] = buf
+    end
+  end
+  table.sort(buffers)
+  return buffers
+end
+
+local function is_empty_unnamed_buffer(buf)
+  return vim.api.nvim_buf_is_valid(buf)
+    and vim.bo[buf].buftype == ""
+    and vim.api.nvim_buf_get_name(buf) == ""
+    and not vim.bo[buf].modified
+    and vim.api.nvim_buf_line_count(buf) == 1
+    and vim.api.nvim_buf_get_lines(buf, 0, 1, false)[1] == ""
+end
+
+-- Neo-tree should be the entire initial view for "nvim ." and the fallback
+-- after closing the last file. Remove only pristine placeholder buffers;
+-- unnamed buffers containing work are deliberately preserved.
+local function remove_empty_unnamed_buffers()
+  local tree_win = neo_tree_window()
+  if not tree_win or #file_buffers() > 0 then
+    return
+  end
+
+  vim.api.nvim_set_current_win(tree_win)
+  for _, win in ipairs(vim.api.nvim_tabpage_list_wins(0)) do
+    if win ~= tree_win then
+      local buf = vim.api.nvim_win_get_buf(win)
+      if is_empty_unnamed_buffer(buf) then
+        vim.api.nvim_win_close(win, true)
+      end
+    end
+  end
+  for _, buf in ipairs(vim.api.nvim_list_bufs()) do
+    if is_empty_unnamed_buffer(buf) then
+      pcall(vim.api.nvim_buf_delete, buf, { force = true })
+    end
+  end
+end
 
 require("neo-tree").setup({
   close_if_last_window = false,
   popup_border_style = "rounded",
   enable_git_status = true,
   enable_diagnostics = true,
+  event_handlers = {
+    {
+      event = "neo_tree_window_after_open",
+      handler = function()
+        vim.schedule(function()
+          remove_empty_unnamed_buffers()
+          sync_tmux_status_with_neo_tree()
+        end)
+      end,
+    },
+    {
+      event = "neo_tree_window_after_close",
+      handler = function()
+        vim.schedule(sync_tmux_status_with_neo_tree)
+      end,
+    },
+  },
   default_component_configs = {
     indent = {
       with_expanders = true,
@@ -621,6 +708,11 @@ vim.api.nvim_create_autocmd("VimLeavePre", {
   desc = "Restore tmux status bar after leaving Neovim",
 })
 
+vim.api.nvim_create_autocmd("TabEnter", {
+  callback = sync_tmux_status_with_neo_tree,
+  desc = "Place tmux status bar according to Neo-tree visibility",
+})
+
 local function current_file_or_cwd()
   if vim.bo.filetype == "neo-tree" then
     return vim.fn.getcwd()
@@ -633,35 +725,48 @@ local function current_file_or_cwd()
 end
 
 vim.keymap.set("n", "<leader>ee", function()
-  for _, win in ipairs(vim.api.nvim_tabpage_list_wins(0)) do
-    local buf = vim.api.nvim_win_get_buf(win)
-    if vim.bo[buf].filetype == "neo-tree" then
-      vim.api.nvim_set_current_win(win)
-      return
-    end
+  local win = neo_tree_window()
+  if win then
+    vim.api.nvim_set_current_win(win)
+    return
   end
   require("neo-tree.command").execute({
     action = "focus",
     source = "filesystem",
-    position = "left",
+    position = #file_buffers() > 0 and "left" or "current",
     reveal_file = current_file_or_cwd(),
     reveal_force_cwd = true,
   })
 end, { desc = "Focus explorer and reveal current file" })
 
 vim.keymap.set("n", "<leader>et", function()
+  if neo_tree_window() then
+    if #file_buffers() == 0 then
+      return
+    end
+    require("neo-tree.command").execute({
+      action = "close",
+      source = "filesystem",
+    })
+    return
+  end
   require("neo-tree.command").execute({
-    toggle = true,
+    action = "focus",
     source = "filesystem",
-    position = "left",
+    position = #file_buffers() > 0 and "left" or "current",
     reveal_file = current_file_or_cwd(),
     reveal_force_cwd = true,
   })
 end, { desc = "Toggle explorer" })
 
-vim.keymap.set("n", "<leader>ec", "<cmd>Neotree close<cr>", {
-  desc = "Close explorer",
-})
+vim.keymap.set("n", "<leader>ec", function()
+  if neo_tree_window() and #file_buffers() > 0 then
+    require("neo-tree.command").execute({
+      action = "close",
+      source = "filesystem",
+    })
+  end
+end, { desc = "Close explorer" })
 
 -- Keymap to save a file without running any auto commands and with creating
 -- directories.
@@ -1285,8 +1390,62 @@ vim.keymap.set("n", "<leader>bb", "<cmd>BufferLinePick<cr>")
 vim.keymap.set("n", "<leader>b,", "<cmd>BufferLineMovePrev<cr>")
 vim.keymap.set("n", "<leader>b.", "<cmd>BufferLineMoveNext<cr>")
 
--- Close the current buffer, or everything except it.
-vim.keymap.set("n", "<leader>bd", "<cmd>bdelete<cr>")
+local function show_explorer_fullscreen()
+  require("neo-tree.command").execute({
+    action = "close",
+    source = "filesystem",
+  })
+  pcall(vim.cmd, "silent only")
+  require("neo-tree.command").execute({
+    action = "focus",
+    source = "filesystem",
+    position = "current",
+    dir = vim.fn.getcwd(),
+  })
+end
+
+-- Close the current file without letting Neovim invent a [No Name] fallback.
+-- Select the next open file first; when this was the last one, replace its
+-- window with a full-screen Neo-tree and then delete the hidden file buffer.
+vim.keymap.set("n", "<leader>bd", function()
+  local current = vim.api.nvim_get_current_buf()
+  if not is_file_buffer(current) then
+    vim.notify("The current window is not a file buffer", vim.log.levels.INFO)
+    return
+  end
+  if vim.bo[current].modified then
+    vim.notify(
+      "Write or discard changes before closing this buffer",
+      vim.log.levels.WARN
+    )
+    return
+  end
+
+  local buffers = file_buffers()
+  if #buffers > 1 then
+    local current_index = 1
+    for index, buf in ipairs(buffers) do
+      if buf == current then
+        current_index = index
+        break
+      end
+    end
+    local next_buf = buffers[(current_index % #buffers) + 1]
+    vim.api.nvim_win_set_buf(0, next_buf)
+    vim.api.nvim_buf_delete(current, {})
+    return
+  end
+
+  show_explorer_fullscreen()
+  vim.schedule(function()
+    if vim.api.nvim_buf_is_valid(current) then
+      vim.api.nvim_buf_delete(current, {})
+    end
+    remove_empty_unnamed_buffers()
+  end)
+end, { desc = "Close file and preserve explorer fallback" })
+
+-- Close everything except the current buffer.
 vim.keymap.set("n", "<leader>bo", "<cmd>BufferLineCloseOthers<cr>")
 
 --------------------------------------------------------------------------------

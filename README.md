@@ -139,9 +139,9 @@ with `prefix + Ctrl-s` and `prefix + Ctrl-r` when you want a layout to persist.
 
 **One window per repo.** `prefix + c` opens a window in the current directory
 and names it after that directory. The status bar normally stays at the bottom;
-Neovim moves it to the top for both file buffers and Neo-tree so it does not
-crowd the editor statusline. It returns to the bottom when Neovim exits.
-`prefix + 1…9` jumps straight to one, and `prefix + &` closes one.
+Neo-tree moves it to the top while the explorer is visible so it does not crowd
+the editor statusline. It returns to the bottom when the explorer closes or
+Neovim exits. `prefix + 1…9` jumps straight to one, and `prefix + &` closes one.
 
 **Split for the job, not for the aesthetic.** `prefix + |` puts a pane to the
 right, `prefix + -` below. The useful shape for a service is editor left, and
@@ -578,11 +578,16 @@ moving between it and a file, and managing entries:
 `<leader>ee` opens or focuses the
 [Neo-tree](https://github.com/nvim-neo-tree/neo-tree.nvim) sidebar and reveals
 the current file. If the sidebar is already visible beside a file, the same key
-moves focus into it. `<leader>et` toggles it and `<leader>ec` closes it. It shows
-Git and diagnostic state, shows dotfiles, and hides Git-ignored items and `.git`.
-The buffer tab row leaves an aligned Explorer header above the sidebar. Opening
-Neovim with a directory (`nvim .`) or editing one (`:e path/`) opens Neo-tree in
-the current window as well.
+moves focus into it. `<leader>et` toggles it and `<leader>ec` closes it when a
+file can remain visible. When the tree is the only view, both keep it open
+instead of creating a `[No Name]` buffer. It shows Git and diagnostic state,
+shows dotfiles, and hides Git-ignored items and `.git`. The buffer tab row leaves
+an aligned Explorer header above the sidebar.
+
+Opening Neovim with a directory (`nvim .`) or editing one (`:e path/`) opens
+Neo-tree full-screen with no underlying file or `[No Name]` buffer. When
+`<leader>bd` closes a file, it selects the next open file first. Closing the last
+file returns to that full-screen explorer state.
 
 Space remains available as the global leader inside the sidebar. Its behavior
 is consistent whether it opens as a sidebar or from a directory.
@@ -598,7 +603,7 @@ buffers, not Neovim tabpages — opening a file adds a tab, and nothing needs a
 |---|---|
 | `]b` / `[b` | next / previous buffer, matching `]c` / `[c` on git hunks |
 | `<leader>bb` | label every tab and jump to the one you press |
-| `<leader>bd` | close this buffer |
+| `<leader>bd` | close this file; select the next, or return to full-screen Neo-tree |
 | `<leader>bo` | close every buffer but this one |
 | `<leader>b.` / `<leader>b,` | move this tab right / left in the row |
 | `<leader>fb` | the buffer list as an fzf picker, with preview |

@@ -82,6 +82,7 @@ bash -n install.sh theme.sh tests/install_test.sh tests/theme_test.sh
 zsh -n .zshrc .zprofile
 tests/install_test.sh
 tests/theme_test.sh
+tests/nvim_workflow_test.sh
 git diff --check
 ```
 
@@ -98,6 +99,10 @@ protection in every mode, and work-shell composition after company startup.
 Tests must use temporary home directories and must never point a mutating mode
 at the real home directory. The shared shell must also start when optional tools
 such as Git, Zinit, and starship are unavailable.
+
+The Neovim workflow test must cover directory startup without an unnamed
+buffer, next-buffer selection, last-buffer fallback to full-screen Neo-tree,
+explorer focus/toggle behavior, and tmux status placement on explorer events.
 
 Before committing, search the current tree for employer names, email addresses,
 tokens, private-key headers, cloud profiles, and absolute `/Users/...` paths.
