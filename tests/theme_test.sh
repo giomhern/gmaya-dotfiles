@@ -13,6 +13,10 @@ FILES=(
   .config/ghostty/config
   .config/starship.toml
   .config/btop/btop.conf
+  .config/btop/themes/catppuccin_latte.theme
+  .config/btop/themes/catppuccin_macchiato.theme
+  .config/btop/themes/catppuccin_mocha.theme
+  .config/btop/themes/tokyonight_moon.theme
   .config/nvim/init.lua
   .config/nvim/lua/core/picker.lua
 )
@@ -27,6 +31,20 @@ chmod +x "$FIXTURE/theme.sh"
 before="$(for rel in "${FILES[@]}"; do cksum "$FIXTURE/$rel"; done)"
 original_theme="$(tr -d '[:space:]' < "$FIXTURE/.theme")"
 "$FIXTURE/theme.sh" status >/dev/null
+"$FIXTURE/theme.sh" latte >/dev/null
+"$FIXTURE/theme.sh" status | grep -Fq 'Catppuccin Latte'
+grep -Fq 'theme = "Catppuccin Latte"' \
+  "$FIXTURE/.config/ghostty/config"
+grep -Fq 'selected_theme = "latte"' \
+  "$FIXTURE/.config/nvim/init.lua"
+grep -Fq "palette = 'catppuccin_latte'" \
+  "$FIXTURE/.config/starship.toml"
+grep -Fq 'color_theme = "catppuccin_latte"' \
+  "$FIXTURE/.config/btop/btop.conf"
+grep -Fq 'theme[main_bg]="#eff1f5"' \
+  "$FIXTURE/.config/btop/themes/catppuccin_latte.theme"
+grep -Fq 'BAT_THEME="Catppuccin Latte"' "$FIXTURE/.zshrc"
+grep -Fq '#eff1f5' "$FIXTURE/.config/nvim/lua/core/picker.lua"
 "$FIXTURE/theme.sh" macchiato >/dev/null
 "$FIXTURE/theme.sh" status | grep -Fq 'Catppuccin Macchiato'
 grep -Fq '#24273a' "$FIXTURE/.zshrc"

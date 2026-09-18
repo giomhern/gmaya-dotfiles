@@ -371,7 +371,7 @@ vim.opt.pumborder = "single"
 
 -- The selected family is changed by theme.sh. Both setup paths normalize their
 -- palettes so the custom picker, explorer, and statusline styling stays shared.
-local selected_theme = "tokyonight-moon"
+local selected_theme = "latte"
 
 local function custom_theme_highlights(colors)
   local highlights = {
@@ -1260,11 +1260,11 @@ require("bufferline").setup({
     },
   },
   highlights = {
-    fill = { bg = "#1e2030" },
-    background = { bg = "#1e2030" },
-    buffer_selected = { bg = "#222436", bold = true },
-    separator = { fg = "#1e2030", bg = "#1e2030" },
-    separator_selected = { fg = "#1e2030", bg = "#222436" },
+    fill = { bg = "#e6e9ef" },
+    background = { bg = "#e6e9ef" },
+    buffer_selected = { bg = "#eff1f5", bold = true },
+    separator = { fg = "#e6e9ef", bg = "#e6e9ef" },
+    separator_selected = { fg = "#e6e9ef", bg = "#eff1f5" },
   },
 })
 

@@ -6,11 +6,11 @@ local state = {
   job = nil,
 }
 
--- TokyoNight Moon colors for fzf, so it matches the terminal window.
+-- Catppuccin Latte colors for fzf, so it matches the terminal window.
 local FZF_COLORS = table.concat({
-  "--color=bg+:#2d3f76,bg:#222436,spinner:#b4f9f8,hl:#ff757f",
-  "fg:#c8d3f5,header:#ff757f,info:#b4f9f8,pointer:#b4f9f8",
-  "marker:#fca7ea,fg+:#c8d3f5,prompt:#b4f9f8,hl+:#ff757f,border:#82aaff,label:#444a73",
+  "--color=bg+:#ccd0da,bg:#eff1f5,spinner:#8839ef,hl:#d20f39",
+  "fg:#4c4f69,header:#d20f39,info:#8839ef,pointer:#8839ef",
+  "marker:#dc8a78,fg+:#4c4f69,prompt:#8839ef,hl+:#d20f39,border:#1e66f5,label:#9ca0b0",
 }, ",")
 
 -- Preview command for the file pickers. "{}" is the selected line, i.e. the

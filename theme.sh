@@ -15,12 +15,15 @@ FILES=(
 )
 
 usage() {
-  printf 'Usage: %s [status|mocha|macchiato|tokyonight-moon]\n' "$0"
+  printf 'Usage: %s [status|latte|mocha|macchiato|tokyonight-moon]\n' "$0"
   printf 'Change the shared theme in every configured application.\n'
 }
 
 palette() {
   case "$1" in
+    latte)
+      printf '%s' '#dc8a78|#dd7878|#ea76cb|#8839ef|#d20f39|#e64553|#fe640b|#df8e1d|#40a02b|#179299|#04a5e5|#209fb5|#1e66f5|#7287fd|#4c4f69|#5c5f77|#6c6f85|#7c7f93|#8c8fa1|#9ca0b0|#acb0be|#bcc0cc|#ccd0da|#eff1f5|#e6e9ef|#dce0e8'
+      ;;
     mocha)
       printf '%s' '#f5e0dc|#f2cdcd|#f5c2e7|#cba6f7|#f38ba8|#eba0ac|#fab387|#f9e2af|#a6e3a1|#94e2d5|#89dceb|#74c7ec|#89b4fa|#b4befe|#cdd6f4|#bac2de|#a6adc8|#9399b2|#7f849c|#6c7086|#585b70|#45475a|#313244|#1e1e2e|#181825|#11111b'
       ;;
@@ -37,6 +40,7 @@ palette() {
 
 display_name() {
   case "$1" in
+    latte) printf 'Catppuccin Latte' ;;
     mocha) printf 'Catppuccin Mocha' ;;
     macchiato) printf 'Catppuccin Macchiato' ;;
     tokyonight-moon) printf 'TokyoNight Moon' ;;
@@ -46,7 +50,7 @@ display_name() {
 
 config_slug() {
   case "$1" in
-    mocha|macchiato) printf 'catppuccin_%s' "$1" ;;
+    latte|mocha|macchiato) printf 'catppuccin_%s' "$1" ;;
     tokyonight-moon) printf 'tokyonight_moon' ;;
     *) return 1 ;;
   esac
@@ -54,6 +58,7 @@ config_slug() {
 
 bat_theme() {
   case "$1" in
+    latte) printf 'Catppuccin Latte' ;;
     mocha) printf 'Catppuccin Mocha' ;;
     macchiato) printf 'Catppuccin Macchiato' ;;
     tokyonight-moon) printf 'ansi' ;;
@@ -80,6 +85,7 @@ verify_selection() {
     "$root/.config/ghostty/config" || return 1
   grep -Fq "color_theme = \"$slug\"" \
     "$root/.config/btop/btop.conf" || return 1
+  [[ -f $root/.config/btop/themes/$slug.theme ]] || return 1
 }
 
 CURRENT="$(tr -d '[:space:]' < "$THEME_FILE")"
@@ -132,6 +138,12 @@ FROM_BAT="$(bat_theme "$CURRENT")"
 TO_BAT="$(bat_theme "$ACTION")"
 STAGE="$(mktemp -d "${TMPDIR:-/tmp}/gmaya-theme.XXXXXX")"
 trap 'rm -rf "$STAGE"' EXIT
+
+# Static btop palettes are not rewritten during a switch, but stage the target
+# asset so validation proves the selected configuration is complete.
+mkdir -p "$STAGE/.config/btop/themes"
+cp "$REPO/.config/btop/themes/$TO_SLUG.theme" \
+  "$STAGE/.config/btop/themes/$TO_SLUG.theme"
 
 for rel in "${FILES[@]}"; do
   [[ -f $REPO/$rel ]] || {

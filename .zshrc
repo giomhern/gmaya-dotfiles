@@ -136,7 +136,7 @@ setopt interactive_comments    # allow # comments at the prompt
 # 08. Theme
 # ------------------------------------------------------------------------------
 
-export BAT_THEME="ansi"
+export BAT_THEME="Catppuccin Latte"
 
 # Shared by FZF_DEFAULT_OPTS and fzf-tab so both stay in sync.
 _FZF_BINDS=(
@@ -148,7 +148,7 @@ _FZF_BINDS=(
   --bind home:preview-top
   --bind end:preview-bottom
 )
-_FZF_COLORS='--color=fg:#c8d3f5,fg+:#c8d3f5,bg:#222436,bg+:#2d3f76,border:#444a73,label:#444a73,spinner:#b4f9f8,hl:#ff757f,hl+:#ff757f,header:#ff757f,info:#b4f9f8,pointer:#b4f9f8,marker:#fca7ea,prompt:#b4f9f8'
+_FZF_COLORS='--color=fg:#4c4f69,fg+:#4c4f69,bg:#eff1f5,bg+:#ccd0da,border:#9ca0b0,label:#9ca0b0,spinner:#8839ef,hl:#d20f39,hl+:#d20f39,header:#d20f39,info:#8839ef,pointer:#8839ef,marker:#dc8a78,prompt:#8839ef'
 
 if command -v fzf >/dev/null 2>&1; then
   eval "$(fzf --zsh)"

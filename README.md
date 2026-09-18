@@ -725,6 +725,7 @@ repository root:
 ```sh
 ./theme.sh status
 ./theme.sh tokyonight-moon
+./theme.sh latte
 ./theme.sh macchiato
 ./theme.sh mocha
 ```
@@ -734,7 +735,7 @@ Neovim), bat, and btop together. Reload the shell with `exec zsh`, reload tmux
 with prefix + `r`, and restart other open applications. The selected theme is
 stored in `.theme`; commit that change to carry the same look to another
 laptop. Tokyo Night uses bat's ANSI theme so syntax colors follow the terminal
-palette.
+palette. Latte is the light option; the other three themes are dark.
 
 ## Credit
 
