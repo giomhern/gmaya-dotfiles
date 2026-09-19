@@ -39,6 +39,26 @@ TMUX= nvim --headless README.md \
   '+qa!'
 pass 'explorer focus and toggle preserve the file window'
 
+TMUX= nvim --headless README.md \
+  '+lua assert(vim.bo.filetype == "markdown"); local preview = vim.fn.maparg("<leader>pv", "n", false, true).callback; assert(type(preview) == "function"); assert(vim.fn.exists(":PreviewFile") == 2); assert(vim.fn.exists(":RenderMarkdown") == 2); preview(); vim.wait(100); preview()' \
+  '+qa!'
+pass 'Markdown preview toggles for the current buffer'
+
+cat > "$TEST_ROOT/open" <<'EOF'
+#!/bin/sh
+printf '%s\n' "$*" >> "$GMAYA_OPEN_TEST_LOG"
+EOF
+chmod +x "$TEST_ROOT/open"
+printf 'fake pdf\n' > "$TEST_ROOT/sample.pdf"
+
+GMAYA_OPEN_TEST_LOG="$TEST_ROOT/open-events" \
+  PATH="$TEST_ROOT:$PATH" TMUX= nvim --headless "$TEST_ROOT/sample.pdf" \
+  '+lua local preview = vim.fn.maparg("<leader>pv", "n", false, true).callback; assert(type(preview) == "function"); preview(); assert(vim.wait(1000, function() return vim.fn.filereadable(vim.env.GMAYA_OPEN_TEST_LOG) == 1 end))' \
+  '+qa!'
+[[ $(cat "$TEST_ROOT/open-events") == \
+  "-a Preview $TEST_ROOT/sample.pdf" ]]
+pass 'PDF preview opens the exact file without launching a GUI in tests'
+
 cat > "$TEST_ROOT/tmux" <<'EOF'
 #!/bin/sh
 printf '%s\n' "$*" >> "$GMAYA_TMUX_TEST_LOG"

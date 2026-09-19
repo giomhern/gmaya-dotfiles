@@ -102,7 +102,8 @@ such as Git, Zinit, and starship are unavailable.
 
 The Neovim workflow test must cover directory startup without an unnamed
 buffer, next-buffer selection, last-buffer fallback to full-screen Neo-tree,
-explorer focus/toggle behavior, and tmux status placement on explorer events.
+explorer focus/toggle behavior, tmux status placement on explorer events, and
+file-type-aware preview dispatch without launching real GUI apps.
 
 Before committing, search the current tree for employer names, email addresses,
 tokens, private-key headers, cloud profiles, and absolute `/Users/...` paths.

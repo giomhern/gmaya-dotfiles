@@ -442,6 +442,7 @@ only where it isn't normal.
 | `<leader>ee` | open/focus Neo-tree and reveal the current file |
 | `<leader>et` / `<leader>ec` | toggle / close Neo-tree |
 | `<leader>ew` | write, no autocommands, creating parent dirs |
+| `<leader>pv` | preview the current Markdown or PDF file |
 | `Ctrl-o` / `Ctrl-i` | back / forward in the jump list |
 
 ### Searching
@@ -556,6 +557,18 @@ file in it. Build a list, then act on it.
 On a PR the `prlsp` client adds `<leader>ghc` to comment (works on a visual
 range), `<leader>ghr` to reply, `<leader>ghs` to show the thread, `<leader>ghu`
 to refresh.
+
+### File previews
+
+| | |
+|---|---|
+| `<leader>pv` in Markdown | toggle the rendered view in the current buffer |
+| `:RenderMarkdown preview` | open a rendered Markdown view beside the source |
+| `<leader>pv` in a PDF | open the file in macOS Preview |
+| `:PreviewFile` | run the same file-aware preview command |
+
+The Markdown toggle keeps the file editable and returns to the source view when
+pressed again. PDF preview leaves the Neovim buffers and windows in place.
 
 ### File explorers
 
