@@ -43,7 +43,7 @@ vim.g.have_nerd_font = true
 
 vim.opt.background = "dark"
 vim.opt.shada = "!,'100,<50,s10,h"
-vim.opt.cc = "80,120" -- Display rulers
+vim.opt.cc = "80" -- Display the default code-width ruler
 -- The width the rulers above are drawn at, and the one stylua.toml and prettier
 -- are both set to. The rulers only paint; textwidth is what actually wraps, and
 -- it is 0 unless set, which is why "t" and "c" in formatoptions did nothing.
@@ -102,7 +102,7 @@ vim.opt.timeoutlen = 300
 vim.opt.undofile = true
 vim.opt.undolevels = 10000
 vim.opt.updatetime = 200 -- Save swap file and trigger CursorHold
-vim.opt.wrap = false -- Disable line wrap
+vim.opt.wrap = false -- File buffers enable soft wrapping below
 vim.opt.wildignore = vim.opt.wildignore + ".DS_Store"
 
 -- Folding
@@ -184,25 +184,40 @@ vim.api.nvim_create_autocmd("TextYankPost", {
   end,
 })
 
--- Prose wraps as you type; code does not. Adding "t" back means a paragraph
--- breaks at textwidth while writing it, the way it already does for comments
--- everywhere else. "wrap" plus "linebreak" also folds any line that is already
--- long into the window instead of running it off the right edge, breaking at a
--- space rather than mid-word, and "breakindent" keeps the continuation lined up
--- under the list marker it belongs to.
+-- Soft-wrap regular file buffers without changing their contents. UI buffers
+-- such as Neo-tree keep their own layout. linebreak avoids splitting a word,
+-- and breakindent aligns the continuation with the start of the original line.
+vim.api.nvim_create_autocmd({ "BufWinEnter", "FileType" }, {
+  group = vim.api.nvim_create_augroup("file-soft-wrap", { clear = true }),
+  callback = function()
+    local path = vim.api.nvim_buf_get_name(0)
+    if
+      vim.bo.buftype == ""
+      and path ~= ""
+      and vim.fn.isdirectory(path) == 0
+    then
+      vim.opt_local.wrap = true
+      vim.opt_local.linebreak = true
+      vim.opt_local.breakindent = true
+    end
+  end,
+})
+
+-- Prose also hard-wraps as it is typed. Markdown gets twice the normal code
+-- width so paragraphs have more room while retaining a visible stopping point.
 vim.api.nvim_create_autocmd("FileType", {
   pattern = { "markdown", "markdown.mdx", "text", "gitcommit" },
   group = vim.api.nvim_create_augroup("prose-wrap", { clear = true }),
   callback = function(args)
     vim.opt_local.formatoptions:append("t")
-    vim.opt_local.wrap = true
-    vim.opt_local.linebreak = true
-    vim.opt_local.breakindent = true
     -- A commit message is the one place the convention is not 80: git wraps the
     -- body at 72 so "git log" stays readable under its four-space indent.
     if args.match == "gitcommit" then
       vim.opt_local.textwidth = 72
       vim.opt_local.colorcolumn = "72"
+    elseif args.match == "markdown" or args.match == "markdown.mdx" then
+      vim.opt_local.textwidth = 160
+      vim.opt_local.colorcolumn = "160"
     end
   end,
 })

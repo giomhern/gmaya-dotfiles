@@ -663,20 +663,20 @@ a PR; it takes the visual selection into account and produces a line range.
 
 ## Notes
 
-**Wrapping is 80, and it wraps prose and comments but never code.** The rulers
-`cc = "80,120"` draws only paint — `textwidth` is what wraps, and it is the
-option that was missing, which is why `t` and `c` sat in `formatoptions` doing
-nothing for a long time. Now:
+**Code has an 80-column guide; Markdown has a 160-column guide.** A guide only
+draws the vertical marker. `textwidth` and `formatoptions` control hard wrapping,
+while `wrap`, `linebreak`, and `breakindent` control how long lines are displayed.
+Now:
 
 - **Comments** wrap as you type, in every filetype, and the `--` or `//` prefix
   carries onto the next line.
-- **Code** never auto-wraps. `t` is deliberately absent from `formatoptions`, so
-  a long string or call chain is left alone mid-edit; width is the formatter's
-  job on save.
-- **Markdown, text and commit messages** wrap as you type, and also soft-wrap
-  into the window (`wrap` + `linebreak` + `breakindent`) so an existing long line
-  folds at a space instead of running off the edge. Commit bodies use 72, git's
-  convention, with the ruler moved to match.
+- **Code** soft-wraps in the window at word boundaries, while remaining one line
+  in the file. `t` stays absent from `formatoptions`, so editing cannot split a
+  string or call chain; the formatter still owns the saved layout.
+- **Markdown** wraps as you type at 160 columns and draws its ruler there. Text
+  files use 80, while commit messages use 72 to follow Git's convention.
+- **All ordinary file buffers** soft-wrap long existing lines with continuation
+  indentation. Neo-tree and other interface buffers retain their own layout.
 - `gqip` reflows a paragraph on demand; `gwip` does it without moving the cursor.
 - `l` in `formatoptions` means setting all this cannot reflow an existing file
   behind your back — only lines you are actively editing are touched.

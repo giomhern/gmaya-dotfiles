@@ -40,9 +40,14 @@ TMUX= nvim --headless README.md \
 pass 'explorer focus and toggle preserve the file window'
 
 TMUX= nvim --headless README.md \
-  '+lua assert(vim.bo.filetype == "markdown"); local preview = vim.fn.maparg("<leader>pv", "n", false, true).callback; assert(type(preview) == "function"); assert(vim.fn.exists(":PreviewFile") == 2); assert(vim.fn.exists(":RenderMarkdown") == 2); preview(); vim.wait(100); preview()' \
+  '+lua assert(vim.bo.filetype == "markdown"); assert(vim.wo.wrap and vim.wo.linebreak and vim.wo.breakindent); assert(vim.bo.textwidth == 160); assert(vim.wo.colorcolumn == "160"); local preview = vim.fn.maparg("<leader>pv", "n", false, true).callback; assert(type(preview) == "function"); assert(vim.fn.exists(":PreviewFile") == 2); assert(vim.fn.exists(":RenderMarkdown") == 2); preview(); vim.wait(100); preview()' \
   '+qa!'
-pass 'Markdown preview toggles for the current buffer'
+pass 'Markdown uses its wider ruler, wraps, and toggles preview'
+
+TMUX= nvim --headless .config/nvim/init.lua \
+  '+lua assert(vim.bo.filetype == "lua"); assert(vim.wo.wrap and vim.wo.linebreak and vim.wo.breakindent); assert(vim.bo.textwidth == 80); assert(vim.wo.colorcolumn == "80"); assert(not vim.bo.formatoptions:find("t", 1, true))' \
+  '+qa!'
+pass 'code buffers soft-wrap at the normal ruler without changing text'
 
 cat > "$TEST_ROOT/open" <<'EOF'
 #!/bin/sh
