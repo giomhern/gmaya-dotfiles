@@ -67,14 +67,9 @@ chmod +x "$TEST_ROOT/tmux"
 
 GMAYA_TMUX_TEST_LOG="$TEST_ROOT/tmux-events" \
   PATH="$TEST_ROOT:$PATH" TMUX=fake nvim --headless README.md \
-  '+lua local toggle = vim.fn.maparg("<leader>et", "n", false, true).callback; toggle(); assert(vim.wait(1000, function() if vim.fn.filereadable(vim.env.GMAYA_TMUX_TEST_LOG) == 0 then return false end for _, line in ipairs(vim.fn.readfile(vim.env.GMAYA_TMUX_TEST_LOG)) do if line:match("status%-position top$") then return true end end return false end)); toggle(); assert(vim.wait(1000, function() return vim.fn.filereadable(vim.env.GMAYA_TMUX_TEST_LOG) == 1 and #vim.fn.readfile(vim.env.GMAYA_TMUX_TEST_LOG) >= 3 end))' \
+  '+lua local toggle = vim.fn.maparg("<leader>et", "n", false, true).callback; toggle(); assert(vim.wait(1000, function() return #vim.api.nvim_tabpage_list_wins(0) == 2 end)); toggle(); assert(vim.wait(1000, function() return #vim.api.nvim_tabpage_list_wins(0) == 1 end)); vim.cmd.tabnew(); vim.cmd.tabprevious()' \
   '+qa!'
-[[ $(sed -n '1p' "$TEST_ROOT/tmux-events") == \
-  'set-option -g status-position bottom' ]]
-[[ $(sed -n '2p' "$TEST_ROOT/tmux-events") == \
-  'set-option -g status-position top' ]]
-[[ $(sed -n '3p' "$TEST_ROOT/tmux-events") == \
-  'set-option -g status-position bottom' ]]
-pass 'tmux tabs follow Neo-tree visibility'
+[[ ! -e "$TEST_ROOT/tmux-events" ]]
+pass 'Neo-tree and tab events do not change tmux options'
 
 printf '1..%d\n' "$PASS_COUNT"

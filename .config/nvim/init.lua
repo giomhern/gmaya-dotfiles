@@ -542,17 +542,6 @@ vim.pack.add({
 require("mini.icons").setup()
 MiniIcons.mock_nvim_web_devicons()
 
--- Keep tmux's window row at the top only while Neo-tree is visible. vim.system
--- avoids blocking the editor, and this is a no-op outside tmux.
-local function set_tmux_status_position(position)
-  if not vim.env.TMUX or vim.env.TMUX == "" then
-    return
-  end
-  vim.system({ "tmux", "set-option", "-g", "status-position", position }, {
-    detach = true,
-  })
-end
-
 local function neo_tree_window()
   for _, win in ipairs(vim.api.nvim_tabpage_list_wins(0)) do
     local buf = vim.api.nvim_win_get_buf(win)
@@ -561,14 +550,6 @@ local function neo_tree_window()
     end
   end
 end
-
-local function sync_tmux_status_with_neo_tree()
-  set_tmux_status_position(neo_tree_window() and "top" or "bottom")
-end
-
--- Reset stale state left by a previously interrupted editor. A directory
--- startup moves it back to the top as soon as Neo-tree opens.
-sync_tmux_status_with_neo_tree()
 
 local function is_file_buffer(buf)
   if not vim.api.nvim_buf_is_valid(buf) then
@@ -637,14 +618,7 @@ require("neo-tree").setup({
       handler = function()
         vim.schedule(function()
           remove_empty_unnamed_buffers()
-          sync_tmux_status_with_neo_tree()
         end)
-      end,
-    },
-    {
-      event = "neo_tree_window_after_close",
-      handler = function()
-        vim.schedule(sync_tmux_status_with_neo_tree)
       end,
     },
   },
@@ -699,18 +673,6 @@ require("neo-tree").setup({
       never_show = { ".git" },
     },
   },
-})
-
-vim.api.nvim_create_autocmd("VimLeavePre", {
-  callback = function()
-    set_tmux_status_position("bottom")
-  end,
-  desc = "Restore tmux status bar after leaving Neovim",
-})
-
-vim.api.nvim_create_autocmd("TabEnter", {
-  callback = sync_tmux_status_with_neo_tree,
-  desc = "Place tmux status bar according to Neo-tree visibility",
 })
 
 local function current_file_or_cwd()
