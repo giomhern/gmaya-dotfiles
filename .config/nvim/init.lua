@@ -218,6 +218,9 @@ vim.api.nvim_create_autocmd("FileType", {
     elseif args.match == "markdown" or args.match == "markdown.mdx" then
       vim.opt_local.textwidth = 160
       vim.opt_local.colorcolumn = "160"
+      -- Reflow an existing long paragraph once it is edited instead of keeping
+      -- the old line length merely because it predates this configuration.
+      vim.opt_local.formatoptions:remove("l")
     end
   end,
 })

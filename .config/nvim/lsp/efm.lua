@@ -24,6 +24,12 @@ local prettier = {
   formatStdin = true,
 }
 
+local markdown_prettier = {
+  formatCanRange = true,
+  formatCommand = "prettier --stdin --stdin-filepath '${INPUT}' ${--range-start:charStart} ${--range-end:charEnd} ${--tab-width:tabSize} ${--use-tabs:!insertSpaces} --config-precedence=cli-override --prose-wrap=always --print-width=160",
+  formatStdin = true,
+}
+
 local ruff = {
   formatCommand = "ruff format --no-cache --stdin-filename '${INPUT}'",
   formatStdin = true,
@@ -56,7 +62,8 @@ local languages = {
   javascriptreact = { prettier },
   json = { jq },
   lua = { stylua },
-  markdown = { prettier },
+  markdown = { markdown_prettier },
+  ["markdown.mdx"] = { markdown_prettier },
   python = { ruff },
   rust = { rustfmt },
   typescript = { prettier },

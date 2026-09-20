@@ -40,7 +40,7 @@ TMUX= nvim --headless README.md \
 pass 'explorer focus and toggle preserve the file window'
 
 TMUX= nvim --headless README.md \
-  '+lua assert(vim.bo.filetype == "markdown"); assert(vim.wo.wrap and vim.wo.linebreak and vim.wo.breakindent); assert(vim.bo.textwidth == 160); assert(vim.wo.colorcolumn == "160"); local preview = vim.fn.maparg("<leader>pv", "n", false, true).callback; assert(type(preview) == "function"); assert(vim.fn.exists(":PreviewFile") == 2); assert(vim.fn.exists(":RenderMarkdown") == 2); preview(); vim.wait(100); preview()' \
+  '+lua assert(vim.bo.filetype == "markdown"); assert(vim.wo.wrap and vim.wo.linebreak and vim.wo.breakindent); assert(vim.bo.textwidth == 160); assert(vim.wo.colorcolumn == "160"); assert(not vim.bo.formatoptions:find("l", 1, true)); local efm = dofile(".config/nvim/lsp/efm.lua"); assert(efm.settings.languages.markdown[1].formatCommand:match("%-%-print%-width=160")); assert(efm.settings.languages["markdown.mdx"][1].formatCommand:match("%-%-print%-width=160")); local preview = vim.fn.maparg("<leader>pv", "n", false, true).callback; assert(type(preview) == "function"); assert(vim.fn.exists(":PreviewFile") == 2); assert(vim.fn.exists(":RenderMarkdown") == 2); preview(); vim.wait(100); preview()' \
   '+qa!'
 pass 'Markdown uses its wider ruler, wraps, and toggles preview'
 

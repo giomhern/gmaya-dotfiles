@@ -673,16 +673,20 @@ Now:
 - **Code** soft-wraps in the window at word boundaries, while remaining one line
   in the file. `t` stays absent from `formatoptions`, so editing cannot split a
   string or call chain; the formatter still owns the saved layout.
-- **Markdown** wraps as you type at 160 columns and draws its ruler there. Text
-  files use 80, while commit messages use 72 to follow Git's convention.
+- **Markdown** wraps as you type at 160 columns and draws its ruler there. An
+  existing paragraph reflows when edited or formatted; saving runs Prettier
+  with `--prose-wrap=always --print-width=160`. Text files use 80, while commit
+  messages use 72 to follow Git's convention.
 - **All ordinary file buffers** soft-wrap long existing lines with continuation
   indentation. Neo-tree and other interface buffers retain their own layout.
 - `gqip` reflows a paragraph on demand; `gwip` does it without moving the cursor.
-- `l` in `formatoptions` means setting all this cannot reflow an existing file
-  behind your back — only lines you are actively editing are touched.
+- `l` in `formatoptions` keeps existing long code and plain-text lines intact.
+  Markdown removes it locally so actively edited prose follows its 160-column
+  width; save formatting handles the rest of the document safely.
 
-The on-save formatters enforce the same 80: `prettier --print-width=80` and
-`stylua.toml`'s `column_width = 80`. That `stylua.toml` is also what *enables*
+Code formatters enforce the same 80: `prettier --print-width=80` and
+`stylua.toml`'s `column_width = 80`; Markdown has its separate 160-column
+Prettier rule. That `stylua.toml` is also what *enables*
 Lua formatting at all — efm only runs stylua when it finds one, so before it
 existed Lua was the single configured language that was never formatted. Its
 settings match the Lua already committed here exactly, verified as zero rewritten
