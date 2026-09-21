@@ -127,9 +127,6 @@ Three layers, three modifiers, almost no collisions:
 - **tmux** owns `Ctrl-a` (the prefix) and a couple of no-prefix keys.
 - **Neovim** owns everything else. Leader is `Space`.
 
-Ghostty hides the macOS title bar. Option-click and drag the resizable window
-frame when you need to move it.
-
 Nothing crosses a boundary, which means `prefix` + arrows moves tmux panes and
 `Ctrl-w` moves nvim splits — see *macOS owns Ctrl+arrows* below for why there is
 no single key for both.

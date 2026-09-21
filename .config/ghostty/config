@@ -18,7 +18,6 @@ window-padding-y = 8
 window-padding-balance = true
 window-save-state = never
 window-new-tab-position = current
-macos-titlebar-style = hidden
 
 # Cursor
 cursor-style = block
