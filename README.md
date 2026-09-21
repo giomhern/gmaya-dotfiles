@@ -580,7 +580,7 @@ moving between it and a file, and managing entries:
 | `:e path/` | open a directory in Neo-tree |
 | `<leader>ee` | open or focus the sidebar and reveal the current file |
 | `<leader>et` / `<leader>ec` | toggle / close the sidebar |
-| `Ctrl-w` `h` / `Ctrl-w` `l` | move into Neo-tree / back to the file window |
+| `Ctrl-w` `l` / `Ctrl-w` `h` | move into Neo-tree / back to the file window |
 | `Enter` or `l` | open a file or expand a directory |
 | `h` | collapse the selected directory |
 | `a` / `d` / `r` | add / delete / rename an entry |
