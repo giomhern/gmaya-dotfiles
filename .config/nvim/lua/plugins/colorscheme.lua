@@ -112,6 +112,7 @@ return {
           default_integrations = false,
           integrations = {
             blink_cmp = true,
+            diffview = true,
             gitsigns = true,
             native_lsp = {
               enabled = true,
@@ -132,6 +133,7 @@ return {
               inlay_hints = { background = true },
             },
             treesitter = true,
+            noice = true,
             which_key = true,
           },
           custom_highlights = custom_theme_highlights,

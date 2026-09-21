@@ -558,10 +558,32 @@ file in it. Build a list, then act on it.
 | `<leader>gfd` | changed files |
 | `<leader>gfl` / `gfL` | log for this file / the repo |
 | `<leader>gfm` | find merge conflicts, into the quickfix list |
+| `<leader>gdo` / `gdc` | open / close the full working-tree diff review |
+| `<leader>gdf` / `gdh` | history for this file / the whole repository |
 
 On a PR the `prlsp` client adds `<leader>ghc` to comment (works on a visual
 range), `<leader>ghr` to reply, `<leader>ghs` to show the thread, `<leader>ghu`
 to refresh.
+
+Diffview is the broader Git review interface: it cycles through all changed
+files, compares revisions, shows file history, and provides a three-way merge
+tool. Open a branch comparison explicitly with `:DiffviewOpen main...HEAD`
+(replace `main` with the branch you are targeting). PR comments and threads
+remain in the separate `prlsp` workflow above.
+
+### Commands and messages
+
+Noice presents `:` commands in a centered palette, keeps `/` and `?` searches
+on the familiar bottom line, sends short messages to a compact view, and opens
+long command output in a split. It preserves the native command-line completion
+behavior and keeps noisy LSP progress out of the editing area.
+
+| | |
+|---|---|
+| `<leader>nh` | open complete message history |
+| `<leader>nl` | show the last message |
+| `<leader>ne` | show recent errors |
+| `<leader>nd` | dismiss visible messages |
 
 ### File previews
 

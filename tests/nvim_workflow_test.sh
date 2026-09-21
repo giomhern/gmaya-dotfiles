@@ -28,6 +28,16 @@ TMUX= nvim --headless README.md \
   '+qa!'
 pass 'blink super-tab completion preserves Copilot and cmdline behavior'
 
+TMUX= nvim --headless README.md \
+  '+lua local ok, err = pcall(function() require("lazy").load({ plugins = { "noice.nvim", "diffview.nvim" } }); vim.api.nvim_exec_autocmds("VimEnter", {}); assert(vim.wait(1000, function() return require("noice.config").is_running() end)); local noice = require("noice.config").options; assert(noice.lsp.progress.enabled == false); assert(vim.tbl_isempty(noice.popupmenu.kind_icons)); assert(noice.presets.command_palette == true); assert(vim.fn.exists(":DiffviewOpen") == 2); assert(vim.fn.exists(":Noice") == 2); assert(vim.fn.maparg("<leader>gdo", "n", false, true).rhs:match("DiffviewOpen")); assert(vim.fn.maparg("<leader>nh", "n", false, true).rhs:match("Noice history")) end); if not ok then io.stderr:write(tostring(err), "\n"); vim.cmd.cquit() end' \
+  '+qa!'
+pass 'Noice and Diffview load with quiet progress and documented mappings'
+
+TMUX= nvim --headless README.md \
+  '+lua local ok, err = pcall(function() vim.cmd.DiffviewOpen(); assert(vim.wait(2000, function() return #vim.api.nvim_list_tabpages() > 1 end)); local found = false; for _, b in ipairs(vim.api.nvim_list_bufs()) do if vim.bo[b].filetype:match("Diffview") then found = true end end; assert(found); vim.cmd.DiffviewClose(); assert(vim.wait(1000, function() return #vim.api.nvim_list_tabpages() == 1 end)) end); if not ok then io.stderr:write(tostring(err), "\n"); vim.cmd.cquit() end' \
+  '+qa!'
+pass 'Diffview opens the working-tree review and returns to the original tab'
+
 TMUX= nvim --headless . \
   '+lua vim.wait(2000, function() return vim.bo.filetype == "neo-tree" end); vim.wait(300); vim.cmd.edit("README.md"); local file = vim.api.nvim_get_current_buf(); assert(vim.api.nvim_buf_get_name(file):match("README.md$")); local close = vim.fn.maparg("<leader>bd", "n", false, true).callback; close(); assert(vim.wait(1500, function() return vim.bo.filetype == "neo-tree" and not vim.api.nvim_buf_is_valid(file) end)); assert(#vim.api.nvim_tabpage_list_wins(0) == 1); for _, b in ipairs(vim.api.nvim_list_bufs()) do assert(not (vim.api.nvim_buf_is_valid(b) and vim.api.nvim_buf_get_name(b) == "")) end' \
   '+qa!'
