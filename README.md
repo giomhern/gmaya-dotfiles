@@ -492,19 +492,20 @@ tolerance and proximity.
 | | |
 |---|---|
 | `Ctrl-n` / `Ctrl-p` | next / previous item (arrows work too) |
-| `Ctrl-y` | **accept** |
+| `Tab` | **accept** the selected item |
+| `Shift-Tab` | move backward through snippet placeholders |
 | `Ctrl-e` | dismiss, keeping what you typed |
 | `Ctrl-Space` | trigger it manually when the menu is not up |
 | `Ctrl-s` | signature help — parameter hints |
 
-Two things catch people out. **`Enter` accepts *and* inserts a newline** — use
-`Ctrl-y`. And **`Tab` does not cycle the menu**; it is bound to snippet jumping
-and falls through to a literal tab, so muscle memory from VS Code misfires here.
+`Tab` is context-aware: it accepts the selected completion, moves forward through
+an active snippet, or falls through to normal indentation. `Enter` remains a
+normal newline and does not accept a suggestion.
 
-Nothing is preselected, so a `Ctrl-n` always comes before the `Ctrl-y`. Typing
-therefore never silently commits a completion. Documentation appears beside a
-selected item, and completion kinds use text labels instead of a second icon
-family.
+Nothing is preselected, so typing never silently commits a completion. Pressing
+`Tab` accepts the first result if you have not chosen another one with `Ctrl-n`
+or `Ctrl-p`. Documentation appears beside a selected item, and completion kinds
+use text labels instead of a second icon family.
 
 **Copilot** is separate — greyed-out inline text, no menu.
 
@@ -521,7 +522,7 @@ type the rest yourself.
 
 | | |
 |---|---|
-| `Tab` / `Shift-Tab` | jump between snippet placeholders |
+| `Tab` / `Shift-Tab` | jump forward / backward between snippet placeholders |
 
 ### Diagnostics and quickfix
 

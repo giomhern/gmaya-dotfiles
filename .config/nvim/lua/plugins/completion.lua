@@ -4,19 +4,10 @@ return {
     version = "1.*",
     event = "InsertEnter",
     opts = {
-      -- Preserve the existing completion keys instead of adopting an Enter- or
-      -- Tab-to-accept preset. Tab remains dedicated to snippet navigation.
+      -- Tab accepts a completion, advances through snippet placeholders, or
+      -- falls back to normal indentation depending on the current context.
       keymap = {
-        preset = "none",
-        ["<C-Space>"] = { "show", "show_documentation", "hide_documentation" },
-        ["<C-e>"] = { "hide", "fallback" },
-        ["<C-y>"] = { "accept", "fallback" },
-        ["<Up>"] = { "select_prev", "fallback" },
-        ["<Down>"] = { "select_next", "fallback" },
-        ["<C-p>"] = { "select_prev", "fallback_to_mappings" },
-        ["<C-n>"] = { "select_next", "fallback_to_mappings" },
-        ["<Tab>"] = { "snippet_forward", "fallback" },
-        ["<S-Tab>"] = { "snippet_backward", "fallback" },
+        preset = "super-tab",
         ["<C-s>"] = { "show_signature", "hide_signature", "fallback" },
       },
       completion = {
