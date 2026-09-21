@@ -602,7 +602,9 @@ Neo-tree full-screen with no underlying file or `[No Name]` buffer. When
 file returns to that full-screen explorer state.
 
 Space remains available as the global leader inside the sidebar. Its behavior
-is consistent whether it opens as a sidebar or from a directory.
+is consistent whether it opens as a sidebar or from a directory. The custom
+statusline is hidden while Neo-tree has focus and returns when a file buffer is
+focused.
 
 ### Buffer tabs
 
