@@ -761,6 +761,10 @@ feature per file. `init.lua` is reserved for editor options, general keymaps,
 LSP, diagnostics, and commands. Add a plugin by creating another Lua file in
 that directory that returns a lazy.nvim plugin specification.
 
+Treesitter installs both parsers and their highlight queries. The configuration
+repairs parser-only installations left by older plugin managers, and lazy.nvim
+runs `:TSUpdate` whenever Treesitter itself is updated.
+
 **tmux plugins** need `prefix + I` (capital i) once after a fresh clone. Prefix
 is `Ctrl-a`.
 

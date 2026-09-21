@@ -110,7 +110,8 @@ buffer, next-buffer selection, last-buffer fallback to full-screen Neo-tree,
 explorer focus/toggle behavior, and file-type-aware preview dispatch without
 launching real GUI apps. Neovim must not change tmux's configured status
 position. It must also preserve the 80-column code ruler and soft wrapping,
-plus the 160-column Markdown ruler and prose wrapping.
+plus the 160-column Markdown ruler and prose wrapping. Require an installed
+Bash parser and non-empty Treesitter highlight queries for shell buffers.
 
 Before committing, search the current tree for employer names, email addresses,
 tokens, private-key headers, cloud profiles, and absolute `/Users/...` paths.

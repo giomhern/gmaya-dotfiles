@@ -2,6 +2,7 @@ return {
   {
     "nvim-treesitter/nvim-treesitter",
     branch = "main",
+    build = ":TSUpdate",
     lazy = false,
     config = function()
       -- Install the nvim-treesitter plugin and ensure that some parsers are always
@@ -45,7 +46,18 @@ return {
 
       local ts = require("nvim-treesitter")
       vim.schedule(function()
-        ts.install(ts_parsers)
+        local missing_queries = vim.tbl_filter(function(lang)
+          return #vim.api.nvim_get_runtime_file(
+            "queries/" .. lang .. "/highlights.scm",
+            true
+          ) == 0
+        end, ts_parsers)
+        if #missing_queries > 0 then
+          -- Repair parser-only installations left by older package managers.
+          ts.install(missing_queries, { force = true })
+        else
+          ts.install(ts_parsers)
+        end
       end)
 
       -- Enable treesitter highlighting and indents.
@@ -58,10 +70,10 @@ return {
           local filetype = event.match
           local lang = vim.treesitter.language.get_lang(filetype)
           if lang and vim.treesitter.language.add(lang) then
-            if vim.treesitter.query.get(filetype, "indents") then
+            if vim.treesitter.query.get(lang, "indents") then
               vim.bo.indentexpr = "v:lua.require'nvim-treesitter'.indentexpr()"
             end
-            if vim.treesitter.query.get(filetype, "folds") then
+            if vim.treesitter.query.get(lang, "folds") then
               vim.wo.foldexpr = "v:lua.vim.treesitter.foldexpr()"
               vim.wo.foldmethod = "expr"
             end

@@ -49,6 +49,11 @@ TMUX= nvim --headless .config/nvim/init.lua \
   '+qa!'
 pass 'code buffers soft-wrap at the normal ruler without changing text'
 
+TMUX= nvim --headless install.sh \
+  '+lua assert(vim.bo.filetype == "sh"); assert(vim.treesitter.language.get_lang(vim.bo.filetype) == "bash"); assert(vim.treesitter.query.get("bash", "highlights")); local query = vim.treesitter.query.get("bash", "highlights"); local root = vim.treesitter.get_parser(0, "bash"):parse()[1]:root(); local count = 0; for _ in query:iter_captures(root, 0, 0, -1) do count = count + 1; if count > 0 then break end end; assert(count > 0)' \
+  '+qa!'
+pass 'shell buffers load Bash Treesitter highlight queries'
+
 cat > "$TEST_ROOT/open" <<'EOF'
 #!/bin/sh
 printf '%s\n' "$*" >> "$GMAYA_OPEN_TEST_LOG"
