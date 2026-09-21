@@ -232,12 +232,6 @@ end
 --- Build the full statusline string. Invoked via the "statusline" option.
 --- @return string
 function M.render()
-  -- Neo-tree already presents its own focused interface. Repeating buffer,
-  -- filetype, and cursor details below it adds noise without useful context.
-  if vim.bo.filetype == "neo-tree" then
-    return ""
-  end
-
   local label, key = get_mode()
   local parts = {}
 
