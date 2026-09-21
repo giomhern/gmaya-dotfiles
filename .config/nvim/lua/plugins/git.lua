@@ -59,69 +59,69 @@ return {
             "n",
             "<leader>gss",
             gitsigns.stage_hunk,
-            { buffer = bufnr }
+            { buffer = bufnr, desc = "Stage hunk" }
           )
           vim.keymap.set(
             "n",
             "<leader>gsr",
             gitsigns.reset_hunk,
-            { buffer = bufnr }
+            { buffer = bufnr, desc = "Reset hunk" }
           )
           vim.keymap.set("v", "<leader>gss", function()
             gitsigns.stage_hunk({ vim.fn.line("."), vim.fn.line("v") })
-          end, { buffer = bufnr })
+          end, { buffer = bufnr, desc = "Stage selected hunks" })
           vim.keymap.set("v", "<leader>gsr", function()
             gitsigns.reset_hunk({ vim.fn.line("."), vim.fn.line("v") })
-          end, { buffer = bufnr })
+          end, { buffer = bufnr, desc = "Reset selected hunks" })
           vim.keymap.set(
             "n",
             "<leader>gsS",
             gitsigns.stage_buffer,
-            { buffer = bufnr }
+            { buffer = bufnr, desc = "Stage buffer" }
           )
           vim.keymap.set(
             "n",
             "<leader>gsR",
             gitsigns.reset_buffer,
-            { buffer = bufnr }
+            { buffer = bufnr, desc = "Reset buffer" }
           )
           vim.keymap.set(
             "n",
             "<leader>gsu",
             gitsigns.undo_stage_hunk,
-            { buffer = bufnr }
+            { buffer = bufnr, desc = "Undo staged hunk" }
           )
           vim.keymap.set(
             "n",
             "<leader>gsp",
             gitsigns.preview_hunk,
-            { buffer = bufnr }
+            { buffer = bufnr, desc = "Preview hunk" }
           )
 
           -- Blame line and show full commit details.
           vim.keymap.set("n", "<leader>gsb", function()
             gitsigns.blame_line({ full = true })
-          end, { buffer = bufnr })
+          end, { buffer = bufnr, desc = "Blame line" })
 
           -- Git diff.
           vim.keymap.set(
             "n",
             "<leader>gsd",
             gitsigns.diffthis,
-            { buffer = bufnr }
+            { buffer = bufnr, desc = "Diff file" }
           )
 
           -- Show hunks in quickfix list.
           vim.keymap.set("n", "<leader>gsq", function()
             gitsigns.setqflist("all")
-          end, { buffer = bufnr })
+          end, { buffer = bufnr, desc = "List hunks" })
 
           -- Toggle word diff and deleted lines.
           vim.keymap.set("n", "<leader>gst", function()
             gitsigns.toggle_linehl()
             gitsigns.toggle_word_diff()
             gitsigns.toggle_deleted()
-          end, { buffer = bufnr })
+          end, { buffer = bufnr, desc = "Toggle detailed changes" })
         end,
       })
 
@@ -155,7 +155,9 @@ return {
         gitsigns.setqflist("all")
       end, { nargs = "*" })
 
-      vim.keymap.set("n", "<leader>gsD", "<cmd>GitDiff<cr>")
+      vim.keymap.set("n", "<leader>gsD", "<cmd>GitDiff<cr>", {
+        desc = "Diff repository",
+      })
 
       -- Find all merge conflicts in the current Git repository and display them in
       -- the quickfix list.
@@ -177,7 +179,7 @@ return {
 
         vim.fn.setqflist({}, " ", { title = "Merge Conflicts", items = items })
         vim.cmd.copen()
-      end)
+      end, { desc = "Find merge conflicts" })
 
       -- Keymaps for the Git pickers ("gf" = git find). "enter" opens the file /
       -- checks out the branch, "ctrl-q" sends the selection to the quickfix list and
@@ -185,25 +187,25 @@ return {
       -- tab (file pickers only).
       vim.keymap.set("n", "<leader>gff", function()
         require("core.picker").git_files()
-      end)
+      end, { desc = "Find tracked files" })
       vim.keymap.set("n", "<leader>gfb", function()
         require("core.picker").git_branches()
-      end)
+      end, { desc = "Find branches" })
       vim.keymap.set("n", "<leader>gfd", function()
         require("core.picker").git_diff()
-      end)
+      end, { desc = "Find changed files" })
       vim.keymap.set("n", "<leader>gfs", function()
         require("core.picker").git_status()
-      end)
+      end, { desc = "Find working tree status" })
       vim.keymap.set("n", "<leader>gfz", function()
         require("core.picker").git_stash()
-      end)
+      end, { desc = "Find stashes" })
       vim.keymap.set("n", "<leader>gfl", function()
         require("core.picker").git_file_log()
-      end)
+      end, { desc = "Find file history" })
       vim.keymap.set("n", "<leader>gfL", function()
         require("core.picker").git_log()
-      end)
+      end, { desc = "Find repository history" })
     end,
   },
 }

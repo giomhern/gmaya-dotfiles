@@ -139,7 +139,9 @@ return {
 
       -- Keymap to save a file without running any auto commands and with creating
       -- directories.
-      vim.keymap.set("n", "<leader>ew", "<cmd>noautocmd write ++p<cr>")
+      vim.keymap.set("n", "<leader>ew", "<cmd>noautocmd write ++p<cr>", {
+        desc = "Write and create parent directories",
+      })
     end,
   },
 }

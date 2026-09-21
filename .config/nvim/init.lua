@@ -336,7 +336,7 @@ vim.keymap.set({ "i", "n" }, "<esc>", "<cmd>noh<cr><esc>")
 -- into an AI chat.
 vim.keymap.set({ "n", "x" }, "<leader>y", function()
   require("core.yank").menu()
-end)
+end, { desc = "Copy file reference" })
 
 --------------------------------------------------------------------------------
 -- COMMAND LINE
@@ -443,13 +443,13 @@ vim.api.nvim_create_autocmd({ "CmdlineLeave" }, {
 -- working directory) using our fzf based picker.
 vim.keymap.set("n", "<leader>ff", function()
   require("core.picker").find_files()
-end)
+end, { desc = "Find files" })
 vim.keymap.set("n", "<leader>fb", function()
   require("core.picker").buffers()
-end)
+end, { desc = "Find open buffers" })
 vim.keymap.set("n", "<leader>fr", function()
   require("core.picker").recent()
-end)
+end, { desc = "Find recent files" })
 
 --------------------------------------------------------------------------------
 -- SEARCH THROUGH FILES
@@ -465,13 +465,13 @@ vim.opt.grepformat = "%f:%l:%c:%m"
 -- greps for common todo / warning tags.
 vim.keymap.set("n", "<leader>ss", function()
   require("core.picker").grep_project()
-end)
+end, { desc = "Search project" })
 vim.keymap.set({ "n", "x" }, "<leader>sw", function()
   require("core.picker").grep_word()
-end)
+end, { desc = "Search word or selection" })
 vim.keymap.set("n", "<leader>st", function()
   require("core.picker").grep_todos()
-end)
+end, { desc = "Search TODO markers" })
 
 --------------------------------------------------------------------------------
 -- REPLACE
@@ -482,36 +482,47 @@ end)
 vim.keymap.set(
   { "n" },
   "<leader>rr",
-  [[:%s///gcI<left><left><left><left><left>]]
+  [[:%s///gcI<left><left><left><left><left>]],
+  { desc = "Replace in buffer" }
 )
-vim.keymap.set("x", "<leader>rr", [[:s///gcI<left><left><left><left><left>]])
+vim.keymap.set(
+  "x",
+  "<leader>rr",
+  [[:s///gcI<left><left><left><left><left>]],
+  { desc = "Replace in selection" }
+)
 vim.keymap.set(
   "n",
   "<leader>rw",
-  [[:%s/\<<c-r><c-w>\>//gcI<left><left><left><left>]]
+  [[:%s/\<<c-r><c-w>\>//gcI<left><left><left><left>]],
+  { desc = "Replace word in buffer" }
 )
 vim.keymap.set(
   "x",
   "<leader>rw",
-  [[y:%s/\V<c-r>"//gcI<left><left><left><left>]]
+  [[y:%s/\V<c-r>"//gcI<left><left><left><left>]],
+  { desc = "Replace selection in buffer" }
 )
 vim.keymap.set(
   "n",
   "<leader>rR",
   [[:cfdo %s///gcI | update]]
-    .. [[<left><left><left><left><left><left><left><left><left><left><left><left><left><left>]]
+    .. [[<left><left><left><left><left><left><left><left><left><left><left><left><left><left>]],
+  { desc = "Replace across quickfix files" }
 )
 vim.keymap.set(
   "n",
   "<leader>rW",
   [[:cfdo %s/\<<c-r><c-w>\>//gcI | update]]
-    .. [[<left><left><left><left><left><left><left><left><left><left><left><left><left>]]
+    .. [[<left><left><left><left><left><left><left><left><left><left><left><left><left>]],
+  { desc = "Replace word across quickfix files" }
 )
 vim.keymap.set(
   "x",
   "<leader>rW",
   [[y:cfdo %s/\V<c-r>"//gcI | update]]
-    .. [[<left><left><left><left><left><left><left><left><left><left><left><left><left>]]
+    .. [[<left><left><left><left><left><left><left><left><left><left><left><left><left>]],
+  { desc = "Replace selection across quickfix files" }
 )
 
 --------------------------------------------------------------------------------
@@ -740,11 +751,17 @@ vim.api.nvim_create_autocmd("LspAttach", {
         { "n", "x" },
         "<leader>ghc",
         ":PRLSPCreateReviewComment<cr>",
-        { silent = true }
+        { silent = true, desc = "Create review comment" }
       )
-      vim.keymap.set("n", "<leader>ghr", "<cmd>PRLSPReplyToReviewThread<cr>")
-      vim.keymap.set("n", "<leader>ghs", "<cmd>PRLSPShowReviewThread<cr>")
-      vim.keymap.set("n", "<leader>ghu", "<cmd>PRLSPRefreshReviewThreads<cr>")
+      vim.keymap.set("n", "<leader>ghr", "<cmd>PRLSPReplyToReviewThread<cr>", {
+        desc = "Reply to review thread",
+      })
+      vim.keymap.set("n", "<leader>ghs", "<cmd>PRLSPShowReviewThread<cr>", {
+        desc = "Show review thread",
+      })
+      vim.keymap.set("n", "<leader>ghu", "<cmd>PRLSPRefreshReviewThreads<cr>", {
+        desc = "Refresh review threads",
+      })
     end
   end,
 })
@@ -836,11 +853,11 @@ end
 
 vim.keymap.set("n", "<leader>d", function()
   vim.diagnostic.setloclist()
-end, {})
+end, { desc = "Buffer diagnostics" })
 
 vim.keymap.set("n", "<leader>D", function()
   vim.diagnostic.setqflist()
-end, {})
+end, { desc = "Workspace diagnostics" })
 
 --------------------------------------------------------------------------------
 -- STATUSLINE

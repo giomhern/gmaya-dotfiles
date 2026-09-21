@@ -18,6 +18,11 @@ TMUX= nvim --headless . \
   '+qa!'
 pass 'nvim dot opens one full-screen tree without an unnamed buffer'
 
+TMUX= nvim --headless README.md \
+  '+lua require("lazy").load({ plugins = { "which-key.nvim" } }); assert(package.loaded["which-key"]); local local_maps = vim.fn.maparg("<leader>?", "n", false, true); assert(type(local_maps.callback) == "function"); local config = require("which-key.config"); assert(config.options.preset == "modern"); assert(config.options.icons.mappings == false); assert(config.options.icons.keys.Space == "Space ")' \
+  '+qa!'
+pass 'which-key loads with the shared theme and textual icon policy'
+
 TMUX= nvim --headless . \
   '+lua vim.wait(2000, function() return vim.bo.filetype == "neo-tree" end); vim.wait(300); vim.cmd.edit("README.md"); local file = vim.api.nvim_get_current_buf(); assert(vim.api.nvim_buf_get_name(file):match("README.md$")); local close = vim.fn.maparg("<leader>bd", "n", false, true).callback; close(); assert(vim.wait(1500, function() return vim.bo.filetype == "neo-tree" and not vim.api.nvim_buf_is_valid(file) end)); assert(#vim.api.nvim_tabpage_list_wins(0) == 1); for _, b in ipairs(vim.api.nvim_list_bufs()) do assert(not (vim.api.nvim_buf_is_valid(b) and vim.api.nvim_buf_get_name(b) == "")) end' \
   '+qa!'

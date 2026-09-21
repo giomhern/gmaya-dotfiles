@@ -131,6 +131,7 @@ return {
               inlay_hints = { background = true },
             },
             treesitter = true,
+            which_key = true,
           },
           custom_highlights = custom_theme_highlights,
         })

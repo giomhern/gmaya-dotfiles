@@ -426,6 +426,11 @@ down five, `2ci"` — the grammar is `count` + `operator` + `motion`.
 Everything below is specific to this config. Leader is `Space`. Mode is noted
 only where it isn't normal.
 
+Pause briefly after pressing `Space` to open which-key and see the available
+commands for that prefix. Continue typing to enter a group, `Backspace` returns
+to the previous level, and `Esc` closes the popup. `Space ?` shows mappings that
+apply only to the current buffer. The popup follows the active Neovim theme.
+
 ### Moving around a codebase
 
 | | |

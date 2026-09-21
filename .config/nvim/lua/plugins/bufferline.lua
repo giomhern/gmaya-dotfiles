@@ -60,11 +60,17 @@ return {
 
       -- Jump straight to a tab by letter, the same idea as the fzf pickers: it labels
       -- each tab and waits for the keystroke.
-      vim.keymap.set("n", "<leader>bb", "<cmd>BufferLinePick<cr>")
+      vim.keymap.set("n", "<leader>bb", "<cmd>BufferLinePick<cr>", {
+        desc = "Pick buffer",
+      })
 
       -- Reorder the row without changing which buffer is current.
-      vim.keymap.set("n", "<leader>b,", "<cmd>BufferLineMovePrev<cr>")
-      vim.keymap.set("n", "<leader>b.", "<cmd>BufferLineMoveNext<cr>")
+      vim.keymap.set("n", "<leader>b,", "<cmd>BufferLineMovePrev<cr>", {
+        desc = "Move buffer left",
+      })
+      vim.keymap.set("n", "<leader>b.", "<cmd>BufferLineMoveNext<cr>", {
+        desc = "Move buffer right",
+      })
 
       local function show_explorer_fullscreen()
         require("neo-tree.command").execute({
@@ -125,7 +131,9 @@ return {
       end, { desc = "Close file and preserve explorer fallback" })
 
       -- Close everything except the current buffer.
-      vim.keymap.set("n", "<leader>bo", "<cmd>BufferLineCloseOthers<cr>")
+      vim.keymap.set("n", "<leader>bo", "<cmd>BufferLineCloseOthers<cr>", {
+        desc = "Close other buffers",
+      })
     end,
   },
 }
