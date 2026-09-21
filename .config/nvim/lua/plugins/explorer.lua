@@ -53,7 +53,7 @@ return {
           },
         },
         window = {
-          position = "right",
+          position = "left",
           width = 34,
           mappings = {
             -- Leader is Space, so do not let Neo-tree consume it before mappings such
@@ -102,7 +102,7 @@ return {
         require("neo-tree.command").execute({
           action = "focus",
           source = "filesystem",
-          position = #buffers.files() > 0 and "right" or "current",
+          position = #buffers.files() > 0 and "left" or "current",
           reveal_file = current_file_or_cwd(),
           reveal_force_cwd = true,
         })
@@ -122,7 +122,7 @@ return {
         require("neo-tree.command").execute({
           action = "focus",
           source = "filesystem",
-          position = #buffers.files() > 0 and "right" or "current",
+          position = #buffers.files() > 0 and "left" or "current",
           reveal_file = current_file_or_cwd(),
           reveal_force_cwd = true,
         })
