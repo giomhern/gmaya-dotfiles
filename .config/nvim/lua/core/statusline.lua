@@ -9,7 +9,7 @@ local DIFF = { added = "✚", modified = "○", removed = "✖" }
 local DIAG = { error = "", warn = "", info = "", hint = "" }
 local FILE = { modified = "○", readonly = "󱈸", unnamed = "" }
 local FILEFORMAT = { unix = "", dos = "", mac = "" }
-local BRANCH_ICON = ""
+local BRANCH_ICON = ""
 
 local MODES = {
   ["n"] = { "NORMAL", "blue" },

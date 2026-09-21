@@ -139,9 +139,8 @@ with `prefix + Ctrl-s` and `prefix + Ctrl-r` when you want a layout to persist.
 
 **One window per repo.** `prefix + c` opens a window in the current directory
 and names it after that directory. The status bar normally stays at the bottom;
-Neo-tree moves it to the top while the explorer is visible so it does not crowd
-the editor statusline. It returns to the bottom when the explorer closes or
-Neovim exits. `prefix + 1…9` jumps straight to one, and `prefix + &` closes one.
+Neovim and Neo-tree leave that position unchanged. `prefix + 1…9` jumps
+straight to one, and `prefix + &` closes one.
 
 **Split for the job, not for the aesthetic.** `prefix + |` puts a pane to the
 right, `prefix + -` below. The useful shape for a service is editor left, and
