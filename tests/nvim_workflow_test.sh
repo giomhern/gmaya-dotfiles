@@ -23,6 +23,11 @@ TMUX= nvim --headless README.md \
   '+qa!'
 pass 'which-key loads with the shared theme and textual icon policy'
 
+TMUX= nvim --headless README.md \
+  '+lua local ok, err = pcall(function() require("lazy").load({ plugins = { "blink.cmp" } }); local cmp = require("blink.cmp"); assert(type(cmp.get_lsp_capabilities) == "function"); local config = require("blink.cmp.config"); assert(config.completion.list.selection.preselect({}) == false); assert(config.completion.list.selection.auto_insert({}) == false); assert(config.completion.ghost_text.enabled() == false); assert(vim.deep_equal(config.sources.default, { "lsp", "path", "snippets", "buffer" })); assert(vim.deep_equal(config.completion.menu.draw.columns({}), { { "label", "label_description", gap = 1 }, { "kind" } })); assert(config.cmdline.enabled == false) end); if not ok then print(err); vim.cmd.cquit() end' \
+  '+qa!'
+pass 'blink completion replaces the native menu without changing Copilot or cmdline'
+
 TMUX= nvim --headless . \
   '+lua vim.wait(2000, function() return vim.bo.filetype == "neo-tree" end); vim.wait(300); vim.cmd.edit("README.md"); local file = vim.api.nvim_get_current_buf(); assert(vim.api.nvim_buf_get_name(file):match("README.md$")); local close = vim.fn.maparg("<leader>bd", "n", false, true).callback; close(); assert(vim.wait(1500, function() return vim.bo.filetype == "neo-tree" and not vim.api.nvim_buf_is_valid(file) end)); assert(#vim.api.nvim_tabpage_list_wins(0) == 1); for _, b in ipairs(vim.api.nvim_list_bufs()) do assert(not (vim.api.nvim_buf_is_valid(b) and vim.api.nvim_buf_get_name(b) == "")) end' \
   '+qa!'

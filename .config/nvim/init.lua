@@ -68,8 +68,6 @@ vim.opt.cc = "80" -- Display the default code-width ruler
 -- it is 0 unless set, which is why "t" and "c" in formatoptions did nothing.
 vim.opt.textwidth = 80
 vim.opt.clipboard = "unnamedplus" -- Sync with system clipboard
-vim.opt.completeopt = { "menuone", "noselect", "fuzzy", "nosort", "popup" } -- Better completion experience
-vim.opt.pumheight = 10 -- Cap the completion menu; unbounded it blankets the file when completing near the bottom
 -- Keep LSP progress out of the cmdline. Neovim 0.12 defaults to "progress:c",
 -- which renders progress through the floating cmd / msg windows anchored to
 -- "laststatus". A chatty server -- jdtls reports "Building" continuously --
@@ -649,21 +647,6 @@ vim.api.nvim_create_autocmd("LspAttach", {
       --     apply = true,
       --   })
       -- end)
-
-      -- Enable completion.
-      if
-        client:supports_method(vim.lsp.protocol.Methods.textDocument_completion)
-      then
-        vim.lsp.completion.enable(
-          true,
-          client.id,
-          buffer,
-          { autotrigger = true }
-        )
-        vim.keymap.set("i", "<c-space>", function()
-          vim.lsp.completion.get()
-        end)
-      end
 
       -- Enable LLM-based inline completions.
       if

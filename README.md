@@ -485,8 +485,9 @@ cursors over *text* in this buffer. Reach for `grn` on anything the LSP knows.
 
 Two independent systems run at once. All of these are insert mode.
 
-**The LSP menu** appears on its own as you type — every server attaches with
-`autotrigger`.
+**Blink completion** appears on its own as you type. It combines LSP results,
+paths, snippets, and words from the current buffer, then ranks them with typo
+tolerance and proximity.
 
 | | |
 |---|---|
@@ -500,11 +501,10 @@ Two things catch people out. **`Enter` accepts *and* inserts a newline** — use
 `Ctrl-y`. And **`Tab` does not cycle the menu**; it is bound to snippet jumping
 and falls through to a literal tab, so muscle memory from VS Code misfires here.
 
-Nothing is preselected (`completeopt` carries `noselect`), so a `Ctrl-n` always
-comes before the `Ctrl-y`. In exchange, typing never silently commits to a
-completion. Also in that option: `fuzzy` so `stro` matches `StreamObserver`,
-`nosort` to keep the server's own ranking, and `popup` for the documentation
-preview beside the selected item.
+Nothing is preselected, so a `Ctrl-n` always comes before the `Ctrl-y`. Typing
+therefore never silently commits a completion. Documentation appears beside a
+selected item, and completion kinds use text labels instead of a second icon
+family.
 
 **Copilot** is separate — greyed-out inline text, no menu.
 

@@ -111,6 +111,7 @@ return {
           flavour = selected_theme,
           default_integrations = false,
           integrations = {
+            blink_cmp = true,
             gitsigns = true,
             native_lsp = {
               enabled = true,
