@@ -4,12 +4,13 @@ return {
     branch = "main",
     lazy = false,
     config = function()
+      local icons = require("core.icons")
       local icons_git = {
         -- Change type
-        added = "✚",
-        modified = "○",
-        deleted = "✖",
-        untracked = "",
+        added = icons.git.added,
+        modified = icons.git.modified,
+        deleted = icons.git.deleted,
+        untracked = icons.git.untracked,
       }
 
       -- Install gitsigns and use our icons instead of the default ones.

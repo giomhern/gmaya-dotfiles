@@ -53,6 +53,8 @@ identity, credentials, machine-specific settings, and a complete rollback path.
 Keep Neovim plugin declarations and configuration under
 `.config/nvim/lua/plugins/`, grouped by feature. Keep `init.lua` for editor-wide
 options, autocmds, commands, LSP, diagnostics, and general keymaps.
+Reuse semantic Nerd Font icons from `.config/nvim/lua/core/icons.lua`; do not
+introduce one-off Git, diagnostic, file-state, or tree icons in plugin modules.
 
 On a managed work laptop, use `./install.sh --work` for preflight and combine
 `--work` with `--apply` or `--migrate`. Verify the three company configuration

@@ -9,6 +9,7 @@ return {
     },
     lazy = false,
     config = function()
+      local icons = require("core.icons")
       -- Neo-tree is the single project and directory explorer. Keeping one explorer
       -- makes "nvim .", ":e path/", and the sidebar use the same keys and behavior.
       local buffers = require("core.buffers")
@@ -31,23 +32,23 @@ return {
         default_component_configs = {
           indent = {
             with_expanders = true,
-            expander_collapsed = "",
-            expander_expanded = "",
+            expander_collapsed = icons.tree.collapsed,
+            expander_expanded = icons.tree.expanded,
             with_markers = true,
             indent_marker = "│",
             last_indent_marker = "└",
           },
           git_status = {
             symbols = {
-              added = "✚",
-              modified = "",
-              deleted = "✖",
-              renamed = "󰁕",
-              untracked = "",
-              ignored = "",
-              unstaged = "󰄱",
-              staged = "",
-              conflict = "",
+              added = icons.git.added,
+              modified = icons.git.modified,
+              deleted = icons.git.deleted,
+              renamed = icons.git.renamed,
+              untracked = icons.git.untracked,
+              ignored = icons.git.ignored,
+              unstaged = icons.git.modified,
+              staged = icons.git.staged,
+              conflict = icons.git.conflict,
             },
           },
         },

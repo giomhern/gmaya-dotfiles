@@ -764,6 +764,11 @@ Treesitter installs both parsers and their highlight queries. The configuration
 repairs parser-only installations left by older plugin managers, and lazy.nvim
 runs `:TSUpdate` whenever Treesitter itself is updated.
 
+Neovim's semantic UI symbols use Nerd Font Octicons from `lua/core/icons.lua`,
+so the statusline, Neo-tree, diagnostics, and Git signs stay visually aligned
+with Starship. Powerline separators and OS/filetype logos keep their specialized
+glyphs.
+
 **tmux plugins** need `prefix + I` (capital i) once after a fresh clone. Prefix
 is `Ctrl-a`.
 

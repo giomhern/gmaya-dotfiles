@@ -5,11 +5,25 @@ local SEP_R = ""
 local COMP_L = ""
 local COMP_R = ""
 
-local DIFF = { added = "✚", modified = "○", removed = "✖" }
-local DIAG = { error = "", warn = "", info = "", hint = "" }
-local FILE = { modified = "○", readonly = "󱈸", unnamed = "" }
+local ICONS = require("core.icons")
+local DIFF = {
+  added = ICONS.git.added,
+  modified = ICONS.git.modified,
+  removed = ICONS.git.deleted,
+}
+local DIAG = {
+  error = ICONS.diagnostic.Error,
+  warn = ICONS.diagnostic.Warn,
+  info = ICONS.diagnostic.Info,
+  hint = ICONS.diagnostic.Hint,
+}
+local FILE = {
+  modified = ICONS.file.modified,
+  readonly = ICONS.file.readonly,
+  unnamed = "",
+}
 local FILEFORMAT = { unix = "", dos = "", mac = "" }
-local BRANCH_ICON = ""
+local BRANCH_ICON = ICONS.git.branch
 
 local MODES = {
   ["n"] = { "NORMAL", "blue" },

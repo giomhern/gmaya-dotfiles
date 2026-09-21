@@ -87,12 +87,12 @@ disabled = false
 style = 'bg:surface0'
 failure_style = 'bg:surface0 fg:red'
 success_style = 'bg:surface0 fg:green'
-success_symbol = ""
-symbol = ""
+success_symbol = ""
+symbol = ""
 not_executable_symbol = ""
-not_found_symbol = ""
-sigint_symbol = ""
-signal_symbol = ""
+not_found_symbol = ""
+sigint_symbol = ""
+signal_symbol = ""
 format = '[ $symbol $status ]($style)'
 
 [time]

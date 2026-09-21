@@ -781,12 +781,7 @@ vim.api.nvim_create_autocmd({ "VimLeavePre", "ExitPre" }, {
 -- DIAGNOSTICS
 --------------------------------------------------------------------------------
 
-local icons_diagnostics = {
-  Error = " ",
-  Warn = " ",
-  Info = " ",
-  Hint = " ",
-}
+local icons_diagnostics = require("core.icons").diagnostic
 
 vim.diagnostic.config({
   underline = true,
@@ -834,7 +829,7 @@ vim.diagnostic.config({
 for _, type in ipairs({ "Error", "Warn", "Hint", "Info" }) do
   vim.fn.sign_define("DiagnosticSign" .. type, {
     name = "DiagnosticSign" .. type,
-    text = icons_diagnostics[type],
+    text = icons_diagnostics[type] .. " ",
     texthl = "Diagnostic" .. type,
   })
 end
