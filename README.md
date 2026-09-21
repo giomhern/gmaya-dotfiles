@@ -756,6 +756,11 @@ revisions. On a new laptop, the first Neovim launch bootstraps lazy.nvim and
 installs the plugins; treesitter parsers compile after that. Use `:Lazy` to
 inspect the plugin list and run updates.
 
+Plugin declarations and their setup live in `.config/nvim/lua/plugins/`, one
+feature per file. `init.lua` is reserved for editor options, general keymaps,
+LSP, diagnostics, and commands. Add a plugin by creating another Lua file in
+that directory that returns a lazy.nvim plugin specification.
+
 **tmux plugins** need `prefix + I` (capital i) once after a fresh clone. Prefix
 is `Ctrl-a`.
 

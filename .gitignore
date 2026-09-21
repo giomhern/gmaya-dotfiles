@@ -11,9 +11,10 @@
 *.pem
 
 # Neovim state that is generated, not configured. Plugins install into
-# ~/.local/share/nvim; only the lock file belongs in version control.
+# ~/.local/share/nvim; only lazy-lock.json belongs in version control.
 .config/nvim/plugin/
 .config/nvim/spell/
+.config/nvim/nvim-pack-lock.json
 .local/share/
 
 # Archives and binaries

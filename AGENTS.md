@@ -50,6 +50,10 @@ identity, credentials, machine-specific settings, and a complete rollback path.
    `~/.local/share/nvim/lazy`, outside this repository. tmux plugin state
    belongs under `~/.tmux/plugins`.
 
+Keep Neovim plugin declarations and configuration under
+`.config/nvim/lua/plugins/`, grouped by feature. Keep `init.lua` for editor-wide
+options, autocmds, commands, LSP, diagnostics, and general keymaps.
+
 On a managed work laptop, use `./install.sh --work` for preflight and combine
 `--work` with `--apply` or `--migrate`. Verify the three company configuration
 paths remain byte-for-byte and mode-for-mode unchanged. Source

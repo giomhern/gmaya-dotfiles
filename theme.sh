@@ -11,7 +11,8 @@ FILES=(
   .config/ghostty/config
   .config/starship.toml
   .config/btop/btop.conf
-  .config/nvim/init.lua
+  .config/nvim/lua/plugins/colorscheme.lua
+  .config/nvim/lua/plugins/bufferline.lua
   .config/nvim/lua/core/picker.lua
 )
 
@@ -81,7 +82,7 @@ verify_selection() {
   grep -Fq "[palettes.$slug]" \
     "$root/.config/starship.toml" || return 1
   grep -Fq "selected_theme = \"$theme\"" \
-    "$root/.config/nvim/init.lua" || return 1
+    "$root/.config/nvim/lua/plugins/colorscheme.lua" || return 1
   grep -Fq "@gmaya_theme \"$theme\"" \
     "$root/.tmux.conf" || return 1
   grep -Fq "theme = \"$display\"" \

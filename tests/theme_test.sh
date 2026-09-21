@@ -18,7 +18,8 @@ FILES=(
   .config/btop/themes/catppuccin_macchiato.theme
   .config/btop/themes/catppuccin_mocha.theme
   .config/btop/themes/tokyonight_moon.theme
-  .config/nvim/init.lua
+  .config/nvim/lua/plugins/colorscheme.lua
+  .config/nvim/lua/plugins/bufferline.lua
   .config/nvim/lua/core/picker.lua
 )
 
@@ -37,7 +38,7 @@ original_theme="$(tr -d '[:space:]' < "$FIXTURE/.theme")"
 grep -Fq 'theme = "Catppuccin Latte"' \
   "$FIXTURE/.config/ghostty/config"
 grep -Fq 'selected_theme = "latte"' \
-  "$FIXTURE/.config/nvim/init.lua"
+  "$FIXTURE/.config/nvim/lua/plugins/colorscheme.lua"
 grep -Fq "palette = 'catppuccin_latte'" \
   "$FIXTURE/.config/starship.toml"
 grep -Fq 'color_theme = "catppuccin_latte"' \
@@ -57,7 +58,7 @@ grep -Fq '#8aadf4' "$FIXTURE/.config/nvim/lua/core/picker.lua"
 "$FIXTURE/theme.sh" status | grep -Fq 'TokyoNight Moon'
 grep -Fq 'theme = "TokyoNight Moon"' "$FIXTURE/.config/ghostty/config"
 grep -Fq 'selected_theme = "tokyonight-moon"' \
-  "$FIXTURE/.config/nvim/init.lua"
+  "$FIXTURE/.config/nvim/lua/plugins/colorscheme.lua"
 grep -Fq 'color_theme = "tokyonight_moon"' \
   "$FIXTURE/.config/btop/btop.conf"
 grep -Fq 'BAT_THEME="ansi"' "$FIXTURE/.zshrc"
