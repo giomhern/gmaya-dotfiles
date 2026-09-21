@@ -750,9 +750,11 @@ are updated with the rest of tmux by `theme.sh`.
 blocking rename prompt on every single window, including the ones tmux-resurrect
 creates while restoring. `prefix + ,` still renames by hand.
 
-**Neovim plugins** are managed by the built-in `vim.pack` and install into
-`~/.local/share/nvim`. Only `nvim-pack-lock.json` is tracked. First launch
-bootstraps them and compiles treesitter parsers.
+**Neovim plugins** are managed by lazy.nvim and install under
+`~/.local/share/nvim/lazy`. The tracked `lazy-lock.json` records plugin
+revisions. On a new laptop, the first Neovim launch bootstraps lazy.nvim and
+installs the plugins; treesitter parsers compile after that. Use `:Lazy` to
+inspect the plugin list and run updates.
 
 **tmux plugins** need `prefix + I` (capital i) once after a fresh clone. Prefix
 is `Ctrl-a`.

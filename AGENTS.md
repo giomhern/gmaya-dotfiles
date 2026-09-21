@@ -46,8 +46,9 @@ identity, credentials, machine-specific settings, and a complete rollback path.
    The same rule applies when an existing config already references the local
    filename, because copying it would create recursive loading.
 6. Run `./install.sh` again and require every managed path to report `ok`.
-7. Initialize optional plugin managers separately. Their state belongs under
-   `~/.local/share/nvim` and `~/.tmux/plugins`, outside this repository.
+7. Let Neovim bootstrap lazy.nvim on first launch. Plugin state belongs under
+   `~/.local/share/nvim/lazy`, outside this repository. tmux plugin state
+   belongs under `~/.tmux/plugins`.
 
 On a managed work laptop, use `./install.sh --work` for preflight and combine
 `--work` with `--apply` or `--migrate`. Verify the three company configuration

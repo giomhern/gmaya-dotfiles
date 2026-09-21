@@ -37,6 +37,25 @@ vim.g.loaded_ruby_provider = 0
 -- nerd font support in Neovim.
 vim.g.have_nerd_font = true
 
+-- Bootstrap lazy.nvim outside the repository so its manager and plugin state
+-- remain local to this Neovim installation.
+local lazypath = vim.fn.stdpath("data") .. "/lazy/lazy.nvim"
+if not (vim.uv or vim.loop).fs_stat(lazypath) then
+  local lazyrepo = "https://github.com/folke/lazy.nvim.git"
+  local output = vim.fn.system({
+    "git",
+    "clone",
+    "--filter=blob:none",
+    "--branch=stable",
+    lazyrepo,
+    lazypath,
+  })
+  if vim.v.shell_error ~= 0 then
+    error("Failed to install lazy.nvim:\n" .. output)
+  end
+end
+vim.opt.rtp:prepend(lazypath)
+
 --------------------------------------------------------------------------------
 -- OPTIONS
 --------------------------------------------------------------------------------
@@ -451,17 +470,37 @@ local function custom_theme_highlights(colors)
   return highlights
 end
 
--- See: https://neovim.io/doc/user/pack.html#_plugin-manager
--- To update all plugins run ":lua vim.pack.update()"
-if selected_theme == "tokyonight-moon" then
-  vim.pack.add({
+-- Keep this custom configuration and use lazy.nvim to install and lock its
+-- plugins. Plugins start eagerly for behavior parity with the former vim.pack
+-- setup; individual modules can be lazy-loaded in a later, separate tuning.
+require("lazy").setup({
+  spec = {
+    { "catppuccin/nvim", name = "catppuccin", branch = "main", lazy = false },
+    { "folke/tokyonight.nvim", branch = "main", lazy = false },
     {
-      src = "https://github.com/folke/tokyonight.nvim",
-      name = "tokyonight",
-      version = "main",
+      "nvim-neo-tree/neo-tree.nvim",
+      branch = "v3.x",
+      lazy = false,
+      dependencies = {
+        "nvim-lua/plenary.nvim",
+        "MunifTanjim/nui.nvim",
+        { "echasnovski/mini.icons", branch = "main" },
+      },
     },
-  }, { confirm = false, load = true })
+    { "nvim-treesitter/nvim-treesitter", branch = "main", lazy = false },
+    {
+      "MeanderingProgrammer/render-markdown.nvim",
+      branch = "main",
+      lazy = false,
+    },
+    { "akinsho/bufferline.nvim", branch = "main", lazy = false },
+    { "lewis6991/gitsigns.nvim", branch = "main", lazy = false },
+    { "jake-stewart/multicursor.nvim", branch = "main", lazy = false },
+  },
+  checker = { enabled = false },
+})
 
+if selected_theme == "tokyonight-moon" then
   require("tokyonight").setup({
     style = "moon",
     on_highlights = function(highlights, palette)
@@ -488,14 +527,6 @@ if selected_theme == "tokyonight-moon" then
   })
   vim.cmd.colorscheme("tokyonight-moon")
 else
-  vim.pack.add({
-    {
-      src = "https://github.com/catppuccin/nvim",
-      name = "catppuccin",
-      version = "main",
-    },
-  }, { confirm = false, load = true })
-
   require("catppuccin").setup({
     flavour = selected_theme,
     default_integrations = false,
@@ -532,29 +563,6 @@ end
 
 -- Neo-tree is the single project and directory explorer. Keeping one explorer
 -- makes "nvim .", ":e path/", and the sidebar use the same keys and behavior.
-vim.pack.add({
-  {
-    src = "https://github.com/nvim-neo-tree/neo-tree.nvim",
-    name = "neo-tree",
-    version = vim.version.range("3"),
-  },
-  {
-    src = "https://github.com/nvim-lua/plenary.nvim",
-    name = "plenary",
-    version = "master",
-  },
-  {
-    src = "https://github.com/MunifTanjim/nui.nvim",
-    name = "nui",
-    version = "main",
-  },
-  {
-    src = "https://github.com/echasnovski/mini.icons",
-    name = "mini-icons",
-    version = "main",
-  },
-}, { confirm = false, load = true })
-
 -- Neo-tree asks for icons through the nvim-web-devicons API, which mini.icons
 -- can answer once mocked. mini.icons themes itself from the colorscheme.
 require("mini.icons").setup()
@@ -929,14 +937,6 @@ vim.api.nvim_create_autocmd("QuickFixCmdPost", {
 
 -- Install the nvim-treesitter plugin and ensure that some parsers are always
 -- installed. We also allow auto installing of additional parsers.
-vim.pack.add({
-  {
-    src = "https://github.com/nvim-treesitter/nvim-treesitter",
-    name = "nvim-treesitter",
-    version = "main",
-  },
-}, { confirm = false, load = true })
-
 require("nvim-treesitter").setup({
   install_dir = vim.fn.stdpath("data") .. "/site",
 })
@@ -979,26 +979,6 @@ vim.schedule(function()
   ts.install(ts_parsers)
 end)
 
--- Update treesitter parsers / queries with plugin updates.
-vim.api.nvim_create_autocmd("PackChanged", {
-  group = vim.api.nvim_create_augroup(
-    "nvim-treesitter-pack-update-handler",
-    { clear = true }
-  ),
-  callback = function(event)
-    local spec = event.data.spec
-    if
-      spec
-      and spec.name == "nvim-treesitter"
-      and event.data.kind == "update"
-    then
-      vim.schedule(function()
-        ts.update()
-      end)
-    end
-  end,
-})
-
 -- Enable treesitter highlighting and indents.
 vim.api.nvim_create_autocmd("FileType", {
   group = vim.api.nvim_create_augroup(
@@ -1026,14 +1006,6 @@ vim.api.nvim_create_autocmd("FileType", {
 --------------------------------------------------------------------------------
 
 -- Render Markdown in Neovim without starting a browser or preview server.
-vim.pack.add({
-  {
-    src = "https://github.com/MeanderingProgrammer/render-markdown.nvim",
-    name = "render-markdown",
-    version = "main",
-  },
-}, { confirm = false, load = true })
-
 require("render-markdown").setup({
   enabled = false,
   file_types = { "markdown", "markdown.mdx" },
@@ -1370,14 +1342,6 @@ require("core.statusline")
 -- the same base / mantle split the fzf picker uses:
 -- the row sits on mantle so it reads as chrome, and the selected tab on base so
 -- it lines up with the buffer beneath it.
-vim.pack.add({
-  {
-    src = "https://github.com/akinsho/bufferline.nvim",
-    name = "bufferline",
-    version = "main",
-  },
-}, { confirm = false, load = true })
-
 vim.opt.showtabline = 2
 
 require("bufferline").setup({
@@ -1498,14 +1462,6 @@ local icons_git = {
 }
 
 -- Install gitsigns and use our icons instead of the default ones.
-vim.pack.add({
-  {
-    src = "https://github.com/lewis6991/gitsigns.nvim",
-    name = "gitsigns",
-    version = "main",
-  },
-}, { confirm = false, load = true })
-
 require("gitsigns").setup({
   signs = {
     add = { text = icons_git.added },
@@ -1685,14 +1641,6 @@ end)
 --------------------------------------------------------------------------------
 -- MULTICURSOR
 --------------------------------------------------------------------------------
-
-vim.pack.add({
-  {
-    src = "https://github.com/jake-stewart/multicursor.nvim",
-    name = "multicursor",
-    version = "main",
-  },
-}, { confirm = false, load = true })
 
 vim.api.nvim_create_autocmd({ "BufReadPre", "BufNewFile" }, {
   group = vim.api.nvim_create_augroup(
