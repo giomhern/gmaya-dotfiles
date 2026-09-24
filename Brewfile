@@ -87,7 +87,7 @@ cask "docker-desktop"
 # Terminal emulator that uses platform-native UI and GPU acceleration
 cask "ghostty"
 # Nerd Font used by Ghostty and terminal-based Neovim
-cask "font-maple-mono-nf"
+cask "font-jetbrains-mono-nerd-font"
 npm "@microsoft/compose-language-service"
 npm "dockerfile-language-server-nodejs"
 npm "prettier"

@@ -33,7 +33,7 @@ vim.g.loaded_perl_provider = 0
 vim.g.loaded_python3_provider = 0
 vim.g.loaded_ruby_provider = 0
 
--- Ghostty uses Maple Mono NF, which supplies Nerd Font icons to Neovim.
+-- Ghostty uses JetBrainsMono Nerd Font Mono for Neovim's icons.
 vim.g.have_nerd_font = true
 
 -- Bootstrap lazy.nvim outside the repository so its manager and plugin state
@@ -89,7 +89,7 @@ vim.opt.formatoptions = "jcroqln" -- Automatic formatting behavior
 vim.opt.hlsearch = true -- Set highlight on search
 vim.opt.ignorecase = true -- Ignore case
 vim.opt.inccommand = "split" -- Show live preview of substitution
-vim.opt.laststatus = 3 -- global statusline
+vim.opt.laststatus = 2 -- statusline belongs to each window, not the sidebar
 vim.opt.list = true -- Show some invisible characters
 vim.opt.listchars = { tab = "│ ", leadmultispace = "│ " } -- Set characters for invisible characters
 vim.opt.mouse = "a" -- Enable mouse mode
@@ -99,7 +99,7 @@ vim.opt.scrolloff = 4 -- Lines of context
 vim.opt.sessionoptions = { "buffers", "curdir", "folds", "tabpages", "winsize" }
 vim.opt.shiftround = true -- Round indent
 vim.opt.shiftwidth = 2 -- Size of an indent
-vim.opt.shortmess = "I" -- Disable the intro message
+vim.opt.shortmess = "IF" -- Suppress intro and duplicate file-open messages
 -- showtabline is set to 2 in the BUFFERLINE section, which owns that row.
 vim.opt.sidescrolloff = 8 -- Columns of context
 vim.opt.signcolumn = "yes" -- Always show the signcolumn, otherwise it would shift the text each time

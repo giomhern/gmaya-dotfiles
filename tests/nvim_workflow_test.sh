@@ -15,11 +15,13 @@ pass() {
 
 TMUX= nvim --headless . \
   '+lua vim.wait(2000, function() return vim.bo.filetype == "neo-tree" end); vim.wait(300); assert(vim.bo.filetype == "neo-tree"); assert(#vim.api.nvim_tabpage_list_wins(0) == 1); local toggle = vim.fn.maparg("<leader>et", "n", false, true).callback; toggle(); vim.wait(100); assert(vim.bo.filetype == "neo-tree"); assert(#vim.api.nvim_tabpage_list_wins(0) == 1); for _, b in ipairs(vim.api.nvim_list_bufs()) do assert(not (vim.api.nvim_buf_is_valid(b) and vim.api.nvim_buf_get_name(b) == ""), "unnamed buffer " .. b) end' \
+  '+lua assert(vim.o.laststatus == 2 and vim.o.showtabline == 0); vim.g.statusline_winid = vim.api.nvim_get_current_win(); assert(require("core.statusline").render() == "%#NeoTreeNormal#%=")' \
   '+qa!'
 pass 'nvim dot opens one full-screen tree without an unnamed buffer'
 
 TMUX= nvim --headless README.md \
   '+lua require("lazy").load({ plugins = { "which-key.nvim" } }); assert(package.loaded["which-key"]); local local_maps = vim.fn.maparg("<leader>?", "n", false, true); assert(type(local_maps.callback) == "function"); local config = require("which-key.config"); assert(config.options.preset == "modern"); assert(config.options.icons.mappings == false); assert(config.options.icons.keys.Space == "Space ")' \
+  '+lua assert(vim.o.showtabline == 2); vim.g.statusline_winid = vim.api.nvim_get_current_win(); assert(require("core.statusline").render():find("README.md", 1, true))' \
   '+qa!'
 pass 'which-key loads with the shared theme and textual icon policy'
 
@@ -51,11 +53,13 @@ pass 'closing a file selects the next open file'
 
 TMUX= nvim --headless README.md \
   '+lua local current = vim.api.nvim_get_current_buf(); local close = vim.fn.maparg("<leader>bd", "n", false, true).callback; close(); vim.wait(1500, function() return vim.bo.filetype == "neo-tree" and not vim.api.nvim_buf_is_valid(current) end); assert(vim.bo.filetype == "neo-tree"); assert(#vim.api.nvim_tabpage_list_wins(0) == 1); assert(not vim.api.nvim_buf_is_valid(current)); for _, b in ipairs(vim.api.nvim_list_bufs()) do assert(not (vim.api.nvim_buf_is_valid(b) and vim.api.nvim_buf_get_name(b) == "")) end' \
+  '+lua assert(vim.wait(1000, function() return vim.o.showtabline == 0 end))' \
   '+qa!'
 pass 'closing the last file returns to a full-screen tree'
 
 TMUX= nvim --headless README.md \
   '+lua local toggle = vim.fn.maparg("<leader>et", "n", false, true).callback; local focus = vim.fn.maparg("<leader>ee", "n", false, true).callback; assert(type(toggle) == "function" and type(focus) == "function"); toggle(); vim.wait(1000, function() return #vim.api.nvim_tabpage_list_wins(0) == 2 end); local tree, file; for _, w in ipairs(vim.api.nvim_tabpage_list_wins(0)) do local b = vim.api.nvim_win_get_buf(w); if vim.bo[b].filetype == "neo-tree" then tree = w else file = w end end; assert(tree and file); assert(vim.api.nvim_win_get_position(tree)[2] < vim.api.nvim_win_get_position(file)[2]); vim.api.nvim_set_current_win(file); focus(); assert(vim.api.nvim_get_current_win() == tree); toggle(); vim.wait(1000, function() return #vim.api.nvim_tabpage_list_wins(0) == 1 end); assert(vim.bo.filetype ~= "neo-tree"); toggle(); vim.wait(1000, function() return #vim.api.nvim_tabpage_list_wins(0) == 2 end)' \
+  '+lua assert(vim.o.showtabline == 2); local status = require("core.statusline"); for _, w in ipairs(vim.api.nvim_tabpage_list_wins(0)) do vim.g.statusline_winid = w; local value = status.render(); if vim.bo[vim.api.nvim_win_get_buf(w)].filetype == "neo-tree" then assert(value == "%#NeoTreeNormal#%=") else assert(value:find("README.md", 1, true)) end end' \
   '+qa!'
 pass 'explorer focus and toggle preserve the file window'
 

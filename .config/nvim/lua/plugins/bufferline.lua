@@ -17,7 +17,20 @@ return {
       -- the same base / mantle split the fzf picker uses:
       -- the row sits on mantle so it reads as chrome, and the selected tab on base so
       -- it lines up with the buffer beneath it.
-      vim.opt.showtabline = 2
+      local function update_visibility()
+        vim.opt.showtabline = #buffers.files() > 0 and 2 or 0
+      end
+      vim.api.nvim_create_autocmd({ "BufAdd", "BufDelete", "BufEnter" }, {
+        desc = "Show buffer tabs only when file buffers are open",
+        callback = function()
+          vim.schedule(update_visibility)
+        end,
+      })
+      vim.api.nvim_create_autocmd("VimEnter", {
+        desc = "Set initial buffer-tab visibility",
+        callback = update_visibility,
+      })
+      update_visibility()
 
       require("bufferline").setup({
         options = {
@@ -34,18 +47,16 @@ return {
           offsets = {
             {
               filetype = "neo-tree",
-              text = " Explorer",
-              text_align = "left",
-              highlight = "Directory",
+              highlight = "NeoTreeNormal",
             },
           },
         },
         highlights = {
-          fill = { bg = "#181825" },
-          background = { bg = "#181825" },
-          buffer_selected = { bg = "#1e1e2e", bold = true },
-          separator = { fg = "#181825", bg = "#181825" },
-          separator_selected = { fg = "#181825", bg = "#1e1e2e" },
+          fill = { bg = "#f8f0e7" },
+          background = { bg = "#f8f0e7" },
+          buffer_selected = { bg = "#faf4ed", bold = true },
+          separator = { fg = "#f8f0e7", bg = "#f8f0e7" },
+          separator_selected = { fg = "#f8f0e7", bg = "#faf4ed" },
         },
       })
 

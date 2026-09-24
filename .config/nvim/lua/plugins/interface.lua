@@ -5,8 +5,22 @@ return {
     dependencies = { "MunifTanjim/nui.nvim" },
     opts = {
       cmdline = {
+        opts = {
+          win_options = {
+            winhighlight = {
+              Normal = "GmayaCmdlinePopup",
+              FloatBorder = "GmayaCmdlineBorder",
+              FloatTitle = "GmayaCmdlineTitle",
+            },
+          },
+        },
         format = {
-          cmdline = { pattern = "^:", icon = ":", lang = "vim" },
+          cmdline = {
+            pattern = "^:",
+            icon = ":",
+            icon_hl_group = "GmayaCmdlineIcon",
+            lang = "vim",
+          },
           search_down = {
             kind = "search",
             pattern = "^/",

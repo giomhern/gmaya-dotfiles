@@ -3,7 +3,10 @@ return {
     "catppuccin/nvim",
     name = "catppuccin",
     priority = 1000,
-    dependencies = { { "folke/tokyonight.nvim", lazy = false } },
+    dependencies = {
+      { "folke/tokyonight.nvim", lazy = false },
+      { "rose-pine/neovim", name = "rose-pine", lazy = false },
+    },
     lazy = false,
     config = function()
       -- Set borders for floating windows, popup menus and the command line completion
@@ -14,12 +17,51 @@ return {
 
       -- The selected family is changed by theme.sh. Both setup paths normalize their
       -- palettes so the custom picker, explorer, and statusline styling stays shared.
-      local selected_theme = "mocha"
+      local selected_theme = "rose-pine-dawn"
 
       local function custom_theme_highlights(colors)
         local highlights = {
           Pmenu = { bg = colors.mantle },
           PmenuBorder = { bg = colors.mantle, fg = colors.blue },
+
+          -- Noice command line uses dedicated groups so its defaults cannot
+          -- reintroduce diagnostic italics or a mismatched popup surface.
+          GmayaCmdlinePopup = { fg = colors.text, bg = colors.base },
+          GmayaCmdlineBorder = { fg = colors.blue, bg = colors.base },
+          GmayaCmdlineTitle = {
+            fg = colors.blue,
+            bg = colors.base,
+            bold = true,
+          },
+          GmayaCmdlineIcon = {
+            fg = colors.blue,
+            bg = colors.base,
+            italic = false,
+          },
+
+          -- Octo's defaults use GitHub's fixed palette. Define its groups here
+          -- first so Octo preserves the active Catppuccin/Tokyo Night palette.
+          OctoGreen = { fg = colors.green },
+          OctoRed = { fg = colors.red },
+          OctoPurple = { fg = colors.mauve },
+          OctoYellow = { fg = colors.yellow },
+          OctoBlue = { fg = colors.blue },
+          OctoGrey = { fg = colors.overlay1 },
+          OctoGreenFloat = { fg = colors.green, bg = colors.base },
+          OctoRedFloat = { fg = colors.red, bg = colors.base },
+          OctoPurpleFloat = { fg = colors.mauve, bg = colors.base },
+          OctoYellowFloat = { fg = colors.yellow, bg = colors.base },
+          OctoBlueFloat = { fg = colors.blue, bg = colors.base },
+          OctoGreyFloat = { fg = colors.overlay1, bg = colors.base },
+          OctoBubbleGreen = { fg = colors.base, bg = colors.green },
+          OctoBubbleRed = { fg = colors.base, bg = colors.red },
+          OctoBubblePurple = { fg = colors.base, bg = colors.mauve },
+          OctoBubbleYellow = { fg = colors.base, bg = colors.yellow },
+          OctoBubbleBlue = { fg = colors.base, bg = colors.blue },
+          OctoBubbleGrey = { fg = colors.text, bg = colors.overlay1 },
+          OctoViewer = { fg = colors.base, bg = colors.blue },
+          OctoReviewDiffAddText = { fg = colors.text, bg = colors.green },
+          OctoReviewDiffDeleteText = { fg = colors.text, bg = colors.red },
 
           -- Picker (see "lua/core/picker.lua").
           PickerNormal = { bg = colors.base },
@@ -80,9 +122,10 @@ return {
         return highlights
       end
 
-      if selected_theme == "tokyonight-moon" then
+      if selected_theme:match("^tokyonight%-") then
+        local style = selected_theme == "tokyonight-day" and "day" or "moon"
         require("tokyonight").setup({
-          style = "moon",
+          style = style,
           on_highlights = function(highlights, palette)
             local colors = {
               mantle = palette.bg_dark,
@@ -105,7 +148,31 @@ return {
             end
           end,
         })
-        vim.cmd.colorscheme("tokyonight-moon")
+        vim.cmd.colorscheme(selected_theme)
+      elseif selected_theme:match("^rose%-pine") then
+        local variant = selected_theme == "rose-pine-dawn" and "dawn" or "main"
+        require("rose-pine").setup({ variant = variant })
+        vim.cmd.colorscheme("rose-pine-" .. variant)
+        local rose = require("rose-pine.palette")
+        local palette = {
+          mantle = rose._nc,
+          base = rose.base,
+          surface0 = rose.highlight_low,
+          overlay1 = rose.muted,
+          text = rose.text,
+          rosewater = rose.rose,
+          blue = rose.foam,
+          green = rose.leaf,
+          mauve = rose.iris,
+          red = rose.love,
+          peach = rose.rose,
+          yellow = rose.gold,
+          sky = rose.foam,
+          teal = rose.pine,
+        }
+        for group, spec in pairs(custom_theme_highlights(palette)) do
+          vim.api.nvim_set_hl(0, group, spec)
+        end
       else
         require("catppuccin").setup({
           flavour = selected_theme,

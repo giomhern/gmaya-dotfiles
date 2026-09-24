@@ -17,7 +17,7 @@ FILES=(
 )
 
 usage() {
-  printf 'Usage: %s [status|latte|mocha|macchiato|tokyonight-moon]\n' "$0"
+  printf 'Usage: %s [status|latte|mocha|macchiato|tokyonight-moon|tokyonight-day|rose-pine|rose-pine-dawn]\n' "$0"
   printf 'Change the shared theme in every configured application.\n'
 }
 
@@ -36,6 +36,18 @@ palette() {
       # Semantic equivalents from Tokyo Night's official Moon palette.
       printf '%s' '#fca7ea|#c099ff|#ff007c|#b4f9f8|#ff757f|#c53b53|#ff966c|#ffc777|#c3e88d|#4fd6be|#86e1fc|#65bcff|#82aaff|#89ddff|#c8d3f5|#737aa2|#828bb8|#636da6|#545c7e|#444a73|#3b4261|#394b70|#2d3f76|#222436|#1e2030|#191B29'
       ;;
+    tokyonight-day)
+      # Semantic equivalents from Tokyo Night Day; extra UI shades are interpolated.
+      printf '%s' '#b4657a|#c77b80|#9854f1|#7847bd|#f52a65|#c64343|#b15c00|#8c6c3e|#587539|#118c74|#07879d|#006a83|#2e7de9|#7890dd|#3760bf|#6172b0|#848cb5|#8990b3|#a1a6c5|#a8aecb|#b3b9d0|#c4c8da|#cbd0df|#e1e2e7|#d0d5e3|#c1c9df'
+      ;;
+    rose-pine)
+      # Rosé Pine Main with distinct derived shades for the shared 26-color UI.
+      printf '%s' '#f2d3d0|#ebbcba|#dc91ae|#c4a7e7|#eb6f92|#d45b7d|#e8a987|#f6c177|#95b1ac|#31748f|#a8d9e0|#6aaac0|#9ccfd8|#b6a1d2|#e0def4|#cbc8de|#b4b0c7|#908caa|#6e6a86|#524f67|#403d52|#26233a|#21202e|#191724|#16141f|#121019'
+      ;;
+    rose-pine-dawn)
+      # Rosé Pine Dawn with distinct derived shades for the shared 26-color UI.
+      printf '%s' '#e5aaa0|#d7827e|#c27394|#907aa9|#b4637a|#a74e68|#dc8c5a|#ea9d34|#6d8f89|#286983|#6aaab2|#438797|#56949f|#a18bb4|#575279|#66617e|#797593|#89859b|#9893a5|#b7b0b8|#cecacd|#dfdad9|#f4ede8|#faf4ed|#f8f0e7|#ece4dc'
+      ;;
     *) return 1 ;;
   esac
 }
@@ -46,6 +58,9 @@ display_name() {
     mocha) printf 'Catppuccin Mocha' ;;
     macchiato) printf 'Catppuccin Macchiato' ;;
     tokyonight-moon) printf 'TokyoNight Moon' ;;
+    tokyonight-day) printf 'TokyoNight Day' ;;
+    rose-pine) printf 'Rose Pine' ;;
+    rose-pine-dawn) printf 'Rose Pine Dawn' ;;
     *) return 1 ;;
   esac
 }
@@ -54,6 +69,9 @@ config_slug() {
   case "$1" in
     latte|mocha|macchiato) printf 'catppuccin_%s' "$1" ;;
     tokyonight-moon) printf 'tokyonight_moon' ;;
+    tokyonight-day) printf 'tokyonight_day' ;;
+    rose-pine) printf 'rose_pine' ;;
+    rose-pine-dawn) printf 'rose_pine_dawn' ;;
     *) return 1 ;;
   esac
 }
@@ -63,7 +81,7 @@ bat_theme() {
     latte) printf 'Catppuccin Latte' ;;
     mocha) printf 'Catppuccin Mocha' ;;
     macchiato) printf 'Catppuccin Macchiato' ;;
-    tokyonight-moon) printf 'ansi' ;;
+    tokyonight-moon|tokyonight-day|rose-pine|rose-pine-dawn) printf 'ansi' ;;
     *) return 1 ;;
   esac
 }

@@ -622,8 +622,8 @@ the current file. If the sidebar is already visible beside a file, the same key
 moves focus into it. `<leader>et` toggles it and `<leader>ec` closes it when a
 file can remain visible. When the tree is the only view, both keep it open
 instead of creating a `[No Name]` buffer. It shows Git and diagnostic state,
-shows dotfiles, and hides Git-ignored items and `.git`. The buffer tab row leaves
-an aligned Explorer header above the sidebar.
+shows dotfiles, and hides Git-ignored items and `.git`. The buffer tab row stays
+over the file area, and the sidebar has no busy statusline of its own.
 
 Opening Neovim with a directory (`nvim .`) or editing one (`:e path/`) opens
 Neo-tree full-screen with no underlying file or `[No Name]` buffer. When
@@ -635,10 +635,10 @@ is consistent whether it opens as a sidebar or from a directory.
 
 ### Buffer tabs
 
-The row along the top is one tab per open buffer, from
+The row along the top is one tab per open file buffer, from
 [bufferline.nvim](https://github.com/akinsho/bufferline.nvim). These are
 buffers, not Neovim tabpages — opening a file adds a tab, and nothing needs a
-`:tabnew`.
+`:tabnew`. With only the full-screen explorer open, the row is hidden.
 
 | | |
 |---|---|
@@ -822,6 +822,9 @@ repository root:
 ```sh
 ./theme.sh status
 ./theme.sh tokyonight-moon
+./theme.sh tokyonight-day
+./theme.sh rose-pine
+./theme.sh rose-pine-dawn
 ./theme.sh latte
 ./theme.sh macchiato
 ./theme.sh mocha
@@ -831,8 +834,11 @@ The command updates Ghostty, Neovim, tmux, Starship, fzf (both shell and
 Neovim), bat, and btop together. Reload the shell with `exec zsh`, reload tmux
 with prefix + `r`, and restart other open applications. The selected theme is
 stored in `.theme`; commit that change to carry the same look to another
-laptop. Tokyo Night uses bat's ANSI theme so syntax colors follow the terminal
-palette. Latte is the light option; the other three themes are dark.
+laptop. Tokyo Night and Rosé Pine use bat's ANSI theme so syntax colors follow
+the terminal palette. Latte, Tokyo Night Day, and Rosé Pine Dawn are light; the
+others are dark. Rosé Pine selects the Main variant. The Neo-tree sidebar and
+inactive buffer tabs deliberately use a different palette surface than
+Ghostty's base background.
 
 ## Credit
 

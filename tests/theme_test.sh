@@ -18,6 +18,9 @@ FILES=(
   .config/btop/themes/catppuccin_macchiato.theme
   .config/btop/themes/catppuccin_mocha.theme
   .config/btop/themes/tokyonight_moon.theme
+  .config/btop/themes/tokyonight_day.theme
+  .config/btop/themes/rose_pine.theme
+  .config/btop/themes/rose_pine_dawn.theme
   .config/nvim/lua/plugins/colorscheme.lua
   .config/nvim/lua/plugins/bufferline.lua
   .config/nvim/lua/core/picker.lua
@@ -63,6 +66,38 @@ grep -Fq 'color_theme = "tokyonight_moon"' \
   "$FIXTURE/.config/btop/btop.conf"
 grep -Fq 'BAT_THEME="ansi"' "$FIXTURE/.zshrc"
 grep -Fq '#222436' "$FIXTURE/.config/starship.toml"
+"$FIXTURE/theme.sh" tokyonight-day >/dev/null
+"$FIXTURE/theme.sh" status | grep -Fq 'TokyoNight Day'
+grep -Fq 'theme = "TokyoNight Day"' "$FIXTURE/.config/ghostty/config"
+grep -Fq 'selected_theme = "tokyonight-day"' \
+  "$FIXTURE/.config/nvim/lua/plugins/colorscheme.lua"
+grep -Fq 'theme[main_bg]="#e1e2e7"' \
+  "$FIXTURE/.config/btop/themes/tokyonight_day.theme"
+grep -Fq '#e1e2e7' "$FIXTURE/.config/nvim/lua/core/picker.lua"
+"$FIXTURE/theme.sh" rose-pine >/dev/null
+"$FIXTURE/theme.sh" status | grep -Fq 'Rose Pine'
+grep -Fq 'theme = "Rose Pine"' "$FIXTURE/.config/ghostty/config"
+grep -Fq 'selected_theme = "rose-pine"' \
+  "$FIXTURE/.config/nvim/lua/plugins/colorscheme.lua"
+grep -Fq 'color_theme = "rose_pine"' \
+  "$FIXTURE/.config/btop/btop.conf"
+grep -Fq 'theme[main_bg]="#191724"' \
+  "$FIXTURE/.config/btop/themes/rose_pine.theme"
+grep -Fq '#191724' "$FIXTURE/.config/starship.toml"
+grep -Fq 'BAT_THEME="ansi"' "$FIXTURE/.zshrc"
+grep -Fq 'font-family = "JetBrainsMono Nerd Font Mono"' \
+  "$FIXTURE/.config/ghostty/config"
+"$FIXTURE/theme.sh" rose-pine-dawn >/dev/null
+"$FIXTURE/theme.sh" status | grep -Fq 'Rose Pine Dawn'
+grep -Fq 'theme = "Rose Pine Dawn"' "$FIXTURE/.config/ghostty/config"
+grep -Fq 'selected_theme = "rose-pine-dawn"' \
+  "$FIXTURE/.config/nvim/lua/plugins/colorscheme.lua"
+grep -Fq 'color_theme = "rose_pine_dawn"' \
+  "$FIXTURE/.config/btop/btop.conf"
+grep -Fq 'theme[main_bg]="#faf4ed"' \
+  "$FIXTURE/.config/btop/themes/rose_pine_dawn.theme"
+grep -Fq '#faf4ed' "$FIXTURE/.config/starship.toml"
+grep -Fq '#faf4ed' "$FIXTURE/.config/nvim/lua/core/picker.lua"
 "$FIXTURE/theme.sh" "$original_theme" >/dev/null
 after="$(for rel in "${FILES[@]}"; do cksum "$FIXTURE/$rel"; done)"
 if [[ $before != "$after" ]]; then
