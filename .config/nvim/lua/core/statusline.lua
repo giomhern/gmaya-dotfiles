@@ -231,7 +231,7 @@ end
 
 --- Build the full statusline string. Invoked via the "statusline" option.
 --- @return string
-local function render_current()
+function M.render()
   local label, key = get_mode()
   local parts = {}
 
@@ -270,21 +270,6 @@ local function render_current()
   put("%#StatuslineZ_" .. key .. "# %l:%c ")
 
   return table.concat(parts)
-end
-
---- Render for the window that owns this statusline. The explorer gets a quiet
---- background strip; file windows keep the useful file and diagnostic details.
---- @return string
-function M.render()
-  local win = tonumber(vim.g.statusline_winid) or vim.api.nvim_get_current_win()
-  if not vim.api.nvim_win_is_valid(win) then
-    return ""
-  end
-  local buf = vim.api.nvim_win_get_buf(win)
-  if vim.bo[buf].filetype == "neo-tree" then
-    return "%#NeoTreeNormal#%="
-  end
-  return vim.api.nvim_win_call(win, render_current)
 end
 
 --------------------------------------------------------------------------------

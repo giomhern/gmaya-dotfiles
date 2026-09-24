@@ -561,10 +561,14 @@ file in it. Build a list, then act on it.
 | `<leader>gdo` / `gdc` | open / close the full working-tree diff review |
 | `<leader>gdf` / `gdh` | history for this file / the whole repository |
 
-Octo provides the full GitHub PR review workflow. `<leader>ghp` lists pull
-requests and `<leader>ghr` opens review mode for the current branch. In the
-review diff, existing threads appear on their lines; Octo's localleader actions
-reply, resolve, react, add suggestions, and submit the review.
+Octo provides the GitHub PR review workflow. `<leader>ghp` lists pull requests;
+open one with `Enter`, then `<leader>ghr` browses its diff and existing threads
+without starting a review or checking out the branch. You can also open a PR
+directly with `:Octo pr edit <number>`. `<leader>ghc` closes the review. To add
+inline comments or reply in a thread, use `<leader>ghs` to start or resume a
+pending GitHub review, then use Octo's localleader actions (Space is the
+localleader). These writes reach GitHub when saved or submitted; browse mode is
+read-only. Resolve and react actions also change GitHub state.
 
 Diffview is the broader Git review interface: it cycles through all changed
 files, compares revisions, shows file history, and provides a three-way merge
@@ -623,12 +627,15 @@ moves focus into it. `<leader>et` toggles it and `<leader>ec` closes it when a
 file can remain visible. When the tree is the only view, both keep it open
 instead of creating a `[No Name]` buffer. It shows Git and diagnostic state,
 shows dotfiles, and hides Git-ignored items and `.git`. The buffer tab row stays
-over the file area, and the sidebar has no busy statusline of its own.
+over the file area, while the statusline spans the full width below both views.
 
 Opening Neovim with a directory (`nvim .`) or editing one (`:e path/`) opens
 Neo-tree full-screen with no underlying file or `[No Name]` buffer. When
 `<leader>bd` closes a file, it selects the next open file first. Closing the last
-file returns to that full-screen explorer state.
+file returns to that full-screen explorer state. It also closes an empty
+`[No Name]` buffer: if a file remains, focus goes to an open file; otherwise
+Neo-tree takes the full view. Modified scratch or special windows remain open
+so their state is not lost, even if that means Neo-tree cannot be full-screen.
 
 Space remains available as the global leader inside the sidebar. Its behavior
 is consistent whether it opens as a sidebar or from a directory.
@@ -644,7 +651,7 @@ buffers, not Neovim tabpages — opening a file adds a tab, and nothing needs a
 |---|---|
 | `]b` / `[b` | next / previous buffer, matching `]c` / `[c` on git hunks |
 | `<leader>bb` | label every tab and jump to the one you press |
-| `<leader>bd` | close this file; select the next, or return to full-screen Neo-tree |
+| `<leader>bd` | close this file or an empty `[No Name]` buffer; keep unsaved text |
 | `<leader>bo` | close every buffer but this one |
 | `<leader>b.` / `<leader>b,` | move this tab right / left in the row |
 | `<leader>fb` | the buffer list as an fzf picker, with preview |
@@ -655,6 +662,12 @@ buffers, not Neovim tabpages — opening a file adds a tab, and nothing needs a
 A tab shows the filetype icon, and an LSP error or warning count when the file
 has diagnostics. `<leader>fb` is still the faster way through a large set — the
 row is for seeing what is open, the picker for searching it.
+
+`[No Name]` is an unnamed, unsaved buffer, often created by `:enew`, `:new`,
+`:tabnew`, or an accidental `Ctrl-w n`. It is not a file until you give it a
+path. To keep one, type your text and use `:saveas path/to/new-file.ext` (the
+parent directory must exist). An untouched empty one can be closed with
+`<leader>bd`; text in an unnamed buffer is never discarded by that mapping.
 
 Use `Enter` in Neo-tree or an fzf picker for the normal buffer workflow.
 `Ctrl-t` in an fzf picker deliberately creates a real Neovim tabpage with its

@@ -31,9 +31,11 @@ function M.files()
   return result
 end
 
-local function is_empty_unnamed(buf)
+function M.is_empty_unnamed(buf)
   return vim.api.nvim_buf_is_valid(buf)
+    and vim.bo[buf].buflisted
     and vim.bo[buf].buftype == ""
+    and vim.bo[buf].modifiable
     and vim.api.nvim_buf_get_name(buf) == ""
     and not vim.bo[buf].modified
     and vim.api.nvim_buf_line_count(buf) == 1
@@ -50,13 +52,15 @@ function M.remove_empty_unnamed()
   for _, win in ipairs(vim.api.nvim_tabpage_list_wins(0)) do
     if win ~= tree_win then
       local buf = vim.api.nvim_win_get_buf(win)
-      if is_empty_unnamed(buf) then
+      if M.is_empty_unnamed(buf) then
         vim.api.nvim_win_close(win, true)
       end
     end
   end
   for _, buf in ipairs(vim.api.nvim_list_bufs()) do
-    if is_empty_unnamed(buf) then
+    -- A different tab can still be using an empty scratch buffer. Only reap
+    -- placeholders that no window displays after the current tree opens.
+    if M.is_empty_unnamed(buf) and #vim.fn.win_findbuf(buf) == 0 then
       pcall(vim.api.nvim_buf_delete, buf, { force = true })
     end
   end

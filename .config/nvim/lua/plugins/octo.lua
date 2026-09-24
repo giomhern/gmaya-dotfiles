@@ -9,7 +9,8 @@ return {
       picker = "default",
       enable_builtin = true,
       default_remote = { "upstream", "origin" },
-      use_local_fs = true,
+      -- Review any PR from its GitHub revision without a checkout prompt.
+      use_local_fs = false,
       file_panel = {
         icons = false,
       },
@@ -27,8 +28,18 @@ return {
       },
       {
         "<leader>ghr",
+        "<cmd>Octo review browse<cr>",
+        desc = "Browse pull request diff and threads (read-only)",
+      },
+      {
+        "<leader>ghs",
         "<cmd>Octo review<cr>",
-        desc = "Review current pull request",
+        desc = "Start or resume a pending PR review",
+      },
+      {
+        "<leader>ghc",
+        "<cmd>Octo review close<cr>",
+        desc = "Close pull request review",
       },
       {
         "<leader>ghn",

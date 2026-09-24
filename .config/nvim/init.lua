@@ -89,7 +89,7 @@ vim.opt.formatoptions = "jcroqln" -- Automatic formatting behavior
 vim.opt.hlsearch = true -- Set highlight on search
 vim.opt.ignorecase = true -- Ignore case
 vim.opt.inccommand = "split" -- Show live preview of substitution
-vim.opt.laststatus = 2 -- statusline belongs to each window, not the sidebar
+vim.opt.laststatus = 3 -- one full-width statusline below the sidebar and file
 vim.opt.list = true -- Show some invisible characters
 vim.opt.listchars = { tab = "│ ", leadmultispace = "│ " } -- Set characters for invisible characters
 vim.opt.mouse = "a" -- Enable mouse mode
