@@ -1,6 +1,6 @@
 # Theme
-theme = "Catppuccin Latte"
-font-family = "Cascadia Mono NF"
+theme = "Catppuccin Mocha"
+font-family = "Maple Mono NF"
 font-synthetic-style = false
 font-size = 12
 

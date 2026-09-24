@@ -12,7 +12,7 @@ typeset -g _GMAYA_WORK_SHELL_LOADED=1
 
 export EDITOR="nvim"
 export MANPAGER="nvim +Man!"
-export BAT_THEME="Catppuccin Latte"
+export BAT_THEME="Catppuccin Mocha"
 
 # Shared fzf behavior and palette. theme.sh updates these colors alongside the
 # full shell, Neovim, Ghostty, tmux, Starship, bat, and btop.
@@ -25,7 +25,7 @@ typeset -ga _GMAYA_FZF_BINDS=(
   --bind home:preview-top
   --bind end:preview-bottom
 )
-typeset -g _GMAYA_FZF_COLORS='--color=fg:#4c4f69,fg+:#4c4f69,bg:#eff1f5,bg+:#ccd0da,border:#9ca0b0,label:#9ca0b0,spinner:#8839ef,hl:#d20f39,hl+:#d20f39,header:#d20f39,info:#8839ef,pointer:#8839ef,marker:#dc8a78,prompt:#8839ef'
+typeset -g _GMAYA_FZF_COLORS='--color=fg:#cdd6f4,fg+:#cdd6f4,bg:#1e1e2e,bg+:#313244,border:#6c7086,label:#6c7086,spinner:#cba6f7,hl:#f38ba8,hl+:#f38ba8,header:#f38ba8,info:#cba6f7,pointer:#cba6f7,marker:#f5e0dc,prompt:#cba6f7'
 
 if command -v fzf >/dev/null 2>&1; then
   eval "$(fzf --zsh)"

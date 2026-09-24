@@ -33,8 +33,7 @@ vim.g.loaded_perl_provider = 0
 vim.g.loaded_python3_provider = 0
 vim.g.loaded_ruby_provider = 0
 
--- We are using "Cascadia Code" as font in our terminal, so that we can enable
--- nerd font support in Neovim.
+-- Ghostty uses Maple Mono NF, which supplies Nerd Font icons to Neovim.
 vim.g.have_nerd_font = true
 
 -- Bootstrap lazy.nvim outside the repository so its manager and plugin state

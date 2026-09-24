@@ -14,7 +14,7 @@ return {
 
       -- The selected family is changed by theme.sh. Both setup paths normalize their
       -- palettes so the custom picker, explorer, and statusline styling stays shared.
-      local selected_theme = "latte"
+      local selected_theme = "mocha"
 
       local function custom_theme_highlights(colors)
         local highlights = {

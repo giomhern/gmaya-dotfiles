@@ -41,11 +41,11 @@ return {
           },
         },
         highlights = {
-          fill = { bg = "#e6e9ef" },
-          background = { bg = "#e6e9ef" },
-          buffer_selected = { bg = "#eff1f5", bold = true },
-          separator = { fg = "#e6e9ef", bg = "#e6e9ef" },
-          separator_selected = { fg = "#e6e9ef", bg = "#eff1f5" },
+          fill = { bg = "#181825" },
+          background = { bg = "#181825" },
+          buffer_selected = { bg = "#1e1e2e", bold = true },
+          separator = { fg = "#181825", bg = "#181825" },
+          separator_selected = { fg = "#181825", bg = "#1e1e2e" },
         },
       })
 
