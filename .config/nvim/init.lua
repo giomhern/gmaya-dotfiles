@@ -603,7 +603,6 @@ vim.lsp.enable({
   "lua_ls",
   "marksman",
   "my_hover_ls",
-  "prlsp",
   "pyright",
   "sourcekit",
   "yamlls",
@@ -725,27 +724,6 @@ vim.api.nvim_create_autocmd("LspAttach", {
       end
     end
 
-    -- If the prlsp client is attached, load the prlsp plugin and add keymaps
-    -- for creating, replying to and showing review comments.
-    if client and client.name == "prlsp" then
-      require("core.prlsp")
-
-      vim.keymap.set(
-        { "n", "x" },
-        "<leader>ghc",
-        ":PRLSPCreateReviewComment<cr>",
-        { silent = true, desc = "Create review comment" }
-      )
-      vim.keymap.set("n", "<leader>ghr", "<cmd>PRLSPReplyToReviewThread<cr>", {
-        desc = "Reply to review thread",
-      })
-      vim.keymap.set("n", "<leader>ghs", "<cmd>PRLSPShowReviewThread<cr>", {
-        desc = "Show review thread",
-      })
-      vim.keymap.set("n", "<leader>ghu", "<cmd>PRLSPRefreshReviewThreads<cr>", {
-        desc = "Refresh review threads",
-      })
-    end
   end,
 })
 

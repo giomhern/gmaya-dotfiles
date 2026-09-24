@@ -561,15 +561,16 @@ file in it. Build a list, then act on it.
 | `<leader>gdo` / `gdc` | open / close the full working-tree diff review |
 | `<leader>gdf` / `gdh` | history for this file / the whole repository |
 
-On a PR the `prlsp` client adds `<leader>ghc` to comment (works on a visual
-range), `<leader>ghr` to reply, `<leader>ghs` to show the thread, `<leader>ghu`
-to refresh.
+Octo provides the full GitHub PR review workflow. `<leader>ghp` lists pull
+requests and `<leader>ghr` opens review mode for the current branch. In the
+review diff, existing threads appear on their lines; Octo's localleader actions
+reply, resolve, react, add suggestions, and submit the review.
 
 Diffview is the broader Git review interface: it cycles through all changed
 files, compares revisions, shows file history, and provides a three-way merge
 tool. Open a branch comparison explicitly with `:DiffviewOpen main...HEAD`
-(replace `main` with the branch you are targeting). PR comments and threads
-remain in the separate `prlsp` workflow above.
+(replace `main` with the branch you are targeting). Octo owns the GitHub-backed
+PR review workflow.
 
 ### Commands and messages
 
