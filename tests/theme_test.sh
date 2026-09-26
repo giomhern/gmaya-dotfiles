@@ -51,7 +51,7 @@ grep -Fq 'theme[main_bg]="#eff1f5"' \
 grep -Fq 'BAT_THEME="Catppuccin Latte"' "$FIXTURE/.zshrc"
 grep -Fq 'BAT_THEME="Catppuccin Latte"' \
   "$FIXTURE/.config/gmaya/work-shell.zsh"
-grep -Fq '#eff1f5' "$FIXTURE/.config/nvim/lua/core/picker.lua"
+grep -Fq 'bg:#e6e9ef' "$FIXTURE/.config/nvim/lua/core/picker.lua"
 "$FIXTURE/theme.sh" macchiato >/dev/null
 "$FIXTURE/theme.sh" status | grep -Fq 'Catppuccin Macchiato'
 grep -Fq '#24273a' "$FIXTURE/.zshrc"
@@ -73,7 +73,7 @@ grep -Fq 'selected_theme = "tokyonight-day"' \
   "$FIXTURE/.config/nvim/lua/plugins/colorscheme.lua"
 grep -Fq 'theme[main_bg]="#e1e2e7"' \
   "$FIXTURE/.config/btop/themes/tokyonight_day.theme"
-grep -Fq '#e1e2e7' "$FIXTURE/.config/nvim/lua/core/picker.lua"
+grep -Fq 'bg:#d0d5e3' "$FIXTURE/.config/nvim/lua/core/picker.lua"
 "$FIXTURE/theme.sh" rose-pine >/dev/null
 "$FIXTURE/theme.sh" status | grep -Fq 'Rose Pine'
 grep -Fq 'theme = "Rose Pine"' "$FIXTURE/.config/ghostty/config"
@@ -97,7 +97,7 @@ grep -Fq 'color_theme = "rose_pine_dawn"' \
 grep -Fq 'theme[main_bg]="#faf4ed"' \
   "$FIXTURE/.config/btop/themes/rose_pine_dawn.theme"
 grep -Fq '#faf4ed' "$FIXTURE/.config/starship.toml"
-grep -Fq '#faf4ed' "$FIXTURE/.config/nvim/lua/core/picker.lua"
+grep -Fq 'bg:#f8f0e7' "$FIXTURE/.config/nvim/lua/core/picker.lua"
 "$FIXTURE/theme.sh" "$original_theme" >/dev/null
 after="$(for rel in "${FILES[@]}"; do cksum "$FIXTURE/$rel"; done)"
 if [[ $before != "$after" ]]; then

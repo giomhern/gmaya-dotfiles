@@ -13,10 +13,8 @@ return {
       -- follow it.
       --
       -- Bufferline derives its palette from the colorscheme. Only the fills are
-      -- pinned below, to
-      -- the same base / mantle split the fzf picker uses:
-      -- the row sits on mantle so it reads as chrome, and the selected tab on base so
-      -- it lines up with the buffer beneath it.
+      -- pinned below: the row shares Neo-tree's mantle canvas, while the
+      -- selected tab uses the editor base beneath it.
       local function update_visibility()
         vim.opt.showtabline = #buffers.files() > 0 and 2 or 0
       end

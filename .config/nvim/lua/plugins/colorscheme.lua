@@ -20,22 +20,70 @@ return {
       local selected_theme = "rose-pine-dawn"
 
       local function custom_theme_highlights(colors)
+        local popup_bg = colors.mantle
         local highlights = {
-          Pmenu = { bg = colors.mantle },
-          PmenuBorder = { bg = colors.mantle, fg = colors.blue },
+          -- Popups use the same canvas as Neo-tree in every theme.
+          NormalFloat = { fg = colors.text, bg = popup_bg },
+          FloatBorder = { fg = colors.blue, bg = popup_bg },
+          FloatTitle = { fg = colors.blue, bg = popup_bg, bold = true },
+          WhichKeyNormal = { fg = colors.text, bg = popup_bg },
+          WhichKeyFloat = { fg = colors.text, bg = popup_bg },
+          WhichKeyBorder = { fg = colors.blue, bg = popup_bg },
+          WhichKeyTitle = { fg = colors.blue, bg = popup_bg, bold = true },
+
+          Pmenu = { bg = popup_bg },
+          PmenuBorder = { bg = popup_bg, fg = colors.blue },
+          BlinkCmpMenu = { link = "Pmenu" },
+          BlinkCmpMenuBorder = { bg = popup_bg, fg = colors.blue },
+          BlinkCmpDoc = { fg = colors.text, bg = popup_bg },
+          BlinkCmpDocBorder = { fg = colors.blue, bg = popup_bg },
+          BlinkCmpDocSeparator = { fg = colors.overlay1, bg = popup_bg },
+          BlinkCmpSignatureHelp = { fg = colors.text, bg = popup_bg },
+          BlinkCmpSignatureHelpBorder = {
+            fg = colors.blue,
+            bg = popup_bg,
+          },
+          NoicePopupmenuBorder = { fg = colors.blue, bg = popup_bg },
+          NoiceCmdlineIcon = {
+            fg = colors.blue,
+            bg = popup_bg,
+            italic = false,
+          },
+          NoiceCmdlineIconSearch = {
+            fg = colors.yellow,
+            bg = popup_bg,
+            italic = false,
+          },
+          NoiceCmdlinePopup = { fg = colors.text, bg = popup_bg },
+          NoiceCmdlinePopupBorder = { fg = colors.blue, bg = popup_bg },
+          NoiceCmdlinePopupBorderSearch = {
+            fg = colors.yellow,
+            bg = popup_bg,
+          },
+          NoiceCmdlinePopupTitle = {
+            fg = colors.blue,
+            bg = popup_bg,
+            bold = true,
+          },
+          NoiceCmdlinePopupTitleSearch = {
+            fg = colors.yellow,
+            bg = popup_bg,
+            bold = true,
+          },
+          NoiceConfirmBorder = { fg = colors.blue, bg = popup_bg },
 
           -- Noice command line uses dedicated groups so its defaults cannot
           -- reintroduce diagnostic italics or a mismatched popup surface.
-          GmayaCmdlinePopup = { fg = colors.text, bg = colors.base },
-          GmayaCmdlineBorder = { fg = colors.blue, bg = colors.base },
+          GmayaCmdlinePopup = { fg = colors.text, bg = popup_bg },
+          GmayaCmdlineBorder = { fg = colors.blue, bg = popup_bg },
           GmayaCmdlineTitle = {
             fg = colors.blue,
-            bg = colors.base,
+            bg = popup_bg,
             bold = true,
           },
           GmayaCmdlineIcon = {
             fg = colors.blue,
-            bg = colors.base,
+            bg = popup_bg,
             italic = false,
           },
 
@@ -47,12 +95,12 @@ return {
           OctoYellow = { fg = colors.yellow },
           OctoBlue = { fg = colors.blue },
           OctoGrey = { fg = colors.overlay1 },
-          OctoGreenFloat = { fg = colors.green, bg = colors.base },
-          OctoRedFloat = { fg = colors.red, bg = colors.base },
-          OctoPurpleFloat = { fg = colors.mauve, bg = colors.base },
-          OctoYellowFloat = { fg = colors.yellow, bg = colors.base },
-          OctoBlueFloat = { fg = colors.blue, bg = colors.base },
-          OctoGreyFloat = { fg = colors.overlay1, bg = colors.base },
+          OctoGreenFloat = { fg = colors.green, bg = popup_bg },
+          OctoRedFloat = { fg = colors.red, bg = popup_bg },
+          OctoPurpleFloat = { fg = colors.mauve, bg = popup_bg },
+          OctoYellowFloat = { fg = colors.yellow, bg = popup_bg },
+          OctoBlueFloat = { fg = colors.blue, bg = popup_bg },
+          OctoGreyFloat = { fg = colors.overlay1, bg = popup_bg },
           OctoBubbleGreen = { fg = colors.base, bg = colors.green },
           OctoBubbleRed = { fg = colors.base, bg = colors.red },
           OctoBubblePurple = { fg = colors.base, bg = colors.mauve },
@@ -64,17 +112,24 @@ return {
           OctoReviewDiffDeleteText = { fg = colors.text, bg = colors.red },
 
           -- Picker (see "lua/core/picker.lua").
-          PickerNormal = { bg = colors.base },
-          PickerBorder = { bg = colors.base, fg = colors.blue },
+          PickerNormal = { fg = colors.text, bg = popup_bg },
+          PickerBorder = { bg = popup_bg, fg = colors.blue },
 
           -- Explorer marks (see "lua/core/explorer.lua").
           ExplorerMark = { fg = colors.rosewater },
           ExplorerMarkLine = { bg = colors.surface0 },
 
           -- Neo-tree sidebar.
-          NeoTreeNormal = { bg = colors.mantle },
-          NeoTreeNormalNC = { bg = colors.mantle },
-          NeoTreeEndOfBuffer = { bg = colors.mantle },
+          NeoTreeNormal = { bg = popup_bg },
+          NeoTreeNormalNC = { bg = popup_bg },
+          NeoTreeEndOfBuffer = { bg = popup_bg },
+          NeoTreeFloatNormal = { fg = colors.text, bg = popup_bg },
+          NeoTreeFloatBorder = { fg = colors.blue, bg = popup_bg },
+          NeoTreeFloatTitle = {
+            fg = colors.blue,
+            bg = popup_bg,
+            bold = true,
+          },
           NeoTreeWinSeparator = { fg = colors.surface0, bg = colors.mantle },
           NeoTreeDirectoryName = { fg = colors.blue },
           NeoTreeDirectoryIcon = { fg = colors.blue },

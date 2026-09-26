@@ -851,7 +851,8 @@ laptop. Tokyo Night and Rosé Pine use bat's ANSI theme so syntax colors follow
 the terminal palette. Latte, Tokyo Night Day, and Rosé Pine Dawn are light; the
 others are dark. Rosé Pine selects the Main variant. The Neo-tree sidebar and
 inactive buffer tabs deliberately use a different palette surface than
-Ghostty's base background.
+Ghostty's base background. Neovim popups, including Neo-tree filters and the
+fzf file picker, use that same sidebar surface in every theme.
 
 ## Credit
 

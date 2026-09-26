@@ -17,8 +17,10 @@ return {
         format = {
           cmdline = {
             pattern = "^:",
-            icon = ":",
-            icon_hl_group = "GmayaCmdlineIcon",
+            -- Noice always inserts a space after an icon. Show Neovim's real
+            -- ':' instead so commands start immediately beside it.
+            icon = false,
+            conceal = false,
             lang = "vim",
           },
           search_down = {
