@@ -53,6 +53,8 @@ return {
           fill = { bg = "#f8f0e7" },
           background = { bg = "#f8f0e7" },
           buffer_selected = { bg = "#faf4ed", bold = true },
+          -- The unsaved-change dot is part of the tab, not the fill beside it.
+          modified_selected = { bg = "#faf4ed" },
           separator = { fg = "#f8f0e7", bg = "#f8f0e7" },
           separator_selected = { fg = "#f8f0e7", bg = "#faf4ed" },
         },
