@@ -215,6 +215,7 @@ vim.api.nvim_create_autocmd({ "BufWinEnter", "FileType" }, {
       vim.opt_local.wrap = true
       vim.opt_local.linebreak = true
       vim.opt_local.breakindent = true
+      vim.opt_local.fillchars:append({ eob = " " })
     end
   end,
 })

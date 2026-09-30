@@ -56,6 +56,11 @@ TMUX= nvim --headless README.md \
 pass 'modified-file dot shares the active tab background'
 
 TMUX= nvim --headless README.md \
+  '+lua assert(vim.wo.fillchars:find("eob: ", 1, true), "file buffers still draw tildes"); vim.wo.fillchars = "eob:~"; vim.api.nvim_exec_autocmds("BufWinEnter", { buffer = 0 }); assert(vim.wo.fillchars:find("eob: ", 1, true), "file window did not clear an overridden tilde")' \
+  '+qa!'
+pass 'file buffers hide end-of-buffer tildes even after a local override'
+
+TMUX= nvim --headless README.md \
   '+lua local ok, err = pcall(function() require("lazy").load({ plugins = { "octo.nvim" } }); local cfg = require("octo.config").values; assert(cfg.picker == "default" and cfg.use_local_fs == false and cfg.reviews.auto_show_threads); assert(vim.fn.exists(":Octo") == 2); for _, item in ipairs({ { "<leader>ghp", "Octo pr list" }, { "<leader>ghr", "Octo review browse" }, { "<leader>ghs", "Octo review" }, { "<leader>ghc", "Octo review close" } }) do assert(vim.fn.maparg(item[1], "n", false, true).rhs:find(item[2], 1, true), item[1]) end; assert(cfg.mappings.review_thread.add_reply.lhs == "<localleader>cr"); assert(cfg.mappings.review_thread.resolve_thread.lhs == "<localleader>rt"); assert(cfg.mappings.review_diff.next_thread.lhs == "]t") end); if not ok then io.stderr:write(tostring(err), "\n"); vim.cmd.cquit() end' \
   '+qa!'
 pass 'Octo loads with read-only browse and explicit pending-review actions'
