@@ -14,10 +14,15 @@ pass() {
 }
 
 TMUX= nvim --headless . \
-  '+lua vim.wait(2000, function() return vim.bo.filetype == "neo-tree" end); vim.wait(300); assert(vim.bo.filetype == "neo-tree"); assert(#vim.api.nvim_tabpage_list_wins(0) == 1); local toggle = vim.fn.maparg("<leader>et", "n", false, true).callback; toggle(); vim.wait(100); assert(vim.bo.filetype == "neo-tree"); assert(#vim.api.nvim_tabpage_list_wins(0) == 1); for _, b in ipairs(vim.api.nvim_list_bufs()) do assert(not (vim.api.nvim_buf_is_valid(b) and vim.api.nvim_buf_get_name(b) == ""), "unnamed buffer " .. b) end' \
+  '+lua assert(vim.bo.filetype == "neo-tree", "directory startup showed a transient buffer"); vim.wait(300); assert(#vim.api.nvim_tabpage_list_wins(0) == 1); local toggle = vim.fn.maparg("<leader>et", "n", false, true).callback; toggle(); vim.wait(100); assert(vim.bo.filetype == "neo-tree"); assert(#vim.api.nvim_tabpage_list_wins(0) == 1); for _, b in ipairs(vim.api.nvim_list_bufs()) do assert(not (vim.api.nvim_buf_is_valid(b) and vim.api.nvim_buf_get_name(b) == ""), "unnamed buffer " .. b) end' \
   '+lua assert(vim.o.laststatus == 3 and vim.o.showtabline == 0); assert(require("core.statusline").render():find("NORMAL", 1, true))' \
   '+qa!'
 pass 'nvim dot opens one full-screen tree without an unnamed buffer'
+
+TMUX= nvim --headless README.md \
+  '+lua local file = vim.api.nvim_get_current_buf(); vim.cmd.edit("tests"); assert(vim.bo.filetype == "neo-tree", ":edit directory showed a transient buffer"); assert(vim.api.nvim_buf_is_valid(file))' \
+  '+qa!'
+pass 'editing a directory opens Neo-tree immediately and keeps the file buffer'
 
 if [[ $(tr -d '[:space:]' < .theme) == oxocarbon-dark ]]; then
   TMUX= nvim --headless .config/nvim/init.lua \

@@ -93,7 +93,9 @@ return {
           },
         },
         filesystem = {
-          hijack_netrw_behavior = "open_current",
+          -- Open directory buffers on BufEnter instead of Neo-tree's debounced
+          -- netrw hijack, which briefly exposes the directory buffer at startup.
+          hijack_netrw_behavior = "disabled",
           follow_current_file = {
             enabled = true,
             leave_dirs_open = false,
@@ -105,6 +107,44 @@ return {
             never_show = { ".git" },
           },
         },
+      })
+
+      -- Neo-tree normally disables netrw when its hijack is enabled. Keep
+      -- netrw from taking the buffer while we open the tree directly.
+      vim.cmd("silent! autocmd! FileExplorer *")
+      local directory_group = vim.api.nvim_create_augroup(
+        "gmaya-neo-tree-directory",
+        { clear = true }
+      )
+      vim.api.nvim_create_autocmd("BufEnter", {
+        group = directory_group,
+        desc = "Open directories directly in Neo-tree",
+        callback = function(ev)
+          local path = vim.api.nvim_buf_get_name(ev.buf)
+          local stat = path ~= "" and vim.uv.fs_stat(path)
+          if not stat or stat.type ~= "directory" then
+            return
+          end
+
+          local win = vim.api.nvim_get_current_win()
+          if vim.api.nvim_win_get_buf(win) ~= ev.buf then
+            return
+          end
+          require("neo-tree.command").execute({
+            action = "focus",
+            source = "filesystem",
+            position = "current",
+            dir = path,
+          })
+          vim.schedule(function()
+            if
+              vim.api.nvim_buf_is_valid(ev.buf)
+              and #vim.fn.win_findbuf(ev.buf) == 0
+            then
+              vim.api.nvim_buf_delete(ev.buf, { force = true })
+            end
+          end)
+        end,
       })
 
       local function current_file_or_cwd()
