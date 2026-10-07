@@ -15,7 +15,7 @@ pass() {
 
 TMUX= nvim --headless . \
   '+lua vim.wait(2000, function() return vim.bo.filetype == "neo-tree" end); vim.wait(300); assert(vim.bo.filetype == "neo-tree"); assert(#vim.api.nvim_tabpage_list_wins(0) == 1); local toggle = vim.fn.maparg("<leader>et", "n", false, true).callback; toggle(); vim.wait(100); assert(vim.bo.filetype == "neo-tree"); assert(#vim.api.nvim_tabpage_list_wins(0) == 1); for _, b in ipairs(vim.api.nvim_list_bufs()) do assert(not (vim.api.nvim_buf_is_valid(b) and vim.api.nvim_buf_get_name(b) == ""), "unnamed buffer " .. b) end' \
-  '+lua assert(vim.o.laststatus == 3 and vim.o.showtabline == 0); assert(require("core.statusline").render():find("NORMAL", 1, true))' \
+  '+lua assert(vim.o.laststatus == 3 and vim.o.showtabline == 0); assert(require("core.statusline").render() == "%#StatuslineC# Files %=")' \
   '+qa!'
 pass 'nvim dot opens one full-screen tree without an unnamed buffer'
 

@@ -229,6 +229,10 @@ end
 --- Build the full statusline string. Invoked via the "statusline" option.
 --- @return string
 function M.render()
+  if vim.bo.filetype == "neo-tree" then
+    return "%#StatuslineC# Files %="
+  end
+
   local label, key = get_mode()
   local parts = {}
 
