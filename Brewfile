@@ -86,7 +86,9 @@ brew "zsh"
 cask "docker-desktop"
 # Terminal emulator that uses platform-native UI and GPU acceleration
 cask "ghostty"
-# Nerd Font used by Ghostty and terminal-based Neovim
+# Primary Ghostty font; Ghostty supplies Nerd Font symbols
+cask "font-ibm-plex-mono"
+# Previous font, kept available for an easy switch back
 cask "font-jetbrains-mono-nerd-font"
 npm "@microsoft/compose-language-service"
 npm "dockerfile-language-server-nodejs"

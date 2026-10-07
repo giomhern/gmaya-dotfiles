@@ -33,7 +33,7 @@ vim.g.loaded_perl_provider = 0
 vim.g.loaded_python3_provider = 0
 vim.g.loaded_ruby_provider = 0
 
--- Ghostty uses JetBrainsMono Nerd Font Mono for Neovim's icons.
+-- Ghostty provides Nerd Font symbols alongside the primary text font.
 vim.g.have_nerd_font = true
 
 -- Bootstrap lazy.nvim outside the repository so its manager and plugin state

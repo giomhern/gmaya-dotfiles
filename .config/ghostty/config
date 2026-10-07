@@ -1,7 +1,7 @@
 # Theme
 theme = "Oxocarbon"
 background = #161616
-font-family = "JetBrainsMono Nerd Font Mono"
+font-family = "IBM Plex Mono"
 font-synthetic-style = false
 font-size = 12
 
