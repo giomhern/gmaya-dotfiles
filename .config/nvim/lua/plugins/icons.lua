@@ -1,11 +1,10 @@
 return {
   {
-    "echasnovski/mini.icons",
-    branch = "main",
+    "nvim-tree/nvim-web-devicons",
+    branch = "master",
     lazy = false,
     config = function()
-      require("mini.icons").setup()
-      MiniIcons.mock_nvim_web_devicons()
+      require("nvim-web-devicons").setup()
     end,
   },
 }

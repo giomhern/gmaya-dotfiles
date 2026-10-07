@@ -2,7 +2,7 @@ return {
   {
     "MeanderingProgrammer/render-markdown.nvim",
     branch = "main",
-    dependencies = { "echasnovski/mini.icons" },
+    dependencies = { "nvim-tree/nvim-web-devicons" },
     lazy = false,
     config = function()
       -- Render Markdown in Neovim without starting a browser or preview server.

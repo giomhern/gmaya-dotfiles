@@ -5,7 +5,7 @@ return {
     dependencies = {
       "nvim-lua/plenary.nvim",
       "MunifTanjim/nui.nvim",
-      { "echasnovski/mini.icons", branch = "main" },
+      { "nvim-tree/nvim-web-devicons", branch = "master" },
     },
     lazy = false,
     config = function()
@@ -17,7 +17,7 @@ return {
 
       require("neo-tree").setup({
         close_if_last_window = false,
-        popup_border_style = "rounded",
+        popup_border_style = "single",
         log_level = vim.log.levels.WARN,
         enable_git_status = true,
         enable_diagnostics = true,

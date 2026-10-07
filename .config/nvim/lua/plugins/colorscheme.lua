@@ -8,6 +8,12 @@ return {
       { "rose-pine/neovim", name = "rose-pine", lazy = false },
       { "neanias/everforest-nvim", name = "everforest", lazy = false },
       { "rebelot/kanagawa.nvim", name = "kanagawa.nvim", lazy = false },
+      {
+        "nyoom-engineering/oxocarbon.nvim",
+        name = "oxocarbon.nvim",
+        lazy = false,
+        build = false,
+      },
     },
     lazy = false,
     config = function()
@@ -19,7 +25,7 @@ return {
 
       -- The selected family is changed by theme.sh. Both setup paths normalize their
       -- palettes so the custom picker, explorer, and statusline styling stays shared.
-      local selected_theme = "everforest-dark"
+      local selected_theme = "oxocarbon-dark"
 
       local function custom_theme_highlights(colors)
         local popup_bg = colors.base
@@ -142,8 +148,6 @@ return {
           StatuslineC = { fg = colors.text, bg = colors.mantle },
           StatuslineCompSepB = { fg = colors.overlay1, bg = colors.surface0 },
           StatuslineCompSepC = { fg = colors.text, bg = colors.mantle },
-          StatuslineSepBC = { fg = colors.surface0, bg = colors.mantle },
-          StatuslineSepXY = { fg = colors.surface0, bg = colors.mantle },
           StatuslineDiagError = { fg = colors.red, bg = colors.surface0 },
           StatuslineDiagWarn = { fg = colors.yellow, bg = colors.surface0 },
           StatuslineDiagInfo = { fg = colors.sky, bg = colors.surface0 },
@@ -169,12 +173,6 @@ return {
             { fg = colors.mantle, bg = color, bold = true }
           highlights["StatuslineB_" .. key] =
             { fg = color, bg = colors.surface0 }
-          highlights["StatuslineSepAB_" .. key] =
-            { fg = color, bg = colors.surface0 }
-          highlights["StatuslineSepYZ_" .. key] =
-            { fg = color, bg = colors.surface0 }
-          highlights["StatuslineSepAC_" .. key] =
-            { fg = color, bg = colors.mantle }
         end
 
         return highlights
@@ -208,9 +206,11 @@ return {
         })
         vim.cmd.colorscheme(selected_theme)
       elseif selected_theme:match("^everforest%-") then
-        vim.o.background = selected_theme == "everforest-light" and "light" or "dark"
+        vim.o.background = selected_theme == "everforest-light" and "light"
+          or "dark"
         require("everforest").setup({
-          background = selected_theme == "everforest-light" and "medium" or "hard",
+          background = selected_theme == "everforest-light" and "medium"
+            or "hard",
           on_highlights = function(highlights, palette)
             local colors = {
               mantle = palette.bg1,
@@ -234,6 +234,28 @@ return {
           end,
         })
         vim.cmd.colorscheme("everforest")
+      elseif selected_theme == "oxocarbon-dark" then
+        vim.o.background = "dark"
+        vim.cmd.colorscheme("oxocarbon")
+        local colors = {
+          mantle = "#1f1f1f",
+          base = "#161616",
+          surface0 = "#262626",
+          overlay1 = "#6f6f6f",
+          text = "#f2f4f8",
+          rosewater = "#ffb3d6",
+          blue = "#78a9ff",
+          green = "#42be65",
+          mauve = "#be95ff",
+          red = "#fa4d56",
+          peach = "#ff832b",
+          yellow = "#f1c21b",
+          sky = "#3ddbd9",
+          teal = "#08bdba",
+        }
+        for group, spec in pairs(custom_theme_highlights(colors)) do
+          vim.api.nvim_set_hl(0, group, spec)
+        end
       elseif selected_theme == "kanagawa-dragon" then
         vim.o.background = "dark"
         require("kanagawa").setup({

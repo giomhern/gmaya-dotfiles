@@ -2,15 +2,13 @@ return {
   {
     "akinsho/bufferline.nvim",
     branch = "main",
-    dependencies = { "echasnovski/mini.icons" },
+    dependencies = { "nvim-tree/nvim-web-devicons" },
     lazy = false,
     config = function()
       local buffers = require("core.buffers")
       -- One tab per open buffer along the top. Buffers, not tabpages: Neovim's own
       -- ":tabs" are separate window layouts, and this config barely uses them, so the
-      -- row tracks what is actually open. Icons come from the mini.icons devicons
-      -- mock set up in the EXPLORER section above, which is why this block has to
-      -- follow it.
+      -- row tracks what is actually open. File icons come from nvim-web-devicons.
       --
       -- Bufferline derives its palette from the colorscheme. Keep the row on
       -- the same canvas as Neo-tree and file buffers, with a distinct active tab.
@@ -49,13 +47,13 @@ return {
           },
         },
         highlights = {
-          fill = { bg = "#272e33" },
-          background = { bg = "#272e33" },
-          buffer_selected = { bg = "#374145", bold = true },
+          fill = { bg = "#161616" },
+          background = { bg = "#161616" },
+          buffer_selected = { bg = "#262626", bold = true },
           -- The unsaved-change dot is part of the tab, not the fill beside it.
-          modified_selected = { bg = "#374145" },
-          separator = { fg = "#272e33", bg = "#272e33" },
-          separator_selected = { fg = "#272e33", bg = "#374145" },
+          modified_selected = { bg = "#262626" },
+          separator = { fg = "#161616", bg = "#161616" },
+          separator_selected = { fg = "#161616", bg = "#262626" },
         },
       })
 

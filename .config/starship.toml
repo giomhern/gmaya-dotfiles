@@ -2,38 +2,38 @@
 
 add_newline = false
 
-format = "[█](surface0)$os$username[](bg:blue fg:surface0)$directory[](fg:blue bg:green)$git_branch$git_status[](fg:green) "
-right_format = "[](fg:surface0)$status[](bg:surface0 fg:text)$time"
+format = "[▌](blue) $username$directory$git_branch$git_status$character"
+right_format = "$status$time"
 
-palette = 'everforest_dark'
+palette = 'oxocarbon_dark'
 
-[palettes.everforest_dark]
-rosewater = "#e69875"
-flamingo = "#e67e80"
-pink = "#d699b6"
-mauve = "#bb8aac"
-red = "#ef7b83"
-maroon = "#c56b73"
-peach = "#e29a73"
-yellow = "#dbbc7f"
-green = "#a7c080"
-teal = "#83c092"
-sky = "#91c8c1"
-sapphire = "#6caaa4"
-blue = "#7fbbb3"
-lavender = "#a9a6c2"
-text = "#d3c6aa"
-subtext1 = "#c4bba4"
-subtext0 = "#9da9a0"
-overlay2 = "#859289"
-overlay1 = "#7a8478"
-overlay0 = "#687a74"
-surface2 = "#495156"
-surface1 = "#414b50"
-surface0 = "#374145"
-base = "#272e33"
-mantle = "#2e383c"
-crust = "#1e2326"
+[palettes.oxocarbon_dark]
+rosewater = "#ffb3d6"
+flamingo = "#ff7eb6"
+pink = "#ee5396"
+mauve = "#be95ff"
+red = "#fa4d56"
+maroon = "#da1e28"
+peach = "#ff832b"
+yellow = "#f1c21b"
+green = "#42be65"
+teal = "#08bdba"
+sky = "#3ddbd9"
+sapphire = "#82cfff"
+blue = "#78a9ff"
+lavender = "#a6c8ff"
+text = "#f2f4f8"
+subtext1 = "#dde1e6"
+subtext0 = "#c1c7cd"
+overlay2 = "#8d8d8d"
+overlay1 = "#6f6f6f"
+overlay0 = "#525252"
+surface2 = "#393939"
+surface1 = "#303030"
+surface0 = "#262626"
+base = "#161616"
+mantle = "#1f1f1f"
+crust = "#0f0f0f"
 
 [os]
 disabled = false
@@ -61,42 +61,47 @@ Redhat = "󱄛"
 RedHatEnterprise = "󱄛"
 
 [username]
-show_always = true
-style_user = "bg:surface0 fg:text"
-style_root = "bg:surface0 fg:text"
-format = '[ $user ]($style)'
+show_always = false
+style_user = "fg:overlay1"
+style_root = "fg:red"
+format = '[$user@]($style)'
 
 [directory]
-style = "fg:mantle bg:blue"
-format = "[ $path ]($style)"
+style = "fg:text"
+format = "[$path]($style)"
 truncation_length = 10
 truncation_symbol = "…/"
 truncate_to_repo = false
 
 [git_branch]
 symbol = ""
-style = "bg:teal"
-format = '[[ $symbol $branch ](fg:base bg:green)]($style)'
+style = "fg:blue"
+format = ' [$symbol $branch]($style)'
 
 [git_status]
-style = "bg:teal"
-format = '[[($all_status$ahead_behind )](fg:base bg:green)]($style)'
+style = "fg:teal"
+format = ' [$all_status$ahead_behind]($style)'
+
+[character]
+success_symbol = '[ ❯ ](fg:teal)'
+error_symbol = '[ ❯ ](fg:red)'
+vimcmd_symbol = '[ ❮ ](fg:blue)'
 
 [status]
 disabled = false
-style = 'bg:surface0'
-failure_style = 'bg:surface0 fg:red'
-success_style = 'bg:surface0 fg:green'
+style = 'fg:overlay1'
+failure_style = 'fg:red'
+success_style = 'fg:green'
 success_symbol = ""
 symbol = ""
 not_executable_symbol = ""
 not_found_symbol = ""
 sigint_symbol = ""
 signal_symbol = ""
-format = '[ $symbol $status ]($style)'
+format = '[$symbol $status ]($style)'
 
 [time]
 disabled = false
 time_format = "%H:%M"
-style = "bg:blue"
-format = '[[  $time ](fg:text bg:surface0)]($style)'
+style = "fg:overlay1"
+format = '[ $time]($style)'

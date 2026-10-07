@@ -17,7 +17,7 @@ FILES=(
 )
 
 usage() {
-  printf 'Usage: %s [status|latte|mocha|macchiato|tokyonight-moon|tokyonight-day|rose-pine|rose-pine-dawn|everforest-light|everforest-dark|kanagawa-dragon]\n' "$0"
+  printf 'Usage: %s [status|latte|mocha|macchiato|tokyonight-moon|tokyonight-day|rose-pine|rose-pine-dawn|everforest-light|everforest-dark|kanagawa-dragon|oxocarbon-dark]\n' "$0"
   printf 'Change the shared theme in every configured application.\n'
 }
 
@@ -60,6 +60,11 @@ palette() {
       # Kanagawa Dragon; the peach and UI shades are semantic equivalents.
       printf '%s' '#b6927b|#b98d7b|#a292a3|#8992a7|#c4746e|#e46876|#d79a7d|#c4b28a|#8a9a7b|#87a987|#8ea4a2|#658594|#8ba4b0|#949fb5|#c5c9c5|#c8c093|#a6a69c|#9e9b93|#7a8382|#737c73|#393836|#282727|#1d1c19|#181616|#12120f|#0d0c0c'
       ;;
+    oxocarbon-dark)
+      # Official Oxocarbon Base16 colors plus nearby Carbon shades for the
+      # shared 26-slot UI. Keep entries unique so theme switches round-trip.
+      printf '%s' '#ffb3d6|#ff7eb6|#ee5396|#be95ff|#fa4d56|#da1e28|#ff832b|#f1c21b|#42be65|#08bdba|#3ddbd9|#82cfff|#78a9ff|#a6c8ff|#f2f4f8|#dde1e6|#c1c7cd|#8d8d8d|#6f6f6f|#525252|#393939|#303030|#262626|#161616|#1f1f1f|#0f0f0f'
+      ;;
     *) return 1 ;;
   esac
 }
@@ -76,6 +81,7 @@ display_name() {
     everforest-light) printf 'Everforest Light Med' ;;
     everforest-dark) printf 'Everforest Dark Hard' ;;
     kanagawa-dragon) printf 'Kanagawa Dragon' ;;
+    oxocarbon-dark) printf 'Oxocarbon' ;;
     *) return 1 ;;
   esac
 }
@@ -90,6 +96,7 @@ config_slug() {
     everforest-light) printf 'everforest_light' ;;
     everforest-dark) printf 'everforest_dark' ;;
     kanagawa-dragon) printf 'kanagawa_dragon' ;;
+    oxocarbon-dark) printf 'oxocarbon_dark' ;;
     *) return 1 ;;
   esac
 }
@@ -99,7 +106,7 @@ bat_theme() {
     latte) printf 'Catppuccin Latte' ;;
     mocha) printf 'Catppuccin Mocha' ;;
     macchiato) printf 'Catppuccin Macchiato' ;;
-    tokyonight-moon|tokyonight-day|rose-pine|rose-pine-dawn|everforest-light|everforest-dark|kanagawa-dragon) printf 'ansi' ;;
+    tokyonight-moon|tokyonight-day|rose-pine|rose-pine-dawn|everforest-light|everforest-dark|kanagawa-dragon|oxocarbon-dark) printf 'ansi' ;;
     *) return 1 ;;
   esac
 }

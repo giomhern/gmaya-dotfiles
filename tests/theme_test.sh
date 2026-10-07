@@ -24,6 +24,7 @@ FILES=(
   .config/btop/themes/everforest_light.theme
   .config/btop/themes/everforest_dark.theme
   .config/btop/themes/kanagawa_dragon.theme
+  .config/btop/themes/oxocarbon_dark.theme
   .config/nvim/lua/plugins/colorscheme.lua
   .config/nvim/lua/plugins/bufferline.lua
   .config/nvim/lua/core/picker.lua
@@ -142,6 +143,20 @@ grep -Fq 'color_theme = "kanagawa_dragon"' \
 grep -Fq 'theme[main_bg]="#181616"' \
   "$FIXTURE/.config/btop/themes/kanagawa_dragon.theme"
 grep -Fq 'bg:#181616' "$FIXTURE/.config/nvim/lua/core/picker.lua"
+grep -Fq 'BAT_THEME="ansi"' "$FIXTURE/.zshrc"
+"$FIXTURE/theme.sh" oxocarbon-dark >/dev/null
+"$FIXTURE/theme.sh" status | grep -Fq 'Oxocarbon'
+grep -Fq 'theme = "Oxocarbon"' \
+  "$FIXTURE/.config/ghostty/config"
+grep -Fq 'background = #161616' \
+  "$FIXTURE/.config/ghostty/config"
+grep -Fq 'selected_theme = "oxocarbon-dark"' \
+  "$FIXTURE/.config/nvim/lua/plugins/colorscheme.lua"
+grep -Fq 'color_theme = "oxocarbon_dark"' \
+  "$FIXTURE/.config/btop/btop.conf"
+grep -Fq 'theme[main_bg]="#161616"' \
+  "$FIXTURE/.config/btop/themes/oxocarbon_dark.theme"
+grep -Fq 'bg:#161616' "$FIXTURE/.config/nvim/lua/core/picker.lua"
 grep -Fq 'BAT_THEME="ansi"' "$FIXTURE/.zshrc"
 "$FIXTURE/theme.sh" "$original_theme" >/dev/null
 after="$(for rel in "${FILES[@]}"; do cksum "$FIXTURE/$rel"; done)"

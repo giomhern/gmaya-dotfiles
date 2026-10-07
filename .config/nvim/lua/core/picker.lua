@@ -12,11 +12,11 @@ local FZF_COLORS = "--color="
   .. (vim.o.background == "light" and "light" or "dark")
   .. ","
   .. table.concat({
-    "bg+:#374145,bg:#272e33,spinner:#bb8aac,hl:#ef7b83",
-    "input-bg:#272e33,list-bg:#272e33,preview-bg:#272e33",
-    "header-bg:#272e33,footer-bg:#272e33",
-    "fg:#d3c6aa,header:#ef7b83,info:#bb8aac,pointer:#bb8aac",
-    "marker:#e69875,fg+:#d3c6aa,prompt:#bb8aac,hl+:#ef7b83,border:#7fbbb3,label:#687a74",
+    "bg+:#262626,bg:#161616,spinner:#82cfff,hl:#78a9ff",
+    "input-bg:#161616,list-bg:#161616,preview-bg:#161616",
+    "header-bg:#161616,footer-bg:#161616",
+    "fg:#f2f4f8,header:#78a9ff,info:#8d8d8d,pointer:#08bdba",
+    "marker:#ff7eb6,fg+:#f2f4f8,prompt:#08bdba,hl+:#78a9ff,border:#78a9ff,label:#8d8d8d",
   }, ",")
 
 -- Preview command for the file pickers. "{}" is the selected line, i.e. the
@@ -72,7 +72,7 @@ local function get_window_config()
     height = win_height,
     row = math.ceil((height - win_height) / 2),
     col = math.ceil((width - win_width) / 2),
-    border = "rounded",
+    border = "single",
   }
 end
 

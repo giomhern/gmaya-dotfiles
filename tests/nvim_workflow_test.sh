@@ -19,6 +19,13 @@ TMUX= nvim --headless . \
   '+qa!'
 pass 'nvim dot opens one full-screen tree without an unnamed buffer'
 
+if [[ $(tr -d '[:space:]' < .theme) == oxocarbon-dark ]]; then
+  TMUX= nvim --headless .config/nvim/init.lua \
+    '+lua assert(vim.g.colors_name == "oxocarbon"); assert(vim.api.nvim_get_hl(0, { name = "Normal", link = false }).bg == tonumber("161616", 16)); assert(require("nvim-web-devicons").get_icon("init.lua", "lua", { default = true })); assert(not require("core.statusline").render():find("", 1, true))' \
+    '+qa!'
+  pass 'Oxocarbon palette, file icons, and flat statusline load together'
+fi
+
 TMUX= nvim --headless \
   '+lua local ok, err = pcall(function() local group = "lazy-load-multicursor"; assert(#vim.api.nvim_get_autocmds({ group = group }) == 2); local mc = require("multicursor-nvim"); local setup = mc.setup; local calls = 0; mc.setup = function(...) calls = calls + 1; return setup(...) end; local before = #vim.api.nvim_get_autocmds({ event = "WinLeave" }); vim.api.nvim_exec_autocmds("BufReadPre", { group = group }); vim.api.nvim_exec_autocmds("BufNewFile", { group = group }); assert(calls == 1, "multicursor setup ran more than once"); assert(#vim.api.nvim_get_autocmds({ group = group }) == 0); assert(#vim.api.nvim_get_autocmds({ event = "WinLeave" }) == before + 1, "multicursor duplicated its window handler"); assert(type(vim.fn.maparg("<c-k>", "n", false, true).callback) == "function") end); if not ok then io.stderr:write(tostring(err), "\n"); vim.cmd.cquit() end' \
   '+qa!'

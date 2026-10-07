@@ -664,7 +664,7 @@ Treesitter installs both parsers and their highlight queries. The configuration 
 runs `:TSUpdate` whenever Treesitter itself is updated.
 
 Neovim's semantic UI symbols use Nerd Font Octicons from `lua/core/icons.lua`, so the statusline, Neo-tree, diagnostics, and Git signs stay visually aligned
-with Starship. Powerline separators and OS/filetype logos keep their specialized glyphs.
+with Starship. Filetype logos use `nvim-web-devicons`, matching the optional Material-style icons in Nyoom's Oxocarbon UI.
 
 **tmux plugins** need `prefix + I` (capital i) once after a fresh clone. Prefix is `Ctrl-a`.
 
@@ -694,11 +694,16 @@ The terminal tools share one visual theme. Check or change it from the repositor
 ./theme.sh everforest-light
 ./theme.sh everforest-dark
 ./theme.sh kanagawa-dragon
+./theme.sh oxocarbon-dark
 ```
 
 The command updates Ghostty, Neovim, tmux, Starship, fzf (both shell and Neovim), bat, and btop together. Reload the shell with `exec zsh`, reload tmux with
 prefix + `r`, and restart other open applications. The selected theme is stored in `.theme`; commit that change to carry the same look to another laptop. Tokyo
-Night, Rosé Pine, Everforest, and Kanagawa Dragon use bat's ANSI theme so syntax colors follow the terminal palette. Latte, Tokyo Night Day, Rosé Pine Dawn, and Everforest Light
+Night, Rosé Pine, Everforest, Kanagawa Dragon, and Oxocarbon use bat's ANSI theme so syntax colors follow the terminal palette. Latte, Tokyo Night Day, Rosé Pine Dawn, and Everforest Light
 are light; the others are dark. Rosé Pine selects the Main variant; Everforest Light uses Medium contrast and Dark uses Hard. File buffers, Neo-tree, the inactive buffer
 tabs, and Neovim popups (including Neo-tree filters and the fzf file picker) share the same background in every theme. The active tab uses a subtly different
 surface so it remains visible.
+
+Oxocarbon uses the upstream dark palette from [Base16 Oxocarbon](https://github.com/nyoom-engineering/base16-oxocarbon) and the
+[Neovim colorscheme](https://github.com/nyoom-engineering/oxocarbon.nvim). The prompt, tmux bar, and editor statusline use flat, sparse shapes so the bright
+blue and cyan accents stand out against the layered grays.

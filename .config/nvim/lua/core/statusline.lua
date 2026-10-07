@@ -1,9 +1,6 @@
 local M = {}
 
-local SEP_L = ""
-local SEP_R = ""
-local COMP_L = ""
-local COMP_R = ""
+local DIV = "│"
 
 local ICONS = require("core.icons")
 local DIFF = {
@@ -159,7 +156,7 @@ local function section_b(key)
     return nil
   end
 
-  local sep = " %#StatuslineCompSepB#" .. COMP_L .. " "
+  local sep = " %#StatuslineCompSepB#" .. DIV .. " "
   return " " .. table.concat(comps, sep) .. " "
 end
 
@@ -192,7 +189,7 @@ local function section_c()
   return " "
     .. tabs()
     .. " %#StatuslineCompSepC#"
-    .. COMP_L
+    .. DIV
     .. " %#StatuslineC#"
     .. filename()
     .. " "
@@ -221,7 +218,7 @@ local function section_x()
     comps[#comps + 1] = ft
   end
 
-  local sep = " %#StatuslineCompSepC#" .. COMP_R .. " %#StatuslineC#"
+  local sep = " %#StatuslineCompSepC#" .. DIV .. " %#StatuslineC#"
   return " " .. table.concat(comps, sep) .. " "
 end
 
@@ -239,17 +236,13 @@ function M.render()
     parts[#parts + 1] = s
   end
 
-  -- a: mode.
+  -- a: mode. Flat Carbon-like blocks keep the color focused on the current mode.
   put("%#StatuslineA_" .. key .. "# " .. label .. " ")
 
   -- b: branch / diff / diagnostics (collapses when empty).
   local b = section_b(key)
   if b then
-    put("%#StatuslineSepAB_" .. key .. "#" .. SEP_L)
     put("%#StatuslineB_" .. key .. "#" .. b)
-    put("%#StatuslineSepBC#" .. SEP_L)
-  else
-    put("%#StatuslineSepAC_" .. key .. "#" .. SEP_L)
   end
 
   -- c: tabs / filename.
@@ -262,11 +255,9 @@ function M.render()
   put("%#StatuslineC#" .. section_x())
 
   -- y: progress (percentage through the file). "%%" renders as a literal "%".
-  put("%#StatuslineSepXY#" .. SEP_R)
   put("%#StatuslineB_" .. key .. "# %p%% ")
 
   -- z: location.
-  put("%#StatuslineSepYZ_" .. key .. "#" .. SEP_R)
   put("%#StatuslineZ_" .. key .. "# %l:%c ")
 
   return table.concat(parts)
