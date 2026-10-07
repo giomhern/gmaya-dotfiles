@@ -87,8 +87,9 @@ cask "docker-desktop"
 # Terminal emulator that uses platform-native UI and GPU acceleration
 cask "ghostty"
 # Primary Ghostty font; Ghostty supplies Nerd Font symbols
+cask "font-geist-mono"
+# Other fonts kept available for switching back
 cask "font-ibm-plex-mono"
-# Previous font, kept available for an easy switch back
 cask "font-jetbrains-mono-nerd-font"
 npm "@microsoft/compose-language-service"
 npm "dockerfile-language-server-nodejs"
