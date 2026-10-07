@@ -106,6 +106,21 @@ return {
           },
         },
         filesystem = {
+          components = {
+            name = function(config, node, state)
+              local result = require("neo-tree.sources.common.components").name(
+                config,
+                node,
+                state
+              )
+              if node:get_depth() == 1 and node.type == "directory" then
+                result.text = "/"
+                  .. vim.fn.fnamemodify(node.path, ":t")
+                  .. result.text:sub(#node.name + 1)
+              end
+              return result
+            end,
+          },
           -- Open directory buffers on BufEnter instead of Neo-tree's debounced
           -- netrw hijack, which briefly exposes the directory buffer at startup.
           hijack_netrw_behavior = "disabled",

@@ -12,6 +12,7 @@ typeset -g _GMAYA_WORK_SHELL_LOADED=1
 
 export EDITOR="nvim"
 export MANPAGER="nvim +Man!"
+export TZ="America/Los_Angeles"
 export BAT_THEME="ansi"
 
 # Shared fzf behavior and palette. theme.sh updates these colors alongside the

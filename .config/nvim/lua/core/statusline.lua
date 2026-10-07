@@ -162,6 +162,9 @@ end
 
 --- @return string
 local function filename()
+  if vim.bo.filetype == "neo-tree" then
+    return ""
+  end
   local name = vim.fn.expand("%:t")
   if name == "" then
     name = FILE.unnamed

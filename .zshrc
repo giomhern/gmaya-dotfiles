@@ -19,6 +19,7 @@
 
 export EDITOR="nvim"
 export MANPAGER="nvim +Man!"
+export TZ="America/Los_Angeles"
 
 export HOMEBREW_NO_ANALYTICS=1
 

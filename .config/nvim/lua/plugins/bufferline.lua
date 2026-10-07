@@ -49,7 +49,7 @@ return {
                     win
                   )
                 local path = state and state.path or vim.fn.getcwd()
-                return vim.fn.fnamemodify(path, ":~")
+                return "/" .. vim.fn.fnamemodify(path, ":t")
               end,
               text_align = "left",
               highlight = "NeoTreeRootName",
