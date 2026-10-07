@@ -38,7 +38,7 @@ pass 'opening Neo-tree leaves empty scratch buffers in other tabs intact'
 
 TMUX= nvim --headless README.md \
   '+lua require("lazy").load({ plugins = { "which-key.nvim" } }); assert(package.loaded["which-key"]); local local_maps = vim.fn.maparg("<leader>?", "n", false, true); assert(type(local_maps.callback) == "function"); local config = require("which-key.config"); assert(config.options.preset == "modern"); assert(config.options.icons.mappings == false); assert(config.options.icons.keys.Space == "Space ")' \
-  '+lua assert(vim.o.laststatus == 3 and vim.o.showtabline == 2); assert(require("core.statusline").render():find("README.md", 1, true))' \
+  '+lua assert(vim.o.laststatus == 3 and vim.o.showtabline == 2); local line = require("core.statusline").render(); assert(line:find("README.md", 1, true)); assert(line:find("markdown", 1, true)); assert(not line:find("1/1", 1, true)); assert(not line:find("utf-8", 1, true))' \
   '+qa!'
 pass 'which-key loads with the shared theme and textual icon policy'
 

@@ -161,11 +161,6 @@ local function section_b(key)
 end
 
 --- @return string
-local function tabs()
-  return vim.fn.tabpagenr() .. "/" .. vim.fn.tabpagenr("$")
-end
-
---- @return string
 local function filename()
   local name = vim.fn.expand("%:t")
   if name == "" then
@@ -183,25 +178,10 @@ local function filename()
   return name
 end
 
---- Section c: tab indicator and filename.
+--- Section c: filename.
 --- @return string
 local function section_c()
-  return " "
-    .. tabs()
-    .. " %#StatuslineCompSepC#"
-    .. DIV
-    .. " %#StatuslineC#"
-    .. filename()
-    .. " "
-end
-
---- @return string
-local function encoding()
-  local enc = vim.bo.fileencoding
-  if enc == "" then
-    enc = vim.o.encoding
-  end
-  return enc
+  return " " .. filename() .. " "
 end
 
 --- @return string
@@ -209,10 +189,10 @@ local function fileformat()
   return FILEFORMAT[vim.bo.fileformat] or vim.bo.fileformat
 end
 
---- Section x: encoding, file format and filetype.
+--- Section x: file format and filetype.
 --- @return string
 local function section_x()
-  local comps = { encoding(), fileformat() }
+  local comps = { fileformat() }
   local ft = vim.bo.filetype
   if ft ~= "" then
     comps[#comps + 1] = ft
@@ -245,13 +225,13 @@ function M.render()
     put("%#StatuslineB_" .. key .. "#" .. b)
   end
 
-  -- c: tabs / filename.
+  -- c: filename.
   put("%#StatuslineC#" .. section_c())
 
   -- Middle gap.
   put("%#StatuslineC#%=")
 
-  -- x: encoding / format / filetype.
+  -- x: format / filetype.
   put("%#StatuslineC#" .. section_x())
 
   -- y: progress (percentage through the file). "%%" renders as a literal "%".
