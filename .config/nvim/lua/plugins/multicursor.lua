@@ -4,13 +4,17 @@ return {
     branch = "main",
     lazy = false,
     config = function()
+      local group = vim.api.nvim_create_augroup(
+        "lazy-load-multicursor",
+        { clear = true }
+      )
       vim.api.nvim_create_autocmd({ "BufReadPre", "BufNewFile" }, {
-        group = vim.api.nvim_create_augroup(
-          "lazy-load-multicursor",
-          { clear = true }
-        ),
+        group = group,
         once = true,
         callback = function()
+          -- `once` applies to each event separately. Remove the other event's
+          -- hook so opening another kind of buffer cannot run setup again.
+          vim.api.nvim_clear_autocmds({ group = group })
           local mc = require("multicursor-nvim")
           mc.setup()
 

@@ -20,6 +20,11 @@ TMUX= nvim --headless . \
 pass 'nvim dot opens one full-screen tree without an unnamed buffer'
 
 TMUX= nvim --headless \
+  '+lua local ok, err = pcall(function() local group = "lazy-load-multicursor"; assert(#vim.api.nvim_get_autocmds({ group = group }) == 2); local mc = require("multicursor-nvim"); local setup = mc.setup; local calls = 0; mc.setup = function(...) calls = calls + 1; return setup(...) end; local before = #vim.api.nvim_get_autocmds({ event = "WinLeave" }); vim.api.nvim_exec_autocmds("BufReadPre", { group = group }); vim.api.nvim_exec_autocmds("BufNewFile", { group = group }); assert(calls == 1, "multicursor setup ran more than once"); assert(#vim.api.nvim_get_autocmds({ group = group }) == 0); assert(#vim.api.nvim_get_autocmds({ event = "WinLeave" }) == before + 1, "multicursor duplicated its window handler"); assert(type(vim.fn.maparg("<c-k>", "n", false, true).callback) == "function") end); if not ok then io.stderr:write(tostring(err), "\n"); vim.cmd.cquit() end' \
+  '+qa!'
+pass 'multicursor initializes once across read and new-file events'
+
+TMUX= nvim --headless \
   '+lua local ok, err = pcall(function() vim.cmd.tabnew(); local other = vim.api.nvim_get_current_buf(); local other_tab = vim.api.nvim_get_current_tabpage(); vim.cmd.tabprevious(); vim.fn.maparg("<leader>ee", "n", false, true).callback(); assert(vim.wait(1000, function() return vim.bo.filetype == "neo-tree" end)); vim.wait(200); assert(vim.api.nvim_tabpage_is_valid(other_tab), "opening Neo-tree must not close another tab"); assert(vim.api.nvim_buf_is_valid(other), "second blank scratch must survive"); assert(vim.api.nvim_win_get_buf(vim.api.nvim_tabpage_list_wins(other_tab)[1]) == other) end); if not ok then io.stderr:write(tostring(err), "\n"); vim.cmd.cquit() end' \
   '+qa!'
 pass 'opening Neo-tree leaves empty scratch buffers in other tabs intact'
@@ -197,6 +202,11 @@ TMUX= nvim --headless .config/nvim/init.lua \
   '+lua assert(vim.bo.filetype == "lua"); assert(vim.wo.wrap and vim.wo.linebreak and vim.wo.breakindent); assert(vim.bo.textwidth == 80); assert(vim.wo.colorcolumn == ""); assert(not vim.bo.formatoptions:find("t", 1, true))' \
   '+qa!'
 pass 'code buffers soft-wrap at the normal width without a ruler or text changes'
+
+TMUX= nvim --headless .config/nvim/init.lua \
+  '+lua local ok, err = pcall(function() local group = "lsp-format-on-save"; assert(#vim.api.nvim_get_autocmds({ event = "BufWritePre", group = group }) == 1); local get_clients, format = vim.lsp.get_clients, vim.lsp.buf.format; local calls = {}; local lua = { name = "lua_ls", id = 10, supports_method = function() return true end }; local efm = { name = "efm", id = 20, supports_method = function() return true end }; vim.lsp.buf.format = function(opts) calls[#calls + 1] = opts end; local function check(clients, expected) vim.lsp.get_clients = function() return clients end; calls = {}; vim.api.nvim_exec_autocmds("BufWritePre", { group = group, buffer = 0 }); assert(#calls == (expected and 1 or 0)); if expected then assert(calls[1].id == expected and calls[1].bufnr == vim.api.nvim_get_current_buf()) end end; check({ lua, efm }, 20); check({ lua }, 10); check({}, nil); vim.lsp.get_clients, vim.lsp.buf.format = get_clients, format end); if not ok then io.stderr:write(tostring(err), "\n"); vim.cmd.cquit() end' \
+  '+qa!'
+pass 'save formatting runs once and prefers efm when servers overlap'
 
 TMUX= nvim --headless install.sh \
   '+lua assert(vim.bo.filetype == "sh"); assert(vim.treesitter.language.get_lang(vim.bo.filetype) == "bash"); assert(vim.treesitter.query.get("bash", "highlights")); local query = vim.treesitter.query.get("bash", "highlights"); local root = vim.treesitter.get_parser(0, "bash"):parse()[1]:root(); local count = 0; for _ in query:iter_captures(root, 0, 0, -1) do count = count + 1; if count > 0 then break end end; assert(count > 0)' \

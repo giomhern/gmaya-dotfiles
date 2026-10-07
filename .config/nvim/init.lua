@@ -605,6 +605,28 @@ vim.lsp.enable({
   "yamlls",
 })
 
+-- Use one formatter per save, even when several language servers attach to a
+-- buffer. efm owns the formatters configured in lsp/efm.lua; another server can
+-- format filetypes that efm does not handle.
+vim.api.nvim_create_autocmd("BufWritePre", {
+  group = vim.api.nvim_create_augroup("lsp-format-on-save", { clear = true }),
+  callback = function(event)
+    local formatter
+    for _, client in ipairs(vim.lsp.get_clients({ bufnr = event.buf })) do
+      if client:supports_method("textDocument/formatting") then
+        if client.name == "efm" then
+          formatter = client
+          break
+        end
+        formatter = formatter or client
+      end
+    end
+    if formatter then
+      vim.lsp.buf.format({ bufnr = event.buf, id = formatter.id })
+    end
+  end,
+})
+
 vim.api.nvim_create_autocmd("LspAttach", {
   callback = function(event)
     local client = vim.lsp.get_client_by_id(event.data.client_id)
@@ -709,18 +731,7 @@ vim.api.nvim_create_autocmd("LspAttach", {
         vim.wo[win][0].foldmethod = "expr"
         vim.wo[win][0].foldexpr = "v:lua.vim.lsp.foldexpr()"
       end
-
-      -- Auto-format on save.
-      if client:supports_method("textDocument/formatting") then
-        vim.api.nvim_create_autocmd("BufWritePre", {
-          buffer = buffer,
-          callback = function()
-            vim.lsp.buf.format({ bufnr = buffer, id = client.id })
-          end,
-        })
-      end
     end
-
   end,
 })
 
