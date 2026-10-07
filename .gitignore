@@ -16,6 +16,7 @@
 .config/nvim/spell/
 .config/nvim/nvim-pack-lock.json
 .local/share/
+nvim.log
 
 # Archives and binaries
 *.tar.gz
