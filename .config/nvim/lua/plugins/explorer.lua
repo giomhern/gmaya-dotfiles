@@ -23,6 +23,19 @@ return {
         enable_diagnostics = true,
         event_handlers = {
           {
+            event = "before_render",
+            handler = function(state)
+              -- The sidebar title lives in bufferline; the full-screen tree
+              -- still needs its own title when there are no file tabs.
+              local hide_root = state.current_position == "left"
+              require("neo-tree").config.hide_root_node = hide_root
+              -- Hidden roots have no row to restore the cursor to.
+              if hide_root and state.position.node_id == state.path then
+                state.position.node_id = nil
+              end
+            end,
+          },
+          {
             event = "before_file_delete",
             handler = function(path)
               local windows = {}

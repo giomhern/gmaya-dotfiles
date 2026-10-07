@@ -42,7 +42,17 @@ return {
           offsets = {
             {
               filetype = "neo-tree",
-              highlight = "NeoTreeNormal",
+              text = function()
+                local win = buffers.neo_tree_window()
+                local state = win
+                  and require("neo-tree.sources.manager").get_state_for_window(
+                    win
+                  )
+                local path = state and state.path or vim.fn.getcwd()
+                return vim.fn.fnamemodify(path, ":~")
+              end,
+              text_align = "left",
+              highlight = "NeoTreeRootName",
             },
           },
         },
