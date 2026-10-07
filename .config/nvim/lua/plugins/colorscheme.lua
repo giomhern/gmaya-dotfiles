@@ -142,7 +142,7 @@ return {
           NeoTreeWinSeparator = { fg = colors.surface0, bg = colors.base },
           NeoTreeDirectoryName = { fg = colors.blue },
           NeoTreeDirectoryIcon = { fg = colors.blue },
-          NeoTreeRootName = { fg = colors.mauve, bold = true },
+          NeoTreeRootName = { fg = colors.mauve, bg = popup_bg, bold = true },
 
           -- Statusline (see "lua/core/statusline.lua").
           StatuslineC = { fg = colors.text, bg = colors.mantle },

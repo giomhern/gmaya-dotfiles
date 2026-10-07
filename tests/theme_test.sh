@@ -39,6 +39,7 @@ chmod +x "$FIXTURE/theme.sh"
 
 before="$(for rel in "${FILES[@]}"; do cksum "$FIXTURE/$rel"; done)"
 original_theme="$(tr -d '[:space:]' < "$FIXTURE/.theme")"
+original_font="$(sed -n '/^font-family = /p' "$FIXTURE/.config/ghostty/config")"
 "$FIXTURE/theme.sh" status >/dev/null
 "$FIXTURE/theme.sh" latte >/dev/null
 "$FIXTURE/theme.sh" status | grep -Fq 'Catppuccin Latte'
@@ -89,7 +90,7 @@ grep -Fq 'theme[main_bg]="#191724"' \
   "$FIXTURE/.config/btop/themes/rose_pine.theme"
 grep -Fq '#191724' "$FIXTURE/.config/starship.toml"
 grep -Fq 'BAT_THEME="ansi"' "$FIXTURE/.zshrc"
-grep -Fq 'font-family = "JetBrainsMono Nerd Font Mono"' \
+grep -Fxq "$original_font" \
   "$FIXTURE/.config/ghostty/config"
 "$FIXTURE/theme.sh" rose-pine-dawn >/dev/null
 "$FIXTURE/theme.sh" status | grep -Fq 'Rose Pine Dawn'
