@@ -148,7 +148,7 @@ _FZF_BINDS=(
   --bind home:preview-top
   --bind end:preview-bottom
 )
-_FZF_COLORS='--color=fg:#575279,fg+:#575279,bg:#faf4ed,bg+:#f4ede8,border:#b7b0b8,label:#b7b0b8,spinner:#907aa9,hl:#b4637a,hl+:#b4637a,header:#b4637a,info:#907aa9,pointer:#907aa9,marker:#e5aaa0,prompt:#907aa9'
+_FZF_COLORS='--color=fg:#d3c6aa,fg+:#d3c6aa,bg:#272e33,bg+:#374145,border:#687a74,label:#687a74,spinner:#bb8aac,hl:#ef7b83,hl+:#ef7b83,header:#ef7b83,info:#bb8aac,pointer:#bb8aac,marker:#e69875,prompt:#bb8aac'
 
 if command -v fzf >/dev/null 2>&1; then
   eval "$(fzf --zsh)"

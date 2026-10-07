@@ -21,6 +21,9 @@ FILES=(
   .config/btop/themes/tokyonight_day.theme
   .config/btop/themes/rose_pine.theme
   .config/btop/themes/rose_pine_dawn.theme
+  .config/btop/themes/everforest_light.theme
+  .config/btop/themes/everforest_dark.theme
+  .config/btop/themes/kanagawa_dragon.theme
   .config/nvim/lua/plugins/colorscheme.lua
   .config/nvim/lua/plugins/bufferline.lua
   .config/nvim/lua/core/picker.lua
@@ -51,7 +54,7 @@ grep -Fq 'theme[main_bg]="#eff1f5"' \
 grep -Fq 'BAT_THEME="Catppuccin Latte"' "$FIXTURE/.zshrc"
 grep -Fq 'BAT_THEME="Catppuccin Latte"' \
   "$FIXTURE/.config/gmaya/work-shell.zsh"
-grep -Fq 'bg:#e6e9ef' "$FIXTURE/.config/nvim/lua/core/picker.lua"
+grep -Fq 'bg:#eff1f5' "$FIXTURE/.config/nvim/lua/core/picker.lua"
 "$FIXTURE/theme.sh" macchiato >/dev/null
 "$FIXTURE/theme.sh" status | grep -Fq 'Catppuccin Macchiato'
 grep -Fq '#24273a' "$FIXTURE/.zshrc"
@@ -73,7 +76,7 @@ grep -Fq 'selected_theme = "tokyonight-day"' \
   "$FIXTURE/.config/nvim/lua/plugins/colorscheme.lua"
 grep -Fq 'theme[main_bg]="#e1e2e7"' \
   "$FIXTURE/.config/btop/themes/tokyonight_day.theme"
-grep -Fq 'bg:#d0d5e3' "$FIXTURE/.config/nvim/lua/core/picker.lua"
+grep -Fq 'bg:#e1e2e7' "$FIXTURE/.config/nvim/lua/core/picker.lua"
 "$FIXTURE/theme.sh" rose-pine >/dev/null
 "$FIXTURE/theme.sh" status | grep -Fq 'Rose Pine'
 grep -Fq 'theme = "Rose Pine"' "$FIXTURE/.config/ghostty/config"
@@ -97,7 +100,49 @@ grep -Fq 'color_theme = "rose_pine_dawn"' \
 grep -Fq 'theme[main_bg]="#faf4ed"' \
   "$FIXTURE/.config/btop/themes/rose_pine_dawn.theme"
 grep -Fq '#faf4ed' "$FIXTURE/.config/starship.toml"
-grep -Fq 'bg:#f8f0e7' "$FIXTURE/.config/nvim/lua/core/picker.lua"
+grep -Fq 'bg:#faf4ed' "$FIXTURE/.config/nvim/lua/core/picker.lua"
+"$FIXTURE/theme.sh" everforest-light >/dev/null
+"$FIXTURE/theme.sh" status | grep -Fq 'Everforest Light Med'
+grep -Fq 'theme = "Everforest Light Med"' \
+  "$FIXTURE/.config/ghostty/config"
+grep -Fq 'background = #fdf6e3' \
+  "$FIXTURE/.config/ghostty/config"
+grep -Fq 'selected_theme = "everforest-light"' \
+  "$FIXTURE/.config/nvim/lua/plugins/colorscheme.lua"
+grep -Fq 'color_theme = "everforest_light"' \
+  "$FIXTURE/.config/btop/btop.conf"
+grep -Fq 'theme[main_bg]="#fdf6e3"' \
+  "$FIXTURE/.config/btop/themes/everforest_light.theme"
+grep -Fq 'BAT_THEME="ansi"' "$FIXTURE/.zshrc"
+grep -Fq 'bg:#fdf6e3' "$FIXTURE/.config/nvim/lua/core/picker.lua"
+"$FIXTURE/theme.sh" everforest-dark >/dev/null
+"$FIXTURE/theme.sh" status | grep -Fq 'Everforest Dark Hard'
+grep -Fq 'theme = "Everforest Dark Hard"' \
+  "$FIXTURE/.config/ghostty/config"
+grep -Fq 'background = #272e33' \
+  "$FIXTURE/.config/ghostty/config"
+grep -Fq 'selected_theme = "everforest-dark"' \
+  "$FIXTURE/.config/nvim/lua/plugins/colorscheme.lua"
+grep -Fq 'color_theme = "everforest_dark"' \
+  "$FIXTURE/.config/btop/btop.conf"
+grep -Fq 'theme[main_bg]="#272e33"' \
+  "$FIXTURE/.config/btop/themes/everforest_dark.theme"
+grep -Fq 'bg:#272e33' "$FIXTURE/.config/nvim/lua/core/picker.lua"
+grep -Fq 'BAT_THEME="ansi"' "$FIXTURE/.zshrc"
+"$FIXTURE/theme.sh" kanagawa-dragon >/dev/null
+"$FIXTURE/theme.sh" status | grep -Fq 'Kanagawa Dragon'
+grep -Fq 'theme = "Kanagawa Dragon"' \
+  "$FIXTURE/.config/ghostty/config"
+grep -Fq 'background = #181616' \
+  "$FIXTURE/.config/ghostty/config"
+grep -Fq 'selected_theme = "kanagawa-dragon"' \
+  "$FIXTURE/.config/nvim/lua/plugins/colorscheme.lua"
+grep -Fq 'color_theme = "kanagawa_dragon"' \
+  "$FIXTURE/.config/btop/btop.conf"
+grep -Fq 'theme[main_bg]="#181616"' \
+  "$FIXTURE/.config/btop/themes/kanagawa_dragon.theme"
+grep -Fq 'bg:#181616' "$FIXTURE/.config/nvim/lua/core/picker.lua"
+grep -Fq 'BAT_THEME="ansi"' "$FIXTURE/.zshrc"
 "$FIXTURE/theme.sh" "$original_theme" >/dev/null
 after="$(for rel in "${FILES[@]}"; do cksum "$FIXTURE/$rel"; done)"
 if [[ $before != "$after" ]]; then

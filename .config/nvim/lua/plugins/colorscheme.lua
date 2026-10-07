@@ -6,6 +6,8 @@ return {
     dependencies = {
       { "folke/tokyonight.nvim", lazy = false },
       { "rose-pine/neovim", name = "rose-pine", lazy = false },
+      { "neanias/everforest-nvim", name = "everforest", lazy = false },
+      { "rebelot/kanagawa.nvim", name = "kanagawa.nvim", lazy = false },
     },
     lazy = false,
     config = function()
@@ -17,12 +19,12 @@ return {
 
       -- The selected family is changed by theme.sh. Both setup paths normalize their
       -- palettes so the custom picker, explorer, and statusline styling stays shared.
-      local selected_theme = "rose-pine-dawn"
+      local selected_theme = "everforest-dark"
 
       local function custom_theme_highlights(colors)
-        local popup_bg = colors.mantle
+        local popup_bg = colors.base
         local highlights = {
-          -- Popups use the same canvas as Neo-tree in every theme.
+          -- Files, Neo-tree, and popups share the editor canvas in every theme.
           NormalFloat = { fg = colors.text, bg = popup_bg },
           FloatBorder = { fg = colors.blue, bg = popup_bg },
           FloatTitle = { fg = colors.blue, bg = popup_bg, bold = true },
@@ -88,7 +90,7 @@ return {
           },
 
           -- Octo's defaults use GitHub's fixed palette. Define its groups here
-          -- first so Octo preserves the active Catppuccin/Tokyo Night palette.
+          -- first so Octo preserves the active shared palette.
           OctoGreen = { fg = colors.green },
           OctoRed = { fg = colors.red },
           OctoPurple = { fg = colors.mauve },
@@ -122,7 +124,8 @@ return {
           -- Neo-tree sidebar.
           NeoTreeNormal = { bg = popup_bg },
           NeoTreeNormalNC = { bg = popup_bg },
-          NeoTreeEndOfBuffer = { bg = popup_bg },
+          -- Keep Neo-tree's empty rows unobtrusive if a window overrides fillchars.
+          NeoTreeEndOfBuffer = { fg = popup_bg, bg = popup_bg },
           NeoTreeFloatNormal = { fg = colors.text, bg = popup_bg },
           NeoTreeFloatBorder = { fg = colors.blue, bg = popup_bg },
           NeoTreeFloatTitle = {
@@ -130,7 +133,7 @@ return {
             bg = popup_bg,
             bold = true,
           },
-          NeoTreeWinSeparator = { fg = colors.surface0, bg = colors.mantle },
+          NeoTreeWinSeparator = { fg = colors.surface0, bg = colors.base },
           NeoTreeDirectoryName = { fg = colors.blue },
           NeoTreeDirectoryIcon = { fg = colors.blue },
           NeoTreeRootName = { fg = colors.mauve, bold = true },
@@ -204,6 +207,60 @@ return {
           end,
         })
         vim.cmd.colorscheme(selected_theme)
+      elseif selected_theme:match("^everforest%-") then
+        vim.o.background = selected_theme == "everforest-light" and "light" or "dark"
+        require("everforest").setup({
+          background = selected_theme == "everforest-light" and "medium" or "hard",
+          on_highlights = function(highlights, palette)
+            local colors = {
+              mantle = palette.bg1,
+              base = palette.bg0,
+              surface0 = palette.bg2,
+              overlay1 = palette.grey0,
+              text = palette.fg,
+              rosewater = palette.orange,
+              blue = palette.blue,
+              green = palette.green,
+              mauve = palette.purple,
+              red = palette.red,
+              peach = palette.orange,
+              yellow = palette.yellow,
+              sky = palette.blue,
+              teal = palette.aqua,
+            }
+            for group, spec in pairs(custom_theme_highlights(colors)) do
+              highlights[group] = spec
+            end
+          end,
+        })
+        vim.cmd.colorscheme("everforest")
+      elseif selected_theme == "kanagawa-dragon" then
+        vim.o.background = "dark"
+        require("kanagawa").setup({
+          theme = "dragon",
+          background = { dark = "dragon", light = "lotus" },
+          overrides = function(colors)
+            local palette = colors.palette
+            local ui = colors.theme.ui
+            return custom_theme_highlights({
+              mantle = palette.dragonBlack1,
+              base = ui.bg,
+              surface0 = palette.dragonBlack2,
+              overlay1 = palette.dragonGray3,
+              text = ui.fg,
+              rosewater = palette.dragonOrange,
+              blue = palette.dragonBlue2,
+              green = palette.dragonGreen2,
+              mauve = palette.dragonViolet,
+              red = palette.dragonRed,
+              peach = palette.dragonOrange2,
+              yellow = palette.dragonYellow,
+              sky = palette.dragonAqua,
+              teal = palette.dragonGreen,
+            })
+          end,
+        })
+        vim.cmd.colorscheme("kanagawa-dragon")
       elseif selected_theme:match("^rose%-pine") then
         local variant = selected_theme == "rose-pine-dawn" and "dawn" or "main"
         require("rose-pine").setup({ variant = variant })

@@ -1,35 +1,20 @@
 # dotfiles
 
-Personal macOS setup: zsh, tmux, Neovim, and synchronized terminal theming
-that ties them together.
+Personal macOS setup: zsh, tmux, Neovim, and synchronized terminal theming that ties them together.
 
 ## Contents
 
 - [Install](#install) · [What's here](#whats-here)
-- [Keys](#keys) — [a day at the keyboard](#a-day-at-the-keyboard) ·
-  [the rest of tmux](#the-rest-of-tmux)
-- [Vim fundamentals](#vim-fundamentals) — [modes](#modes) ·
-  [moving](#moving) · [jumping to a line](#jumping-to-a-line) ·
-  [searching in a file](#searching-in-a-file) ·
-  [changing text](#changing-text) · [text objects](#text-objects) ·
-  [commenting](#commenting) · [copy and paste](#copy-and-paste) ·
-  [visual mode](#visual-mode) · [counts](#counts) ·
-  [files, buffers, splits](#files-buffers-splits)
-- [Neovim reference](#neovim-reference) —
-  [moving around a codebase](#moving-around-a-codebase) ·
-  [searching](#searching) · [editing](#editing) ·
-  [completion](#completion) ·
-  [diagnostics and quickfix](#diagnostics-and-quickfix) · [git](#git) ·
-  [file explorers](#file-explorers) ·
-  [buffer tabs](#buffer-tabs) ·
-  [fzf pickers](#inside-any-fzf-picker) ·
-  [windows and misc](#windows-and-misc)
-- [Notes](#notes) · [Secrets](#secrets) ·
-  [Change the theme everywhere](#change-the-theme-everywhere) ·
-  [Credit](#credit)
+- [Keys](#keys) — [a day at the keyboard](#a-day-at-the-keyboard) · [the rest of tmux](#the-rest-of-tmux)
+- [Vim fundamentals](#vim-fundamentals) — [modes](#modes) · [moving](#moving) · [jumping to a line](#jumping-to-a-line) ·
+  [searching in a file](#searching-in-a-file) · [changing text](#changing-text) · [text objects](#text-objects) · [commenting](#commenting) ·
+  [copy and paste](#copy-and-paste) · [visual mode](#visual-mode) · [counts](#counts) · [files, buffers, splits](#files-buffers-splits)
+- [Neovim reference](#neovim-reference) — [moving around a codebase](#moving-around-a-codebase) · [searching](#searching) · [editing](#editing) ·
+  [completion](#completion) · [diagnostics and quickfix](#diagnostics-and-quickfix) · [git](#git) · [file explorers](#file-explorers) ·
+  [buffer tabs](#buffer-tabs) · [fzf pickers](#inside-any-fzf-picker) · [windows and misc](#windows-and-misc)
+- [Notes](#notes) · [Secrets](#secrets) · [Change the theme everywhere](#change-the-theme-everywhere) · [Credit](#credit)
 
-New to Vim? Start with [Vim fundamentals](#vim-fundamentals). Everything under
-[Neovim reference](#neovim-reference) is specific to this config.
+New to Vim? Start with [Vim fundamentals](#vim-fundamentals). Everything under [Neovim reference](#neovim-reference) is specific to this config.
 
 ## Install
 
@@ -46,78 +31,63 @@ cd ~/gmaya-dotfiles
 # Optional: review the Brewfile first, then install its tools with brew bundle
 ```
 
-`install.sh` **symlinks** rather than copies. The file in this repo is the file
-the tool reads, so editing either path changes both and `git status` always
+`install.sh` **symlinks** rather than copies. The file in this repo is the file the tool reads, so editing either path changes both and `git status` always
 reflects reality. There is no sync step to forget.
 
-The default run changes nothing. `--apply` links only paths that are absent;
-every file, directory, or symlink already in `$HOME` is reported as a conflict
-and left untouched. Review the conflicts before choosing `--migrate`.
+The default run changes nothing. `--apply` links only paths that are absent; every file, directory, or symlink already in `$HOME` is reported as a conflict and
+left untouched. Review the conflicts before choosing `--migrate`.
 
-`--migrate` is the explicit path for making this setup authoritative on a
-laptop that already has configuration. Before linking, it copies the existing
-shell, login-shell, and Git configuration to `~/.zshrc.local`,
-`~/.zprofile.local`, and `~/.gitconfig.local`. It moves all conflicting managed
-targets into `~/.dotfiles-backups/<timestamp>/`. If a local file already exists,
-the preflight aborts before changing anything so two configurations are never
-silently merged. A linking failure restores the original targets.
+`--migrate` is the explicit path for making this setup authoritative on a laptop that already has configuration. Before linking, it copies the existing shell,
+login-shell, and Git configuration to `~/.zshrc.local`, `~/.zprofile.local`, and `~/.gitconfig.local`. It moves all conflicting managed targets into
+`~/.dotfiles-backups/<timestamp>/`. If a local file already exists, the preflight aborts before changing anything so two configurations are never silently
+merged. A linking failure restores the original targets.
 
-Credential and account stores—including `~/.ssh`, `~/.gnupg`, `~/.config/gh`,
-`~/.aws`, `~/.kube`, `~/.netrc`, `~/.git-credentials`, `~/.zshsecrets`, and
-`~/.secrets`—are outside the managed target list. The installer neither reads
-nor modifies them.
+Credential and account stores—including `~/.ssh`, `~/.gnupg`, `~/.config/gh`, `~/.aws`, `~/.kube`, `~/.netrc`, `~/.git-credentials`, `~/.zshsecrets`, and
+`~/.secrets`—are outside the managed target list. The installer neither reads nor modifies them.
 
-To try this Neovim setup without replacing an existing `~/.config/nvim`, link
-it under another app name and launch it explicitly:
+To try this Neovim setup without replacing an existing `~/.config/nvim`, link it under another app name and launch it explicitly:
 
 ```sh
 ln -s "$PWD/.config/nvim" ~/.config/nvim-gmaya
 NVIM_APPNAME=nvim-gmaya nvim
 ```
 
-Git identity and account settings live in `~/.gitconfig.local`, which is
-included by the tracked `.gitconfig` but never committed. Start from
-`.gitconfig.local.example` on a new laptop. Machine-specific shell settings
-belong in `~/.zshrc.local` and `~/.zprofile.local`; the matching `.example`
-files contain examples.
+Git identity and account settings live in `~/.gitconfig.local`, which is included by the tracked `.gitconfig` but never committed. Start from
+`.gitconfig.local.example` on a new laptop. Machine-specific shell settings belong in `~/.zshrc.local` and `~/.zprofile.local`; the matching `.example` files
+contain examples.
 
 ### Managed work laptops
 
-The `--work` profile removes `~/.zshrc`, `~/.zprofile`, and `~/.gitconfig` from
-the managed target list before preflight begins. Check, apply, and migrate never
-read, copy, move, link, back up, or change those three paths. This leaves
-company initialization, credentials, Git includes, signing, and account policy
-in place while installing tmux, Ghostty, Neovim, Starship, and btop.
+The `--work` profile removes `~/.zshrc`, `~/.zprofile`, and `~/.gitconfig` from the managed target list before preflight begins. Check, apply, and migrate never
+read, copy, move, link, back up, or change those three paths. This leaves company initialization, credentials, Git includes, signing, and account policy in
+place while installing tmux, Ghostty, Neovim, Starship, and btop.
 
-The profile links an optional interactive layer at
-`~/.config/gmaya/work-shell.zsh`. After the company shell has completed its own
-initialization, source it from an approved local hook:
+The profile links an optional interactive layer at `~/.config/gmaya/work-shell.zsh`. After the company shell has completed its own initialization, source it
+from an approved local hook:
 
 ```zsh
 source ~/.config/gmaya/work-shell.zsh
 ```
 
-That fragment adds the shared Starship prompt, bat/fzf colors, aliases, and
-tmux helper functions. It does not alter `PATH`, load secrets, configure Git,
-install shell plugins, or edit a startup file. The source line is deliberately
-manual so the installer cannot modify company-owned shell startup.
+That fragment adds the shared Starship prompt, bat/fzf colors, aliases, and tmux helper functions. It does not alter `PATH`, load secrets, configure Git,
+install shell plugins, or edit a startup file. The source line is deliberately manual so the installer cannot modify company-owned shell startup.
 
 ## What's here
 
-| Path | |
-|---|---|
-| `.zshrc` | Shell config, sectioned and indexed at the top |
-| `.zprofile` | Login shell — sets up the Homebrew environment |
-| `.tmux.conf` | tmux + tpm plugins |
-| `.tmux.conf.local.example` | optional machine-only tmux style overrides |
-| `.gitconfig` | Shared Git behavior; identity stays local |
-| `.config/gmaya/work-shell.zsh` | opt-in shell presentation for work laptops |
-| `.config/nvim/` | Neovim config — `init.lua`, `lsp/`, `lua/core/` |
-| `.config/starship.toml` | Prompt |
-| `.config/ghostty/` | Terminal |
-| `.config/btop/` | System monitor |
-| `.theme`, `theme.sh` | Shared visual theme and synchronized switcher |
-| `Brewfile` | Everything installed via Homebrew |
+| Path                           |                                                 |
+| ------------------------------ | ----------------------------------------------- |
+| `.zshrc`                       | Shell config, sectioned and indexed at the top  |
+| `.zprofile`                    | Login shell — sets up the Homebrew environment  |
+| `.tmux.conf`                   | tmux + tpm plugins                              |
+| `.tmux.conf.local.example`     | optional machine-only tmux style overrides      |
+| `.gitconfig`                   | Shared Git behavior; identity stays local       |
+| `.config/gmaya/work-shell.zsh` | opt-in shell presentation for work laptops      |
+| `.config/nvim/`                | Neovim config — `init.lua`, `lsp/`, `lua/core/` |
+| `.config/starship.toml`        | Prompt                                          |
+| `.config/ghostty/`             | Terminal                                        |
+| `.config/btop/`                | System monitor                                  |
+| `.theme`, `theme.sh`           | Shared visual theme and synchronized switcher   |
+| `Brewfile`                     | Everything installed via Homebrew               |
 
 ## Keys
 
@@ -127,626 +97,531 @@ Three layers, three modifiers, almost no collisions:
 - **tmux** owns `Ctrl-a` (the prefix) and a couple of no-prefix keys.
 - **Neovim** owns everything else. Leader is `Space`.
 
-Nothing crosses a boundary, which means `prefix` + arrows moves tmux panes and
-`Ctrl-w` moves nvim splits — see *macOS owns Ctrl+arrows* below for why there is
+Nothing crosses a boundary, which means `prefix` + arrows moves tmux panes and `Ctrl-w` moves nvim splits — see _macOS owns Ctrl+arrows_ below for why there is
 no single key for both.
 
 ### A day at the keyboard
 
-**Start.** `ts` attaches the `main` session, or creates it. You almost never
-start a second one; you make windows instead. Save and restore intentionally
-with `prefix + Ctrl-s` and `prefix + Ctrl-r` when you want a layout to persist.
+**Start.** `ts` attaches the `main` session, or creates it. You almost never start a second one; you make windows instead. Save and restore intentionally with
+`prefix + Ctrl-s` and `prefix + Ctrl-r` when you want a layout to persist.
 
-**One window per repo.** `prefix + c` opens a window in the current directory
-and names it after that directory. The status bar normally stays at the bottom;
-Neovim and Neo-tree leave that position unchanged. `prefix + 1…9` jumps
-straight to one, and `prefix + &` closes one.
+**One window per repo.** `prefix + c` opens a window in the current directory and names it after that directory. The status bar normally stays at the bottom;
+Neovim and Neo-tree leave that position unchanged. `prefix + 1…9` jumps straight to one, and `prefix + &` closes one.
 
-**Split for the job, not for the aesthetic.** `prefix + |` puts a pane to the
-right, `prefix + -` below. The useful shape for a service is editor left, and
-right split in two for a log tail and a shell. `prefix + z` zooms the focused
-pane to fill the window and again to restore it — reach for it constantly, it
-is faster than resizing. When you do need to resize, `prefix + Shift`+arrows
-repeats, so hold `Shift` and tap.
+**Split for the job, not for the aesthetic.** `prefix + |` puts a pane to the right, `prefix + -` below. The useful shape for a service is editor left, and
+right split in two for a log tail and a shell. `prefix + z` zooms the focused pane to fill the window and again to restore it — reach for it constantly, it is
+faster than resizing. When you do need to resize, `prefix + Shift`+arrows repeats, so hold `Shift` and tap.
 
-**Move between panes** with `prefix` + arrows. It repeats, so `Ctrl-a` once then
-arrow, arrow, arrow walks the layout. Inside nvim, splits are `Ctrl-w` + `h`/`j`
-/`k`/`l` (or `Ctrl-w` + arrows). Two different keys for two different things —
-see *macOS owns Ctrl+arrows*.
+**Move between panes** with `prefix` + arrows. It repeats, so `Ctrl-a` once then arrow, arrow, arrow walks the layout. Inside nvim, splits are `Ctrl-w` +
+`h`/`j` /`k`/`l` (or `Ctrl-w` + arrows). Two different keys for two different things — see _macOS owns Ctrl+arrows_.
 
 **Inside nvim, navigate by meaning, not by path.**
 
-| | |
-|---|---|
-| `gW` | any symbol in the workspace — **start here in a big repo** |
-| `gO` | symbols in this file |
-| `gd` / `grr` / `gri` | definition / references / implementations |
-| `<leader>ff` | find a file by path |
-| `<leader>ss` | grep the project |
-| `<leader>sw` | grep the word under the cursor |
-| `<leader>fb` / `<leader>fr` | open buffers / recent files |
-| `<leader>ee` | open or focus the Neo-tree project sidebar |
-| `<leader>d` | diagnostics for the buffer into the location list |
+|                             |                                                            |
+| --------------------------- | ---------------------------------------------------------- |
+| `gW`                        | any symbol in the workspace — **start here in a big repo** |
+| `gO`                        | symbols in this file                                       |
+| `gd` / `grr` / `gri`        | definition / references / implementations                  |
+| `<leader>ff`                | find a file by path                                        |
+| `<leader>ss`                | grep the project                                           |
+| `<leader>sw`                | grep the word under the cursor                             |
+| `<leader>fb` / `<leader>fr` | open buffers / recent files                                |
+| `<leader>ee`                | open or focus the Neo-tree project sidebar                 |
+| `<leader>d`                 | diagnostics for the buffer into the location list          |
 
-The ordering matters. `gW` beats everything else in a Java or Go codebase
-because jdtls and gopls index the whole workspace — type `PaymentControl` and
-land on the class, no idea where it lives. Fall back to `<leader>ff` when you
-know the filename, `<leader>ss` when you only know a string. `<leader>ee` is
-last resort: a directory tree is the slowest way to find anything you can name.
+The ordering matters. `gW` beats everything else in a Java or Go codebase because jdtls and gopls index the whole workspace — type `PaymentControl` and land on
+the class, no idea where it lives. Fall back to `<leader>ff` when you know the filename, `<leader>ss` when you only know a string. `<leader>ee` is last resort:
+a directory tree is the slowest way to find anything you can name.
 
-**Edit.** `Ctrl-n` adds a cursor at the next occurrence of the word under the
-cursor, `Ctrl-a` at all of them — the fastest rename when it is textual rather
-than semantic. Use `grn` instead when it is a real symbol, so the LSP fixes
-imports and other files too. `Alt-j` / `Alt-k` move the current line or
-selection. `grf` formats.
+**Edit.** `Ctrl-n` adds a cursor at the next occurrence of the word under the cursor, `Ctrl-a` at all of them — the fastest rename when it is textual rather
+than semantic. Use `grn` instead when it is a real symbol, so the LSP fixes imports and other files too. `Alt-j` / `Alt-k` move the current line or selection.
+`grf` formats.
 
-**Review before committing.** `]c` and `[c` walk hunks, `<leader>gss` stages
-one, `<leader>gsr` resets one, `<leader>gsp` previews. `<leader>gsb` blames the
-line. The `<leader>gf*` family opens fzf pickers over branches, status, stashes
-and log.
+**Review before committing.** `]c` and `[c` walk hunks, `<leader>gss` stages one, `<leader>gsr` resets one, `<leader>gsp` previews. `<leader>gsb` blames the
+line. The `<leader>gf*` family opens fzf pickers over branches, status, stashes and log.
 
-**Scratch work goes in the popup.** `Alt-t` floats a shell over whatever you
-are doing, in the same directory. Run the one-off `docker compose logs`, the
-`mvn dependency:tree`, or `git log --oneline`; `Alt-t` again dismisses it. Your
-pane layout is never disturbed for a throwaway command.
+**Scratch work goes in the popup.** `Alt-t` floats a shell over whatever you are doing, in the same directory. Run the one-off `docker compose logs`, the
+`mvn dependency:tree`, or `git log --oneline`; `Alt-t` again dismisses it. Your pane layout is never disturbed for a throwaway command.
 
-**Copy something out.** `prefix + [` enters copy mode with vi keys — `v`
-selects, `Ctrl-v` for a block, `y` copies and exits, `Esc` leaves. Mouse drag
-also copies and no longer snaps the view back to the prompt.
+**Copy something out.** `prefix + [` enters copy mode with vi keys — `v` selects, `Ctrl-v` for a block, `y` copies and exits, `Esc` leaves. Mouse drag also
+copies and no longer snaps the view back to the prompt.
 
 ### The rest of tmux
 
-| | |
-|---|---|
-| `prefix` + `,` | rename this window by hand (overrides the auto-name) |
-| `prefix` + `n` / `p` | next / previous window — repeatable |
-| `prefix` + `x` / `&` | kill the pane / the window — `y` confirms, `Esc` backs out |
-| `prefix` + `d` | detach; everything keeps running |
-| `prefix` + `r` | reload `~/.tmux.conf` |
-| `prefix` + `I` | install plugins — once, after a fresh clone |
-| `prefix` + `Ctrl-s` / `Ctrl-r` | save / restore the session by hand |
+|                                |                                                            |
+| ------------------------------ | ---------------------------------------------------------- |
+| `prefix` + `,`                 | rename this window by hand (overrides the auto-name)       |
+| `prefix` + `n` / `p`           | next / previous window — repeatable                        |
+| `prefix` + `x` / `&`           | kill the pane / the window — `y` confirms, `Esc` backs out |
+| `prefix` + `d`                 | detach; everything keeps running                           |
+| `prefix` + `r`                 | reload `~/.tmux.conf`                                      |
+| `prefix` + `I`                 | install plugins — once, after a fresh clone                |
+| `prefix` + `Ctrl-s` / `Ctrl-r` | save / restore the session by hand                         |
 
-Windows and panes are both 1-indexed, and windows renumber themselves when one
-closes, so `prefix + 3` always means the third window you can see.
+Windows and panes are both 1-indexed, and windows renumber themselves when one closes, so `prefix + 3` always means the third window you can see.
 
-For machine-specific colors or separators, copy
-`.tmux.conf.local.example` to `~/.tmux.conf.local` and edit the copy. The shared
-config loads it after the synchronized theme, so local values win. The file is
-gitignored and the installer never manages it. Reload with `prefix + r`.
+For machine-specific colors or separators, copy `.tmux.conf.local.example` to `~/.tmux.conf.local` and edit the copy. The shared config loads it after the
+synchronized theme, so local values win. The file is gitignored and the installer never manages it. Reload with `prefix + r`.
 
 ## Vim fundamentals
 
-Plain Vim, not this config — but you need it before any of the rest is useful.
-Where this setup changes a default, it says so.
+Plain Vim, not this config — but you need it before any of the rest is useful. Where this setup changes a default, it says so.
 
 ### Modes
 
-You start in **normal** mode, where letters are commands, not text. `Esc` always
-returns there. The rest of the table assumes normal mode.
+You start in **normal** mode, where letters are commands, not text. `Esc` always returns there. The rest of the table assumes normal mode.
 
-| | |
-|---|---|
-| `i` / `a` | insert **before** / **after** the cursor |
-| `I` / `A` | insert at the first non-blank / at end of line |
-| `o` / `O` | open a new line below / above and insert |
-| `v` / `V` | visual character / whole line |
-| `Ctrl-v` | visual **block** — column selection |
-| `:` | command line |
-| `Esc` | back to normal (here it also clears search highlight) |
+|           |                                                       |
+| --------- | ----------------------------------------------------- |
+| `i` / `a` | insert **before** / **after** the cursor              |
+| `I` / `A` | insert at the first non-blank / at end of line        |
+| `o` / `O` | open a new line below / above and insert              |
+| `v` / `V` | visual character / whole line                         |
+| `Ctrl-v`  | visual **block** — column selection                   |
+| `:`       | command line                                          |
+| `Esc`     | back to normal (here it also clears search highlight) |
 
-`I` and `A` are the ones worth drilling. "Jump to the start/end of this line and
-start typing" is a single keystroke, not `0` then `i`.
+`I` and `A` are the ones worth drilling. "Jump to the start/end of this line and start typing" is a single keystroke, not `0` then `i`.
 
 ### Moving
 
-| | |
-|---|---|
-| `h` `j` `k` `l` | left, down, up, right (arrows work too) |
-| `w` / `b` | forward / back one word |
-| `e` | end of the current word |
-| `W` `B` `E` | same, but whitespace-separated — skips punctuation |
-| `0` / `^` / `$` | start of line / first non-blank / end of line |
-| `f<char>` / `F<char>` | jump to next / previous `<char>` on this line |
-| `t<char>` / `T<char>` | jump just before / after it |
-| `;` / `,` | repeat the last `f`/`t` forward / backward |
-| `%` | jump to the matching bracket, and back again |
-| `]}` / `[{` | end / start of the enclosing `{ }`, from anywhere inside |
-| `])` / `[(` | end / start of the enclosing `( )` |
-| `]m` / `[m` | next / previous method **start** |
-| `]M` / `[M` | next / previous method **end** |
-| `{` / `}` | previous / next blank line — paragraph hops |
-| `Ctrl-d` / `Ctrl-u` | half a screen down / up |
-| `Ctrl-f` / `Ctrl-b` | full page down / up |
-| `H` / `M` / `L` | top / middle / bottom of the visible screen |
-| `zz` / `zt` / `zb` | scroll so the cursor sits centre / top / bottom |
+|                       |                                                          |
+| --------------------- | -------------------------------------------------------- |
+| `h` `j` `k` `l`       | left, down, up, right (arrows work too)                  |
+| `w` / `b`             | forward / back one word                                  |
+| `e`                   | end of the current word                                  |
+| `W` `B` `E`           | same, but whitespace-separated — skips punctuation       |
+| `0` / `^` / `$`       | start of line / first non-blank / end of line            |
+| `f<char>` / `F<char>` | jump to next / previous `<char>` on this line            |
+| `t<char>` / `T<char>` | jump just before / after it                              |
+| `;` / `,`             | repeat the last `f`/`t` forward / backward               |
+| `%`                   | jump to the matching bracket, and back again             |
+| `]}` / `[{`           | end / start of the enclosing `{ }`, from anywhere inside |
+| `])` / `[(`           | end / start of the enclosing `( )`                       |
+| `]m` / `[m`           | next / previous method **start**                         |
+| `]M` / `[M`           | next / previous method **end**                           |
+| `{` / `}`             | previous / next blank line — paragraph hops              |
+| `Ctrl-d` / `Ctrl-u`   | half a screen down / up                                  |
+| `Ctrl-f` / `Ctrl-b`   | full page down / up                                      |
+| `H` / `M` / `L`       | top / middle / bottom of the visible screen              |
+| `zz` / `zt` / `zb`    | scroll so the cursor sits centre / top / bottom          |
 
-`%` needs the cursor on a bracket — though if it is not, it jumps forward to
-the first one on the line and matches that. `]}` needs nothing: it finds the
-end of the block you are standing in. For "end of this function" in Java or Go,
-`]M` goes straight there.
+`%` needs the cursor on a bracket — though if it is not, it jumps forward to the first one on the line and matches that. `]}` needs nothing: it finds the end of
+the block you are standing in. For "end of this function" in Java or Go, `]M` goes straight there.
 
-**A caveat specific to this config:** `j`, `k` and the up/down arrows are mapped
-to `gj`/`gk`, so they move by *visible* line rather than by real line. On a long
-wrapped line they step within it. Give a count (`5j`) and you get the normal
-behaviour back.
+**A caveat specific to this config:** `j`, `k` and the up/down arrows are mapped to `gj`/`gk`, so they move by _visible_ line rather than by real line. On a
+long wrapped line they step within it. Give a count (`5j`) and you get the normal behaviour back.
 
 ### Jumping to a line
 
-| | |
-|---|---|
-| `gg` / `G` | first / last line of the file |
-| `42G` or `:42` | go to line 42 |
-| `Ctrl-g` | show where you are |
+|                     |                                      |
+| ------------------- | ------------------------------------ |
+| `gg` / `G`          | first / last line of the file        |
+| `42G` or `:42`      | go to line 42                        |
+| `Ctrl-g`            | show where you are                   |
 | `Ctrl-o` / `Ctrl-i` | back / forward through the jump list |
-| ``` `` ``` | back to where you last jumped from |
+| ` `` `              | back to where you last jumped from   |
 
-`Ctrl-o` is the undo button for navigation. Followed a definition three files
-deep? `Ctrl-o` three times walks you back out.
+`Ctrl-o` is the undo button for navigation. Followed a definition three files deep? `Ctrl-o` three times walks you back out.
 
 ### Searching in a file
 
-| | |
-|---|---|
-| `/text` then `Enter` | search forward |
-| `?text` | search backward |
-| `n` / `N` | next / previous match |
-| `*` / `#` | search for the word under the cursor, forward / back |
-| `:noh` | clear the highlight (or just press `Esc` here) |
+|                      |                                                      |
+| -------------------- | ---------------------------------------------------- |
+| `/text` then `Enter` | search forward                                       |
+| `?text`              | search backward                                      |
+| `n` / `N`            | next / previous match                                |
+| `*` / `#`            | search for the word under the cursor, forward / back |
+| `:noh`               | clear the highlight (or just press `Esc` here)       |
 
-Search is case-sensitive unless the pattern is all lowercase. `\c` anywhere in
-the pattern forces case-insensitive: `/todo\c`.
+Search is case-sensitive unless the pattern is all lowercase. `\c` anywhere in the pattern forces case-insensitive: `/todo\c`.
 
-For searching *across* files, use `<leader>ss` — see [Searching](#searching).
+For searching _across_ files, use `<leader>ss` — see [Searching](#searching).
 
 ### Changing text
 
-Operators combine with the motions above: `d` + `w` deletes a word, `c` + `$`
-changes to end of line. That composition is the whole language.
+Operators combine with the motions above: `d` + `w` deletes a word, `c` + `$` changes to end of line. That composition is the whole language.
 
-| | |
-|---|---|
-| `x` / `X` | delete the character under / before the cursor |
-| `dd` / `cc` | delete / change the whole line |
-| `D` / `C` | delete / change to end of line |
-| `dw` / `cw` | delete / change to the next word |
+|                      |                                                     |
+| -------------------- | --------------------------------------------------- |
+| `x` / `X`            | delete the character under / before the cursor      |
+| `dd` / `cc`          | delete / change the whole line                      |
+| `D` / `C`            | delete / change to end of line                      |
+| `dw` / `cw`          | delete / change to the next word                    |
 | `d$` `d0` `dG` `dgg` | delete to end of line / start / end of file / start |
-| `r<char>` | replace one character, staying in normal mode |
-| `s` | delete the character and insert |
-| `J` | join this line with the next |
-| `~` | toggle the case of one character |
-| `.` | **repeat the last change** |
-| `u` / `Ctrl-r` | undo / redo |
+| `r<char>`            | replace one character, staying in normal mode       |
+| `s`                  | delete the character and insert                     |
+| `J`                  | join this line with the next                        |
+| `~`                  | toggle the case of one character                    |
+| `.`                  | **repeat the last change**                          |
+| `u` / `Ctrl-r`       | undo / redo                                         |
 
-`.` is the highest-value key in Vim. Make a small edit, `n` to the next match,
-`.` to repeat it. Most of what people use multiple cursors for is `.` in a loop.
+`.` is the highest-value key in Vim. Make a small edit, `n` to the next match, `.` to repeat it. Most of what people use multiple cursors for is `.` in a loop.
 
-**A second caveat:** Vim increments the number under the cursor with `Ctrl-a`
-and decrements with `Ctrl-x`. Here `Ctrl-a` belongs to multicursor instead, so
-only the decrement half survives. Use `:s` or multicursor for bulk number
-edits.
+**A second caveat:** Vim increments the number under the cursor with `Ctrl-a` and decrements with `Ctrl-x`. Here `Ctrl-a` belongs to multicursor instead, so
+only the decrement half survives. Use `:s` or multicursor for bulk number edits.
 
 ### Text objects
 
-Operators also take objects: `i` for "inner", `a` for "around" (includes the
-delimiters).
+Operators also take objects: `i` for "inner", `a` for "around" (includes the delimiters).
 
-| | |
-|---|---|
-| `diw` / `ciw` | delete / change the word under the cursor |
-| `ci"` `ci'` `ci(` `ci[` `ci{` | change inside the quotes / brackets |
-| `ca(` | change the brackets *and* their contents |
-| `dit` / `cit` | delete / change inside an HTML or XML tag |
-| `dap` | delete a whole paragraph |
+|                               |                                           |
+| ----------------------------- | ----------------------------------------- |
+| `diw` / `ciw`                 | delete / change the word under the cursor |
+| `ci"` `ci'` `ci(` `ci[` `ci{` | change inside the quotes / brackets       |
+| `ca(`                         | change the brackets _and_ their contents  |
+| `dit` / `cit`                 | delete / change inside an HTML or XML tag |
+| `dap`                         | delete a whole paragraph                  |
 
-`ci"` with the cursor anywhere inside a string replaces its contents. `ciw` with
-the cursor anywhere in a word replaces the word. Neither needs you to position
+`ci"` with the cursor anywhere inside a string replaces its contents. `ciw` with the cursor anywhere in a word replaces the word. Neither needs you to position
 precisely first.
 
 **On a whole block**, the same objects do the work without any jumping:
 
-| | |
-|---|---|
-| `di{` / `ci{` | delete / clear a function or block body |
-| `ya{` | yank the block including its braces |
-| `=i{` | reindent the body |
-| `gci{` | comment out the body |
-| `va{` | select the block — press `a{` again to expand to the enclosing one |
+|               |                                                                    |
+| ------------- | ------------------------------------------------------------------ |
+| `di{` / `ci{` | delete / clear a function or block body                            |
+| `ya{`         | yank the block including its braces                                |
+| `=i{`         | reindent the body                                                  |
+| `gci{`        | comment out the body                                               |
+| `va{`         | select the block — press `a{` again to expand to the enclosing one |
 
 That last one is the quick way to climb out of nested scopes.
 
 ### Commenting
 
-| | |
-|---|---|
+|               |                                  |
+| ------------- | -------------------------------- |
 | `gc` (visual) | toggle comments on the selection |
-| `gcc` | toggle the current line |
-| `gcap` | comment the whole paragraph |
-| `gci{` | comment the enclosing block |
-| `gc3j` | this line and the three below |
-| `3gcc` | three lines |
+| `gcc`         | toggle the current line          |
+| `gcap`        | comment the whole paragraph      |
+| `gci{`        | comment the enclosing block      |
+| `gc3j`        | this line and the three below    |
+| `3gcc`        | three lines                      |
 
-`gc` is a Neovim built-in, not a plugin, and it toggles — press it again to
-uncomment. The comment string comes from the buffer's `commentstring`, so it is
-`//` in Java and Go, `--` in Lua, `#` in shell, and it stays correct inside
-nested contexts like a `<script>` block in HTML.
+`gc` is a Neovim built-in, not a plugin, and it toggles — press it again to uncomment. The comment string comes from the buffer's `commentstring`, so it is `//`
+in Java and Go, `--` in Lua, `#` in shell, and it stays correct inside nested contexts like a `<script>` block in HTML.
 
-`gcap` and `gci{` are the ones worth keeping: comment out a whole function body
-without counting lines or selecting anything.
+`gcap` and `gci{` are the ones worth keeping: comment out a whole function body without counting lines or selecting anything.
 
-One limit — `gc` uses line comments, never block comments. In Java you get `//`
-on each line rather than a `/* */` wrapper. That toggles cleanly, which is
+One limit — `gc` uses line comments, never block comments. In Java you get `//` on each line rather than a `/* */` wrapper. That toggles cleanly, which is
 usually the point, but a real block comment you write by hand.
 
 ### Copy and paste
 
-| | |
-|---|---|
-| `yy` | yank (copy) the line |
-| `yw` / `y$` | yank a word / to end of line |
-| `p` / `P` | paste after / before the cursor |
-| `dd` then `p` | move a line |
+|               |                                               |
+| ------------- | --------------------------------------------- |
+| `yy`          | yank (copy) the line                          |
+| `yw` / `y$`   | yank a word / to end of line                  |
+| `p` / `P`     | paste after / before the cursor               |
+| `dd` then `p` | move a line                                   |
 | `"+y` / `"+p` | yank to / paste from the **system** clipboard |
 
-Vim's registers are separate from the macOS clipboard. `"+` is the bridge. In
-visual mode, `"+y` copies the selection out to other apps.
+Vim's registers are separate from the macOS clipboard. `"+` is the bridge. In visual mode, `"+y` copies the selection out to other apps.
 
 ### Visual mode
 
 Select first, then act. `v` then a motion, then an operator.
 
-| | |
-|---|---|
-| `viw` | select the word |
-| `V` then `j` `j` | select three lines |
-| `d` / `y` / `c` | delete / yank / change the selection |
-| `<` / `>` | indent left / right — here the selection stays put |
-| `Ctrl-v` then `I` then `Esc` | insert the same text on every selected line |
+|                              |                                                    |
+| ---------------------------- | -------------------------------------------------- |
+| `viw`                        | select the word                                    |
+| `V` then `j` `j`             | select three lines                                 |
+| `d` / `y` / `c`              | delete / yank / change the selection               |
+| `<` / `>`                    | indent left / right — here the selection stays put |
+| `Ctrl-v` then `I` then `Esc` | insert the same text on every selected line        |
 
 ### Counts
 
-Almost anything takes a number prefix: `3dd` deletes three lines, `5j` moves
-down five, `2ci"` — the grammar is `count` + `operator` + `motion`.
+Almost anything takes a number prefix: `3dd` deletes three lines, `5j` moves down five, `2ci"` — the grammar is `count` + `operator` + `motion`.
 
 ### Files, buffers, splits
 
-| | |
-|---|---|
-| `:w` / `:q` / `:wq` | write / quit / both |
-| `:q!` | quit, discarding changes |
-| `:e <file>` | open a file |
-| `:bn` / `:bp` / `:bd` | next / previous / close buffer |
-| `]b` / `[b` | next / previous buffer, via the tab row |
-| `Ctrl-w` `s` / `v` | split horizontally / vertically |
-| `Ctrl-w` + `h` `j` `k` `l` | move between splits |
-| `Ctrl-w` `o` | close every split but this one |
-| `Ctrl-w` `q` | close this split |
+|                            |                                         |
+| -------------------------- | --------------------------------------- |
+| `:w` / `:q` / `:wq`        | write / quit / both                     |
+| `:q!`                      | quit, discarding changes                |
+| `:e <file>`                | open a file                             |
+| `:bn` / `:bp` / `:bd`      | next / previous / close buffer          |
+| `]b` / `[b`                | next / previous buffer, via the tab row |
+| `Ctrl-w` `s` / `v`         | split horizontally / vertically         |
+| `Ctrl-w` + `h` `j` `k` `l` | move between splits                     |
+| `Ctrl-w` `o`               | close every split but this one          |
+| `Ctrl-w` `q`               | close this split                        |
 
 ## Neovim reference
 
-Everything below is specific to this config. Leader is `Space`. Mode is noted
-only where it isn't normal.
+Everything below is specific to this config. Leader is `Space`. Mode is noted only where it isn't normal.
 
-Pause briefly after pressing `Space` to open which-key and see the available
-commands for that prefix. Continue typing to enter a group, `Backspace` returns
-to the previous level, and `Esc` closes the popup. `Space ?` shows mappings that
-apply only to the current buffer. The popup follows the active Neovim theme.
+Pause briefly after pressing `Space` to open which-key and see the available commands for that prefix. Continue typing to enter a group, `Backspace` returns to
+the previous level, and `Esc` closes the popup. `Space ?` shows mappings that apply only to the current buffer. The popup follows the active Neovim theme.
 
 ### Moving around a codebase
 
-| | |
-|---|---|
-| `gW` | workspace symbol — any class, func or method by name |
-| `gO` | symbols in this file |
-| `gd` / `gD` | definition / declaration |
-| `grr` | references |
-| `gri` / `grt` | implementations / type definition |
-| `K` | hover docs |
-| `Ctrl-s` | signature help (also insert mode) |
-| `<leader>ff` / `fb` / `fr` | files / open buffers / recent files |
-| `<leader>ee` | open/focus Neo-tree and reveal the current file |
-| `<leader>et` / `<leader>ec` | toggle / close Neo-tree |
-| `<leader>ew` | write, no autocommands, creating parent dirs |
-| `<leader>pv` | preview the current Markdown or PDF file |
-| `Ctrl-o` / `Ctrl-i` | back / forward in the jump list |
+|                             |                                                      |
+| --------------------------- | ---------------------------------------------------- |
+| `gW`                        | workspace symbol — any class, func or method by name |
+| `gO`                        | symbols in this file                                 |
+| `gd` / `gD`                 | definition / declaration                             |
+| `grr`                       | references                                           |
+| `gri` / `grt`               | implementations / type definition                    |
+| `K`                         | hover docs                                           |
+| `Ctrl-s`                    | signature help (also insert mode)                    |
+| `<leader>ff` / `fb` / `fr`  | files / open buffers / recent files                  |
+| `<leader>ee`                | open/focus Neo-tree and reveal the current file      |
+| `<leader>et` / `<leader>ec` | toggle / close Neo-tree                              |
+| `<leader>ew`                | write, no autocommands, creating parent dirs         |
+| `<leader>pv`                | preview the current Markdown or PDF file             |
+| `Ctrl-o` / `Ctrl-i`         | back / forward in the jump list                      |
 
 ### Searching
 
-| | |
-|---|---|
-| `<leader>ss` | grep the project |
-| `<leader>sw` | grep the word under the cursor (or selection, in visual) |
-| `<leader>st` | grep TODO / FIXME / HACK / WARN tags |
-| `:find <name>` | fd-backed fuzzy path completion |
-| `:grep <pat>` | ripgrep straight into the quickfix list |
+|                |                                                          |
+| -------------- | -------------------------------------------------------- |
+| `<leader>ss`   | grep the project                                         |
+| `<leader>sw`   | grep the word under the cursor (or selection, in visual) |
+| `<leader>st`   | grep TODO / FIXME / HACK / WARN tags                     |
+| `:find <name>` | fd-backed fuzzy path completion                          |
+| `:grep <pat>`  | ripgrep straight into the quickfix list                  |
 
 ### Editing
 
-| | |
-|---|---|
-| `grn` | LSP rename — use this for symbols, it fixes other files |
-| `gra` | code action (imports, generate, quick fix) |
-| `grf` | format the buffer |
-| `Ctrl-n` | add a cursor at the next match of the word under the cursor |
-| `Ctrl-a` | add cursors at every match |
-| `Ctrl-j` / `Ctrl-k` | add a cursor on the line below / above |
-| `Ctrl-m` (visual) | add a cursor on each selected match |
-| `Alt-j` / `Alt-k` | move line or selection down / up (n, i, x) |
-| `<` / `>` (visual) | indent, keeping the selection |
-| `<leader>rr` / `rw` | substitute in this buffer, blank / word under cursor |
-| `<leader>rR` / `rW` | the same across every quickfix file, then save |
-| `gqip` / `gwip` | reflow this paragraph to the width; `gw` keeps the cursor |
-| `Esc` | clear search highlight |
+|                     |                                                             |
+| ------------------- | ----------------------------------------------------------- |
+| `grn`               | LSP rename — use this for symbols, it fixes other files     |
+| `gra`               | code action (imports, generate, quick fix)                  |
+| `grf`               | format the buffer                                           |
+| `Ctrl-n`            | add a cursor at the next match of the word under the cursor |
+| `Ctrl-a`            | add cursors at every match                                  |
+| `Ctrl-j` / `Ctrl-k` | add a cursor on the line below / above                      |
+| `Ctrl-m` (visual)   | add a cursor on each selected match                         |
+| `Alt-j` / `Alt-k`   | move line or selection down / up (n, i, x)                  |
+| `<` / `>` (visual)  | indent, keeping the selection                               |
+| `<leader>rr` / `rw` | substitute in this buffer, blank / word under cursor        |
+| `<leader>rR` / `rW` | the same across every quickfix file, then save              |
+| `gqip` / `gwip`     | reflow this paragraph to the width; `gw` keeps the cursor   |
+| `Esc`               | clear search highlight                                      |
 
-`grn` versus `Ctrl-n` is the distinction worth internalising: `grn` asks jdtls or
-gopls to rename the *symbol* everywhere including imports; `Ctrl-n` is multiple
-cursors over *text* in this buffer. Reach for `grn` on anything the LSP knows.
+`grn` versus `Ctrl-n` is the distinction worth internalising: `grn` asks jdtls or gopls to rename the _symbol_ everywhere including imports; `Ctrl-n` is
+multiple cursors over _text_ in this buffer. Reach for `grn` on anything the LSP knows.
 
 ### Completion
 
 Two independent systems run at once. All of these are insert mode.
 
-**Blink completion** appears on its own as you type. It combines LSP results,
-paths, snippets, and words from the current buffer, then ranks them with typo
+**Blink completion** appears on its own as you type. It combines LSP results, paths, snippets, and words from the current buffer, then ranks them with typo
 tolerance and proximity.
 
-| | |
-|---|---|
-| `Ctrl-n` / `Ctrl-p` | next / previous item (arrows work too) |
-| `Tab` | **accept** the selected item |
-| `Shift-Tab` | move backward through snippet placeholders |
-| `Ctrl-e` | dismiss, keeping what you typed |
-| `Ctrl-Space` | trigger it manually when the menu is not up |
-| `Ctrl-s` | signature help — parameter hints |
+|                     |                                             |
+| ------------------- | ------------------------------------------- |
+| `Ctrl-n` / `Ctrl-p` | next / previous item (arrows work too)      |
+| `Tab`               | **accept** the selected item                |
+| `Shift-Tab`         | move backward through snippet placeholders  |
+| `Ctrl-e`            | dismiss, keeping what you typed             |
+| `Ctrl-Space`        | trigger it manually when the menu is not up |
+| `Ctrl-s`            | signature help — parameter hints            |
 
-`Tab` is context-aware: it accepts the selected completion, moves forward through
-an active snippet, or falls through to normal indentation. `Enter` remains a
+`Tab` is context-aware: it accepts the selected completion, moves forward through an active snippet, or falls through to normal indentation. `Enter` remains a
 normal newline and does not accept a suggestion.
 
-Nothing is preselected, so typing never silently commits a completion. Pressing
-`Tab` accepts the first result if you have not chosen another one with `Ctrl-n`
-or `Ctrl-p`. Documentation appears beside a selected item, and completion kinds
-use text labels instead of a second icon family.
+Nothing is preselected, so typing never silently commits a completion. Pressing `Tab` accepts the first result if you have not chosen another one with `Ctrl-n`
+or `Ctrl-p`. Documentation appears beside a selected item, and completion kinds use text labels instead of a second icon family.
 
 **Copilot** is separate — greyed-out inline text, no menu.
 
-| | |
-|---|---|
-| `Ctrl-Enter` | accept the whole suggestion |
-| `Ctrl-Right` | accept one word at a time |
-| `Ctrl-Up` / `Ctrl-Down` | cycle alternatives |
+|                         |                             |
+| ----------------------- | --------------------------- |
+| `Ctrl-Enter`            | accept the whole suggestion |
+| `Ctrl-Right`            | accept one word at a time   |
+| `Ctrl-Up` / `Ctrl-Down` | cycle alternatives          |
 
-Word-by-word is the underrated one: take the first half of a suggestion and
-type the rest yourself.
+Word-by-word is the underrated one: take the first half of a suggestion and type the rest yourself.
 
 **Snippets.** Accepting a method completion usually inserts placeholders.
 
-| | |
-|---|---|
+|                     |                                                      |
+| ------------------- | ---------------------------------------------------- |
 | `Tab` / `Shift-Tab` | jump forward / backward between snippet placeholders |
 
 ### Diagnostics and quickfix
 
-| | |
-|---|---|
-| `]d` / `[d` | next / previous diagnostic |
-| `]D` / `[D` | last / first diagnostic in the buffer |
-| `Ctrl-w` `d` | show the diagnostic under the cursor |
+|                           |                                                   |
+| ------------------------- | ------------------------------------------------- |
+| `]d` / `[d`               | next / previous diagnostic                        |
+| `]D` / `[D`               | last / first diagnostic in the buffer             |
+| `Ctrl-w` `d`              | show the diagnostic under the cursor              |
 | `<leader>d` / `<leader>D` | all diagnostics into the location / quickfix list |
-| `]q` / `[q` | next / previous quickfix item |
-| `dd`, `d` (visual) | delete entries from inside the quickfix window |
-| `grh` | toggle inlay hints |
+| `]q` / `[q`               | next / previous quickfix item                     |
+| `dd`, `d` (visual)        | delete entries from inside the quickfix window    |
+| `grh`                     | toggle inlay hints                                |
 
-The quickfix list is the spine of the whole config — grep, diagnostics, LSP
-references and git hunks all land there, and `<leader>rR` rewrites across every
-file in it. Build a list, then act on it.
+The quickfix list is the spine of the whole config — grep, diagnostics, LSP references and git hunks all land there, and `<leader>rR` rewrites across every file
+in it. Build a list, then act on it.
 
 ### Git
 
-| | |
-|---|---|
-| `]c` / `[c` | next / previous hunk |
+|                       |                                                  |
+| --------------------- | ------------------------------------------------ |
+| `]c` / `[c`           | next / previous hunk                             |
 | `<leader>gss` / `gsr` | stage / reset the hunk (works on a visual range) |
-| `<leader>gsS` / `gsR` | stage / reset the whole buffer |
-| `<leader>gsu` | undo the last stage |
-| `<leader>gsp` | preview the hunk inline |
-| `<leader>gsb` | blame this line |
-| `<leader>gsd` / `gsD` | diff this file / the whole tree |
-| `<leader>gsq` | every hunk into the quickfix list |
-| `<leader>gst` | toggle hunk line highlighting |
-| `<leader>gff` / `gfs` | fzf over tracked files / working tree status |
-| `<leader>gfb` / `gfz` | branches / stashes |
-| `<leader>gfd` | changed files |
-| `<leader>gfl` / `gfL` | log for this file / the repo |
-| `<leader>gfm` | find merge conflicts, into the quickfix list |
-| `<leader>gdo` / `gdc` | open / close the full working-tree diff review |
-| `<leader>gdf` / `gdh` | history for this file / the whole repository |
+| `<leader>gsS` / `gsR` | stage / reset the whole buffer                   |
+| `<leader>gsu`         | undo the last stage                              |
+| `<leader>gsp`         | preview the hunk inline                          |
+| `<leader>gsb`         | blame this line                                  |
+| `<leader>gsd` / `gsD` | diff this file / the whole tree                  |
+| `<leader>gsq`         | every hunk into the quickfix list                |
+| `<leader>gst`         | toggle hunk line highlighting                    |
+| `<leader>gff` / `gfs` | fzf over tracked files / working tree status     |
+| `<leader>gfb` / `gfz` | branches / stashes                               |
+| `<leader>gfd`         | changed files                                    |
+| `<leader>gfl` / `gfL` | log for this file / the repo                     |
+| `<leader>gfm`         | find merge conflicts, into the quickfix list     |
+| `<leader>gdo` / `gdc` | open / close the full working-tree diff review   |
+| `<leader>gdf` / `gdh` | history for this file / the whole repository     |
 
-Octo provides the GitHub PR review workflow. `<leader>ghp` lists pull requests;
-open one with `Enter`, then `<leader>ghr` browses its diff and existing threads
-without starting a review or checking out the branch. You can also open a PR
-directly with `:Octo pr edit <number>`. `<leader>ghc` closes the review. To add
-inline comments or reply in a thread, use `<leader>ghs` to start or resume a
-pending GitHub review, then use Octo's localleader actions (Space is the
-localleader). These writes reach GitHub when saved or submitted; browse mode is
-read-only. Resolve and react actions also change GitHub state.
+Octo provides the GitHub PR review workflow. `<leader>ghp` lists pull requests; open one with `Enter`, then `<leader>ghr` browses its diff and existing threads
+without starting a review or checking out the branch. You can also open a PR directly with `:Octo pr edit <number>`. `<leader>ghc` closes the review. To add
+inline comments or reply in a thread, use `<leader>ghs` to start or resume a pending GitHub review, then use Octo's localleader actions (Space is the
+localleader). These writes reach GitHub when saved or submitted; browse mode is read-only. Resolve and react actions also change GitHub state.
 
-Diffview is the broader Git review interface: it cycles through all changed
-files, compares revisions, shows file history, and provides a three-way merge
-tool. Open a branch comparison explicitly with `:DiffviewOpen main...HEAD`
-(replace `main` with the branch you are targeting). Octo owns the GitHub-backed
-PR review workflow.
+Diffview is the broader Git review interface: it cycles through all changed files, compares revisions, shows file history, and provides a three-way merge tool.
+Open a branch comparison explicitly with `:DiffviewOpen main...HEAD` (replace `main` with the branch you are targeting). Octo owns the GitHub-backed PR review
+workflow.
 
 ### Commands and messages
 
-Noice presents `:` commands in a centered palette, keeps `/` and `?` searches
-on the familiar bottom line, sends short messages to a compact view, and opens
-long command output in a split. It preserves the native command-line completion
-behavior and keeps noisy LSP progress out of the editing area.
+Noice presents `:` commands in a centered palette, keeps `/` and `?` searches on the familiar bottom line, sends short messages to a compact view, and opens
+long command output in a split. It preserves the native command-line completion behavior and keeps noisy LSP progress out of the editing area.
 
-| | |
-|---|---|
+|              |                               |
+| ------------ | ----------------------------- |
 | `<leader>nh` | open complete message history |
-| `<leader>nl` | show the last message |
-| `<leader>ne` | show recent errors |
-| `<leader>nd` | dismiss visible messages |
+| `<leader>nl` | show the last message         |
+| `<leader>ne` | show recent errors            |
+| `<leader>nd` | dismiss visible messages      |
 
 ### File previews
 
-| | |
-|---|---|
-| `<leader>pv` in Markdown | toggle the rendered view in the current buffer |
+|                           |                                                 |
+| ------------------------- | ----------------------------------------------- |
+| `<leader>pv` in Markdown  | toggle the rendered view in the current buffer  |
 | `:RenderMarkdown preview` | open a rendered Markdown view beside the source |
-| `<leader>pv` in a PDF | open the file in macOS Preview |
-| `:PreviewFile` | run the same file-aware preview command |
+| `<leader>pv` in a PDF     | open the file in macOS Preview                  |
+| `:PreviewFile`            | run the same file-aware preview command         |
 
-The Markdown toggle keeps the file editable and returns to the source view when
-pressed again. PDF preview leaves the Neovim buffers and windows in place.
+The Markdown toggle keeps the file editable and returns to the source view when pressed again. PDF preview leaves the Neovim buffers and windows in place.
 
 ### File explorers
 
-Neo-tree is the only directory explorer. These commands cover opening it,
-moving between it and a file, and managing entries:
+Neo-tree is the only directory explorer. These commands cover opening it, moving between it and a file, and managing entries:
 
-| | |
-|---|---|
-| `nvim .` | start Neovim with Neo-tree at the current directory |
-| `:e path/` | open a directory in Neo-tree |
-| `<leader>ee` | open or focus the sidebar and reveal the current file |
-| `<leader>et` / `<leader>ec` | toggle / close the sidebar |
-| `Ctrl-w` `h` / `Ctrl-w` `l` | move into Neo-tree / back to the file window |
-| `Enter` or `l` | open a file or expand a directory |
-| `h` | collapse the selected directory |
-| `a` / `d` / `r` | add / delete / rename an entry |
-| `P` | toggle the floating file preview |
-| `?` | show Neo-tree's complete key reference |
+|                             |                                                       |
+| --------------------------- | ----------------------------------------------------- |
+| `nvim .`                    | start Neovim with Neo-tree at the current directory   |
+| `:e path/`                  | open a directory in Neo-tree                          |
+| `<leader>ee`                | open or focus the sidebar and reveal the current file |
+| `<leader>et` / `<leader>ec` | toggle / close the sidebar                            |
+| `Ctrl-w` `h` / `Ctrl-w` `l` | move into Neo-tree / back to the file window          |
+| `Enter` or `l`              | open a file or expand a directory                     |
+| `h`                         | collapse the selected directory                       |
+| `a` / `d` / `r`             | add / delete / rename an entry                        |
+| `P`                         | toggle the floating file preview                      |
+| `?`                         | show Neo-tree's complete key reference                |
 
-`<leader>ee` opens or focuses the
-[Neo-tree](https://github.com/nvim-neo-tree/neo-tree.nvim) sidebar and reveals
-the current file. If the sidebar is already visible beside a file, the same key
-moves focus into it. `<leader>et` toggles it and `<leader>ec` closes it when a
-file can remain visible. When the tree is the only view, both keep it open
-instead of creating a `[No Name]` buffer. It shows Git and diagnostic state,
-shows dotfiles, and hides Git-ignored items and `.git`. The buffer tab row stays
-over the file area, while the statusline spans the full width below both views.
+`<leader>ee` opens or focuses the [Neo-tree](https://github.com/nvim-neo-tree/neo-tree.nvim) sidebar and reveals the current file. If the sidebar is already
+visible beside a file, the same key moves focus into it. `<leader>et` toggles it and `<leader>ec` closes it when a file can remain visible. When the tree is the
+only view, both keep it open instead of creating a `[No Name]` buffer. It shows Git and diagnostic state, shows dotfiles, and hides Git-ignored items and
+`.git`. The buffer tab row stays over the file area, while the statusline spans the full width below both views.
 
-Opening Neovim with a directory (`nvim .`) or editing one (`:e path/`) opens
-Neo-tree full-screen with no underlying file or `[No Name]` buffer. When
-`<leader>bd` closes a file, it selects the next open file first. Closing the last
-file returns to that full-screen explorer state. It also closes an empty
-`[No Name]` buffer: if a file remains, focus goes to an open file; otherwise
-Neo-tree takes the full view. Modified scratch or special windows remain open
-so their state is not lost, even if that means Neo-tree cannot be full-screen.
+Opening Neovim with a directory (`nvim .`) or editing one (`:e path/`) opens Neo-tree full-screen with no underlying file or `[No Name]` buffer. When
+`<leader>bd` closes a file, it selects the next open file first. Closing the last file returns to that full-screen explorer state. It also closes an empty
+`[No Name]` buffer: if a file remains, focus goes to an open file; otherwise Neo-tree takes the full view. Modified scratch or special windows remain open so
+their state is not lost, even if that means Neo-tree cannot be full-screen.
 
-Space remains available as the global leader inside the sidebar. Its behavior
-is consistent whether it opens as a sidebar or from a directory.
+Space remains available as the global leader inside the sidebar. Its behavior is consistent whether it opens as a sidebar or from a directory.
 
 ### Buffer tabs
 
-The row along the top is one tab per open file buffer, from
-[bufferline.nvim](https://github.com/akinsho/bufferline.nvim). These are
-buffers, not Neovim tabpages — opening a file adds a tab, and nothing needs a
-`:tabnew`. With only the full-screen explorer open, the row is hidden.
+The row along the top is one tab per open file buffer, from [bufferline.nvim](https://github.com/akinsho/bufferline.nvim). These are buffers, not Neovim
+tabpages — opening a file adds a tab, and nothing needs a `:tabnew`. With only the full-screen explorer open, the row is hidden.
 
-| | |
-|---|---|
-| `]b` / `[b` | next / previous buffer, matching `]c` / `[c` on git hunks |
-| `<leader>bb` | label every tab and jump to the one you press |
-| `<leader>bd` | close this file or an empty `[No Name]` buffer; keep unsaved text |
-| `<leader>bo` | close every buffer but this one |
-| `<leader>b.` / `<leader>b,` | move this tab right / left in the row |
-| `<leader>fb` | the buffer list as an fzf picker, with preview |
-| `:ls` | list every open buffer and its number |
-| `:buffer <number-or-name>` | switch to a buffer directly |
-| `:tabs` | list real Neovim tabpages and their windows |
+|                             |                                                                   |
+| --------------------------- | ----------------------------------------------------------------- |
+| `]b` / `[b`                 | next / previous buffer, matching `]c` / `[c` on git hunks         |
+| `<leader>bb`                | label every tab and jump to the one you press                     |
+| `<leader>bd`                | close this file or an empty `[No Name]` buffer; keep unsaved text |
+| `<leader>bo`                | close every buffer but this one                                   |
+| `<leader>b.` / `<leader>b,` | move this tab right / left in the row                             |
+| `<leader>fb`                | the buffer list as an fzf picker, with preview                    |
+| `:ls`                       | list every open buffer and its number                             |
+| `:buffer <number-or-name>`  | switch to a buffer directly                                       |
+| `:tabs`                     | list real Neovim tabpages and their windows                       |
 
-A tab shows the filetype icon, and an LSP error or warning count when the file
-has diagnostics. `<leader>fb` is still the faster way through a large set — the
+A tab shows the filetype icon, and an LSP error or warning count when the file has diagnostics. `<leader>fb` is still the faster way through a large set — the
 row is for seeing what is open, the picker for searching it.
 
-`[No Name]` is an unnamed, unsaved buffer, often created by `:enew`, `:new`,
-`:tabnew`, or an accidental `Ctrl-w n`. It is not a file until you give it a
-path. To keep one, type your text and use `:saveas path/to/new-file.ext` (the
-parent directory must exist). An untouched empty one can be closed with
-`<leader>bd`; text in an unnamed buffer is never discarded by that mapping.
+`[No Name]` is an unnamed, unsaved buffer, often created by `:enew`, `:new`, `:tabnew`, or an accidental `Ctrl-w n`. It is not a file until you give it a path.
+To keep one, type your text and use `:saveas path/to/new-file.ext` (the parent directory must exist). An untouched empty one can be closed with `<leader>bd`;
+text in an unnamed buffer is never discarded by that mapping.
 
-Use `Enter` in Neo-tree or an fzf picker for the normal buffer workflow.
-`Ctrl-t` in an fzf picker deliberately creates a real Neovim tabpage with its
-own window layout; `:tabs` shows whether any exist.
+Use `Enter` in Neo-tree or an fzf picker for the normal buffer workflow. `Ctrl-t` in an fzf picker deliberately creates a real Neovim tabpage with its own
+window layout; `:tabs` shows whether any exist.
 
 ### Inside any fzf picker
 
-| | |
-|---|---|
-| `Enter` | open |
-| `Ctrl-s` / `Ctrl-v` / `Ctrl-t` | split / vsplit / tab |
-| `Ctrl-q` | send all matches to the quickfix list |
-| `Tab` | multi-select (file and grep pickers; not branches, log or stash) |
-| `Ctrl-p` | toggle the preview |
-| `Ctrl-d` / `Ctrl-u` | half page down / up in the list |
-| `Ctrl-f` / `Ctrl-b` | half page down / up in the preview |
-| `Ctrl-x` | delete the buffer (buffer picker only) |
+|                                |                                                                  |
+| ------------------------------ | ---------------------------------------------------------------- |
+| `Enter`                        | open                                                             |
+| `Ctrl-s` / `Ctrl-v` / `Ctrl-t` | split / vsplit / tab                                             |
+| `Ctrl-q`                       | send all matches to the quickfix list                            |
+| `Tab`                          | multi-select (file and grep pickers; not branches, log or stash) |
+| `Ctrl-p`                       | toggle the preview                                               |
+| `Ctrl-d` / `Ctrl-u`            | half page down / up in the list                                  |
+| `Ctrl-f` / `Ctrl-b`            | half page down / up in the preview                               |
+| `Ctrl-x`                       | delete the buffer (buffer picker only)                           |
 
-`Ctrl-q` is the one people forget. Grep for something, `Ctrl-q` the lot into
-quickfix, then `<leader>rR` to rewrite every match across every file.
+`Ctrl-q` is the one people forget. Grep for something, `Ctrl-q` the lot into quickfix, then `<leader>rR` to rewrite every match across every file.
 
 ### Windows and misc
 
-| | |
-|---|---|
-| `Ctrl-w` + `h`/`j`/`k`/`l` | move between splits (arrows work too) |
-| `Ctrl-w` `s` / `v` | split horizontally / vertically |
-| `Ctrl-w` `o` | close every split but this one |
-| `Shift` + arrows | resize the split |
-| `<leader>y` | copy a reference to this file — menu of filename, relative path, absolute path, GitHub URL, or the diagnostic under the cursor |
+|                            |                                                                                                                                |
+| -------------------------- | ------------------------------------------------------------------------------------------------------------------------------ |
+| `Ctrl-w` + `h`/`j`/`k`/`l` | move between splits (arrows work too)                                                                                          |
+| `Ctrl-w` `s` / `v`         | split horizontally / vertically                                                                                                |
+| `Ctrl-w` `o`               | close every split but this one                                                                                                 |
+| `Shift` + arrows           | resize the split                                                                                                               |
+| `<leader>y`                | copy a reference to this file — menu of filename, relative path, absolute path, GitHub URL, or the diagnostic under the cursor |
 
-`<leader>y` `→` *Git Url* is the fastest way to paste a permalink into Slack or
-a PR; it takes the visual selection into account and produces a line range.
+`<leader>y` `→` _Git Url_ is the fastest way to paste a permalink into Slack or a PR; it takes the visual selection into account and produces a line range.
 
 ## Notes
 
-**Code has an 80-column guide; Markdown has a 160-column guide.** A guide only
-draws the vertical marker. `textwidth` and `formatoptions` control hard wrapping,
-while `wrap`, `linebreak`, and `breakindent` control how long lines are displayed.
-Now:
+**No vertical rulers are drawn.** Code retains an 80-column text width and Markdown a 160-column text width. `textwidth` and `formatoptions` control hard wrapping,
+while `wrap`, `linebreak`, and `breakindent` control how long lines are displayed:
 
-- **Comments** wrap as you type, in every filetype, and the `--` or `//` prefix
-  carries onto the next line.
-- **Code** soft-wraps in the window at word boundaries, while remaining one line
-  in the file. `t` stays absent from `formatoptions`, so editing cannot split a
+- **Comments** wrap as you type, in every filetype, and the `--` or `//` prefix carries onto the next line.
+- **Code** soft-wraps in the window at word boundaries, while remaining one line in the file. `t` stays absent from `formatoptions`, so editing cannot split a
   string or call chain; the formatter still owns the saved layout.
-- **Markdown** wraps as you type at 160 columns and draws its ruler there. An
-  existing paragraph reflows when edited or formatted; saving runs Prettier
-  with `--prose-wrap=always --print-width=160`. Text files use 80, while commit
-  messages use 72 to follow Git's convention.
-- **All ordinary file buffers** soft-wrap long existing lines with continuation
-  indentation. Neo-tree and other interface buffers retain their own layout.
+- **Markdown** wraps as you type at 160 columns without drawing a ruler. An existing paragraph reflows when edited or formatted; saving runs Prettier with
+  `--prose-wrap=always --print-width=160`. Text files use 80, while commit messages use 72 to follow Git's convention.
+- **All ordinary file buffers** soft-wrap long existing lines with continuation indentation. Neo-tree and other interface buffers retain their own layout.
 - `gqip` reflows a paragraph on demand; `gwip` does it without moving the cursor.
-- `l` in `formatoptions` keeps existing long code and plain-text lines intact.
-  Markdown removes it locally so actively edited prose follows its 160-column
+- `l` in `formatoptions` keeps existing long code and plain-text lines intact. Markdown removes it locally so actively edited prose follows its 160-column
   width; save formatting handles the rest of the document safely.
 
-Code formatters enforce the same 80: `prettier --print-width=80` and
-`stylua.toml`'s `column_width = 80`; Markdown has its separate 160-column
-Prettier rule. That `stylua.toml` is also what *enables*
-Lua formatting at all — efm only runs stylua when it finds one, so before it
-existed Lua was the single configured language that was never formatted. Its
-settings match the Lua already committed here exactly, verified as zero rewritten
-lines across all 23 files, so adding it reformatted nothing.
+Code formatters enforce the same 80: `prettier --print-width=80` and `stylua.toml`'s `column_width = 80`; Markdown has its separate 160-column Prettier rule.
+That `stylua.toml` is also what _enables_ Lua formatting at all — efm only runs stylua when it finds one, so before it existed Lua was the single configured
+language that was never formatted. Its settings match the Lua already committed here exactly, verified as zero rewritten lines across all 23 files, so adding it
+reformatted nothing.
 
-**Java follows Homebrew's current OpenJDK.** When `openjdk` is installed,
-`.zshrc` discovers its prefix and puts `$JAVA_HOME/bin` on `$PATH`. Projects
-that require another JDK can select it in `~/.zshrc.local` without changing the
-shared configuration.
+**Java follows Homebrew's current OpenJDK.** When `openjdk` is installed, `.zshrc` discovers its prefix and puts `$JAVA_HOME/bin` on `$PATH`. Projects that
+require another JDK can select it in `~/.zshrc.local` without changing the shared configuration.
 
-**Lombok needs a javaagent, and it is not in this repo.** Lombok generates
-members during annotation processing, so `log` from `@Slf4j`, the accessors from
-`@Getter` / `@Data` and the constructors from `@RequiredArgsConstructor` are
-absent from the source jdtls reads — every one of them reports as unresolved
-while Maven builds the project happily. IntelliJ bundles Lombok support; jdtls
-needs the jar attached as a javaagent so it can patch the compiler it uses
-internally. `lsp/jdtls.lua` adds the argument when the jar is present and starts
-normally when it is not, so a fresh machine still gets a working Java setup —
-just one that cannot see Lombok members until you run:
+**Lombok needs a javaagent, and it is not in this repo.** Lombok generates members during annotation processing, so `log` from `@Slf4j`, the accessors from
+`@Getter` / `@Data` and the constructors from `@RequiredArgsConstructor` are absent from the source jdtls reads — every one of them reports as unresolved while
+Maven builds the project happily. IntelliJ bundles Lombok support; jdtls needs the jar attached as a javaagent so it can patch the compiler it uses internally.
+`lsp/jdtls.lua` adds the argument when the jar is present and starts normally when it is not, so a fresh machine still gets a working Java setup — just one that
+cannot see Lombok members until you run:
 
 ```sh
 mkdir -p ~/.local/share/lombok
@@ -754,83 +629,58 @@ cp ~/.m2/repository/org/projectlombok/lombok/1.18.46/lombok-1.18.46.jar \
    ~/.local/share/lombok/lombok.jar
 ```
 
-The jar lives outside the repo on purpose — 2MB of binary does not belong in
-dotfiles. Any recent Lombok works; keep it new enough for the JDK in
-`JAVA_HOME`, since Lombok support for a major Java release usually lands a few
-versions behind.
+The jar lives outside the repo on purpose — 2MB of binary does not belong in dotfiles. Any recent Lombok works; keep it new enough for the JDK in `JAVA_HOME`,
+since Lombok support for a major Java release usually lands a few versions behind.
 
-**macOS owns Ctrl+arrows.** This config used to bind them at the tmux root table
-to cross nvim splits and tmux panes with one keystroke: tmux inspected the
-pane's process list and either forwarded the key to nvim or moved the pane
-itself. It cannot work here. The macOS window server claims all four before any
-terminal sees them — `Ctrl-←`/`Ctrl-→` switch Spaces, `Ctrl-↑` is Mission
-Control, `Ctrl-↓` is Application Windows — and pressing one moved the whole
-desktop instead. The bindings and the `vim-tmux-navigator` plugin behind them
-are gone; panes are `prefix` + arrows, splits are `Ctrl-w`.
+**macOS owns Ctrl+arrows.** This config used to bind them at the tmux root table to cross nvim splits and tmux panes with one keystroke: tmux inspected the
+pane's process list and either forwarded the key to nvim or moved the pane itself. It cannot work here. The macOS window server claims all four before any
+terminal sees them — `Ctrl-←`/`Ctrl-→` switch Spaces, `Ctrl-↑` is Mission Control, `Ctrl-↓` is Application Windows — and pressing one moved the whole desktop
+instead. The bindings and the `vim-tmux-navigator` plugin behind them are gone; panes are `prefix` + arrows, splits are `Ctrl-w`.
 
 Disabling the four shortcuts in *System Settings > Keyboard > Keyboard Shortcuts
-> Mission Control* would free the keys if the unified navigation is ever worth
-having back.
 
-**`Alt-t` toggles a floating scratch session** (`popup`), opened in the current
-pane's directory. Press it again from inside to dismiss. It used to be `Ctrl-t`,
-which was a bad choice twice over: root-table bindings never reach the pane, so
-it swallowed both fzf's Ctrl-T file widget and nvim's explorer open-in-new-tab.
-The popup command runs with `TMUX=` unset — tmux refuses to attach a session
-from inside an existing client otherwise, so the old binding just flashed and
+> Mission Control* would free the keys if the unified navigation is ever worth having back.
+
+**`Alt-t` toggles a floating scratch session** (`popup`), opened in the current pane's directory. Press it again from inside to dismiss. It used to be `Ctrl-t`,
+which was a bad choice twice over: root-table bindings never reach the pane, so it swallowed both fzf's Ctrl-T file widget and nvim's explorer open-in-new-tab.
+The popup command runs with `TMUX=` unset — tmux refuses to attach a session from inside an existing client otherwise, so the old binding just flashed and
 closed.
 
-**Kill confirmations are a centred menu**, not tmux's built-in
-`confirm-before`, which takes over the status line and leaves the cursor
-blinking next to the window name. `prefix + x` and `prefix + &` open a small
-themed box in the middle of the screen; `y` still confirms. The `menu-*` styles
-are updated with the rest of tmux by `theme.sh`.
+**Kill confirmations are a centred menu**, not tmux's built-in `confirm-before`, which takes over the status line and leaves the cursor blinking next to the
+window name. `prefix + x` and `prefix + &` open a small themed box in the middle of the screen; `y` still confirms. The `menu-*` styles are updated with the
+rest of tmux by `theme.sh`.
 
-**Windows name themselves** after the directory of the active pane
-(`automatic-rename-format`). The previous `after-new-window` hook opened a
-blocking rename prompt on every single window, including the ones tmux-resurrect
-creates while restoring. `prefix + ,` still renames by hand.
+**Windows name themselves** after the directory of the active pane (`automatic-rename-format`). The previous `after-new-window` hook opened a blocking rename
+prompt on every single window, including the ones tmux-resurrect creates while restoring. `prefix + ,` still renames by hand.
 
-**Neovim plugins** are managed by lazy.nvim and install under
-`~/.local/share/nvim/lazy`. The tracked `lazy-lock.json` records plugin
-revisions. On a new laptop, the first Neovim launch bootstraps lazy.nvim and
-installs the plugins; treesitter parsers compile after that. Use `:Lazy` to
-inspect the plugin list and run updates.
+**Neovim plugins** are managed by lazy.nvim and install under `~/.local/share/nvim/lazy`. The tracked `lazy-lock.json` records plugin revisions. On a new
+laptop, the first Neovim launch bootstraps lazy.nvim and installs the plugins; treesitter parsers compile after that. Use `:Lazy` to inspect the plugin list and
+run updates.
 
-Plugin declarations and their setup live in `.config/nvim/lua/plugins/`, one
-feature per file. `init.lua` is reserved for editor options, general keymaps,
-LSP, diagnostics, and commands. Add a plugin by creating another Lua file in
-that directory that returns a lazy.nvim plugin specification.
+Plugin declarations and their setup live in `.config/nvim/lua/plugins/`, one feature per file. `init.lua` is reserved for editor options, general keymaps, LSP,
+diagnostics, and commands. Add a plugin by creating another Lua file in that directory that returns a lazy.nvim plugin specification.
 
-Treesitter installs both parsers and their highlight queries. The configuration
-repairs parser-only installations left by older plugin managers, and lazy.nvim
+Treesitter installs both parsers and their highlight queries. The configuration repairs parser-only installations left by older plugin managers, and lazy.nvim
 runs `:TSUpdate` whenever Treesitter itself is updated.
 
-Neovim's semantic UI symbols use Nerd Font Octicons from `lua/core/icons.lua`,
-so the statusline, Neo-tree, diagnostics, and Git signs stay visually aligned
-with Starship. Powerline separators and OS/filetype logos keep their specialized
-glyphs.
+Neovim's semantic UI symbols use Nerd Font Octicons from `lua/core/icons.lua`, so the statusline, Neo-tree, diagnostics, and Git signs stay visually aligned
+with Starship. Powerline separators and OS/filetype logos keep their specialized glyphs.
 
-**tmux plugins** need `prefix + I` (capital i) once after a fresh clone. Prefix
-is `Ctrl-a`.
+**tmux plugins** need `prefix + I` (capital i) once after a fresh clone. Prefix is `Ctrl-a`.
 
 ## Secrets
 
-Not in this repo, and gitignored so they cannot be added by accident. `.zshrc`
-reads `~/.zshsecrets` if present and stays quiet if it is missing.
+Not in this repo, and gitignored so they cannot be added by accident. `.zshrc` reads `~/.zshsecrets` if present and stays quiet if it is missing.
 
-GitHub CLI authentication remains in `~/.config/gh`, and SSH keys remain in
-`~/.ssh`; neither path is managed or sourced by this repository. Use
-`gh auth login` or your preferred credential manager on each laptop.
+GitHub CLI authentication remains in `~/.config/gh`, and SSH keys remain in `~/.ssh`; neither path is managed or sourced by this repository. Use `gh auth login`
+or your preferred credential manager on each laptop.
 
-Repository automation must follow the safety contract in `AGENTS.md`. Its
-required test suite exercises migration, collision refusal, rollback, private
-backup permissions, and protected credential paths using temporary homes.
+Repository automation must follow the safety contract in `AGENTS.md`. Its required test suite exercises migration, collision refusal, rollback, private backup
+permissions, and protected credential paths using temporary homes.
 
 ## Change the theme everywhere
 
-The terminal tools share one visual theme. Check or change it from the
-repository root:
+The terminal tools share one visual theme. Check or change it from the repository root:
 
 ```sh
 ./theme.sh status
@@ -841,20 +691,14 @@ repository root:
 ./theme.sh latte
 ./theme.sh macchiato
 ./theme.sh mocha
+./theme.sh everforest-light
+./theme.sh everforest-dark
+./theme.sh kanagawa-dragon
 ```
 
-The command updates Ghostty, Neovim, tmux, Starship, fzf (both shell and
-Neovim), bat, and btop together. Reload the shell with `exec zsh`, reload tmux
-with prefix + `r`, and restart other open applications. The selected theme is
-stored in `.theme`; commit that change to carry the same look to another
-laptop. Tokyo Night and Rosé Pine use bat's ANSI theme so syntax colors follow
-the terminal palette. Latte, Tokyo Night Day, and Rosé Pine Dawn are light; the
-others are dark. Rosé Pine selects the Main variant. The Neo-tree sidebar and
-inactive buffer tabs deliberately use a different palette surface than
-Ghostty's base background. Neovim popups, including Neo-tree filters and the
-fzf file picker, use that same sidebar surface in every theme.
-
-## Credit
-
-The Neovim config and several shell helpers originate from
-[ricoberger/dotfiles](https://github.com/ricoberger/dotfiles), since diverged.
+The command updates Ghostty, Neovim, tmux, Starship, fzf (both shell and Neovim), bat, and btop together. Reload the shell with `exec zsh`, reload tmux with
+prefix + `r`, and restart other open applications. The selected theme is stored in `.theme`; commit that change to carry the same look to another laptop. Tokyo
+Night, Rosé Pine, Everforest, and Kanagawa Dragon use bat's ANSI theme so syntax colors follow the terminal palette. Latte, Tokyo Night Day, Rosé Pine Dawn, and Everforest Light
+are light; the others are dark. Rosé Pine selects the Main variant; Everforest Light uses Medium contrast and Dark uses Hard. File buffers, Neo-tree, the inactive buffer
+tabs, and Neovim popups (including Neo-tree filters and the fzf file picker) share the same background in every theme. The active tab uses a subtly different
+surface so it remains visible.

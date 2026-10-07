@@ -46,19 +46,29 @@ TMUX= nvim --headless README.md \
 pass 'Noice renders command text directly beside the colon'
 
 TMUX= nvim --headless . \
-  '+lua local ok, err = pcall(function() assert(vim.wait(1500, function() return vim.bo.filetype == "neo-tree" end)); require("lazy").load({ plugins = { "noice.nvim", "which-key.nvim", "blink.cmp" } }); vim.api.nvim_exec_autocmds("VimEnter", {}); assert(vim.wait(1000, function() return require("noice.config").is_running() end)); local hl = function(name) return vim.api.nvim_get_hl(0, { name = name, link = false }) end; local canvas = hl("NeoTreeNormal").bg; assert(canvas); for _, name in ipairs({ "NormalFloat", "FloatBorder", "FloatTitle", "NeoTreeFloatNormal", "NeoTreeFloatBorder", "NeoTreeFloatTitle", "PickerNormal", "PickerBorder", "WhichKeyNormal", "WhichKeyBorder", "WhichKeyTitle", "NoicePopup", "NoicePopupBorder", "NoiceCmdlinePopup", "NoiceCmdlinePopupBorder", "BlinkCmpDoc", "BlinkCmpDocBorder", "BlinkCmpSignatureHelp", "BlinkCmpSignatureHelpBorder" }) do assert(hl(name).bg == canvas, name .. " differs from Neo-tree") end; assert(hl("Pmenu").bg == canvas); assert(hl("BlinkCmpMenuBorder").bg == canvas); assert(hl("NoicePopupmenuBorder").bg == canvas) end); if not ok then io.stderr:write(tostring(err), "\n"); vim.cmd.cquit() end' \
+  '+lua local ok, err = pcall(function() assert(vim.wait(1500, function() return vim.bo.filetype == "neo-tree" end)); require("lazy").load({ plugins = { "noice.nvim", "which-key.nvim", "blink.cmp" } }); vim.api.nvim_exec_autocmds("VimEnter", {}); assert(vim.wait(1000, function() return require("noice.config").is_running() end)); local hl = function(name) return vim.api.nvim_get_hl(0, { name = name, link = false }) end; local canvas = hl("Normal").bg; assert(canvas); for _, name in ipairs({ "NeoTreeNormal", "NeoTreeNormalNC", "NeoTreeEndOfBuffer", "NormalFloat", "FloatBorder", "FloatTitle", "NeoTreeFloatNormal", "NeoTreeFloatBorder", "NeoTreeFloatTitle", "PickerNormal", "PickerBorder", "WhichKeyNormal", "WhichKeyBorder", "WhichKeyTitle", "NoicePopup", "NoicePopupBorder", "NoiceCmdlinePopup", "NoiceCmdlinePopupBorder", "BlinkCmpDoc", "BlinkCmpDocBorder", "BlinkCmpSignatureHelp", "BlinkCmpSignatureHelpBorder", "BufferLineFill", "BufferLineBackground" }) do assert(hl(name).bg == canvas, name .. " differs from file background") end; assert(hl("Pmenu").bg == canvas); assert(hl("BlinkCmpMenuBorder").bg == canvas); assert(hl("NoicePopupmenuBorder").bg == canvas) end); if not ok then io.stderr:write(tostring(err), "\n"); vim.cmd.cquit() end' \
   '+qa!'
-pass 'Neo-tree, Noice, WhichKey, Blink and picker popups share the explorer canvas'
+pass 'files, Neo-tree, buffer tabs, and popups share the editor canvas'
+
+TMUX= nvim --headless README.md \
+  '+lua assert(vim.o.colorcolumn == "" and vim.wo.colorcolumn == "", "file window still draws a vertical ruler")' \
+  '+qa!'
+pass 'file windows have no visible column ruler'
 
 TMUX= nvim --headless README.md \
   '+lua local hl = function(name) return vim.api.nvim_get_hl(0, { name = name, link = false }) end; assert(hl("BufferLineModifiedSelected").bg == hl("BufferLineBufferSelected").bg, "modified dot sits outside the active tab")' \
   '+qa!'
 pass 'modified-file dot shares the active tab background'
 
+TMUX= nvim --headless . \
+  '+lua local ok, err = pcall(function() assert(vim.wait(1500, function() return vim.bo.filetype == "neo-tree" end)); assert(vim.wo.fillchars:find("eob: ", 1, true), "Neo-tree still draws tildes"); assert(vim.wo.winhighlight:find("EndOfBuffer:NeoTreeEndOfBuffer", 1, true)); local hl = vim.api.nvim_get_hl(0, { name = "NeoTreeEndOfBuffer", link = false }); local bg = vim.api.nvim_get_hl(0, { name = "Normal", link = false }).bg; assert(hl.fg == bg and hl.bg == bg, "Neo-tree filler is visible") end); if not ok then io.stderr:write(tostring(err), "\n"); vim.cmd.cquit() end' \
+  '+qa!'
+pass 'Neo-tree hides end-of-buffer tildes'
+
 TMUX= nvim --headless README.md \
   '+lua assert(vim.wo.fillchars:find("eob: ", 1, true), "file buffers still draw tildes"); vim.wo.fillchars = "eob:~"; vim.api.nvim_exec_autocmds("BufWinEnter", { buffer = 0 }); assert(vim.wo.fillchars:find("eob: ", 1, true), "file window did not clear an overridden tilde")' \
   '+qa!'
-pass 'file buffers hide end-of-buffer tildes even after a local override'
+pass 'file buffers hide end-of-buffer tildes too'
 
 TMUX= nvim --headless README.md \
   '+lua local ok, err = pcall(function() require("lazy").load({ plugins = { "octo.nvim" } }); local cfg = require("octo.config").values; assert(cfg.picker == "default" and cfg.use_local_fs == false and cfg.reviews.auto_show_threads); assert(vim.fn.exists(":Octo") == 2); for _, item in ipairs({ { "<leader>ghp", "Octo pr list" }, { "<leader>ghr", "Octo review browse" }, { "<leader>ghs", "Octo review" }, { "<leader>ghc", "Octo review close" } }) do assert(vim.fn.maparg(item[1], "n", false, true).rhs:find(item[2], 1, true), item[1]) end; assert(cfg.mappings.review_thread.add_reply.lhs == "<localleader>cr"); assert(cfg.mappings.review_thread.resolve_thread.lhs == "<localleader>rt"); assert(cfg.mappings.review_diff.next_thread.lhs == "]t") end); if not ok then io.stderr:write(tostring(err), "\n"); vim.cmd.cquit() end' \
@@ -74,6 +84,21 @@ TMUX= nvim --headless . \
   '+lua vim.wait(2000, function() return vim.bo.filetype == "neo-tree" end); vim.wait(300); vim.cmd.edit("README.md"); local file = vim.api.nvim_get_current_buf(); assert(vim.api.nvim_buf_get_name(file):match("README.md$")); local close = vim.fn.maparg("<leader>bd", "n", false, true).callback; close(); assert(vim.wait(1500, function() return vim.bo.filetype == "neo-tree" and not vim.api.nvim_buf_is_valid(file) end)); assert(#vim.api.nvim_tabpage_list_wins(0) == 1); for _, b in ipairs(vim.api.nvim_list_bufs()) do assert(not (vim.api.nvim_buf_is_valid(b) and vim.api.nvim_buf_get_name(b) == "")) end' \
   '+qa!'
 pass 'directory startup can open a file and return cleanly to the tree'
+
+GMAYA_DELETE_TEST_ROOT="$TEST_ROOT" TMUX= nvim --headless \
+  '+lua local ok, err = pcall(function() local path = vim.uv.fs_realpath(vim.env.GMAYA_DELETE_TEST_ROOT) .. "/delete-last.txt"; vim.fn.writefile({ "temporary" }, path); vim.cmd.edit(path); local file = vim.api.nvim_get_current_buf(); vim.fn.maparg("<leader>et", "n", false, true).callback(); assert(vim.wait(1000, function() return require("core.buffers").neo_tree_window() ~= nil end)); assert(require("neo-tree").config.log_level == vim.log.levels.WARN); require("neo-tree.sources.filesystem.lib.fs_actions").delete_node(path, nil, true); assert(vim.wait(1500, function() return vim.bo.filetype == "neo-tree" and #vim.api.nvim_tabpage_list_wins(0) == 1 and not vim.api.nvim_buf_is_valid(file) end)); for _, buf in ipairs(vim.api.nvim_list_bufs()) do assert(not require("core.buffers").is_empty_unnamed(buf), "delete left an empty buffer") end end); if not ok then io.stderr:write(tostring(err), "\n"); vim.cmd.cquit() end' \
+  '+qa!'
+pass 'Neo-tree deletion of the last open file returns to full-screen explorer'
+
+GMAYA_DELETE_TEST_ROOT="$TEST_ROOT" TMUX= nvim --headless \
+  '+lua local ok, err = pcall(function() local root = vim.uv.fs_realpath(vim.env.GMAYA_DELETE_TEST_ROOT); local first = root .. "/delete-first.txt"; local second = root .. "/keep-second.txt"; vim.fn.writefile({ "first" }, first); vim.fn.writefile({ "second" }, second); vim.cmd.edit(second); local kept = vim.api.nvim_get_current_buf(); vim.cmd.edit(first); local deleted = vim.api.nvim_get_current_buf(); local win = vim.api.nvim_get_current_win(); vim.fn.maparg("<leader>et", "n", false, true).callback(); require("neo-tree.sources.filesystem.lib.fs_actions").delete_node(first, nil, true); assert(vim.wait(1500, function() return vim.api.nvim_win_is_valid(win) and vim.api.nvim_win_get_buf(win) == kept and not vim.api.nvim_buf_is_valid(deleted) end)); for _, buf in ipairs(vim.api.nvim_list_bufs()) do assert(not require("core.buffers").is_empty_unnamed(buf), "delete left an empty buffer") end end); if not ok then io.stderr:write(tostring(err), "\n"); vim.cmd.cquit() end' \
+  '+qa!'
+pass 'Neo-tree deletion selects another open file without an empty buffer'
+
+GMAYA_DELETE_TEST_ROOT="$TEST_ROOT" TMUX= nvim --headless \
+  '+lua local ok, err = pcall(function() local path = vim.uv.fs_realpath(vim.env.GMAYA_DELETE_TEST_ROOT) .. "/delete-splits.txt"; vim.fn.writefile({ "temporary" }, path); vim.cmd.edit(path); vim.cmd.vsplit(); local deleted = vim.api.nvim_get_current_buf(); vim.fn.maparg("<leader>et", "n", false, true).callback(); require("neo-tree.sources.filesystem.lib.fs_actions").delete_node(path, nil, true); assert(vim.wait(1500, function() return #vim.api.nvim_tabpage_list_wins(0) == 1 and vim.bo.filetype == "neo-tree" and not vim.api.nvim_buf_is_valid(deleted) end)); for _, buf in ipairs(vim.api.nvim_list_bufs()) do assert(not require("core.buffers").is_empty_unnamed(buf), "delete left an empty buffer") end end); if not ok then io.stderr:write(tostring(err), "\n"); vim.cmd.cquit() end' \
+  '+qa!'
+pass 'Neo-tree deletion cleans up two views of the same file'
 
 TMUX= nvim --headless . \
   '+lua local ok, err = pcall(function() local manager = require("neo-tree.sources.manager"); local renderer = require("neo-tree.ui.renderer"); local commands = require("neo-tree.sources.filesystem.commands"); local function open(name) assert(vim.wait(2000, function() local state = manager.get_state_for_window(); return state and state.tree and state.tree:get_node(vim.fn.getcwd() .. "/" .. name) end)); local state = manager.get_state_for_window(); renderer.focus_node(state, vim.fn.getcwd() .. "/" .. name); commands.open(state); assert(vim.wait(1000, function() return vim.api.nvim_buf_get_name(0):match(name .. "$") end)) end; open("README.md"); local readme = vim.api.nvim_get_current_buf(); vim.fn.maparg("<leader>ee", "n", false, true).callback(); assert(vim.wait(1000, function() return vim.bo.filetype == "neo-tree" end)); open("AGENTS.md"); local agents = vim.api.nvim_get_current_buf(); local close = vim.fn.maparg("<leader>bd", "n", false, true).callback; close(); assert(vim.api.nvim_get_current_buf() == readme and not vim.api.nvim_buf_is_valid(agents)); close(); assert(vim.wait(1500, function() return vim.bo.filetype == "neo-tree" and #require("core.buffers").files() == 0 end)); assert(#vim.api.nvim_tabpage_list_wins(0) == 1); for _, buf in ipairs(vim.api.nvim_list_bufs()) do assert(not require("core.buffers").is_empty_unnamed(buf)) end end); if not ok then io.stderr:write(tostring(err), "\n"); vim.cmd.cquit() end' \
@@ -164,14 +189,14 @@ TMUX= nvim --headless README.md \
 pass 'explorer focus and toggle preserve the file window'
 
 TMUX= nvim --headless README.md \
-  '+lua assert(vim.bo.filetype == "markdown"); assert(vim.wo.wrap and vim.wo.linebreak and vim.wo.breakindent); assert(vim.bo.textwidth == 160); assert(vim.wo.colorcolumn == "160"); assert(not vim.bo.formatoptions:find("l", 1, true)); local efm = dofile(".config/nvim/lsp/efm.lua"); assert(efm.settings.languages.markdown[1].formatCommand:match("%-%-print%-width=160")); assert(efm.settings.languages["markdown.mdx"][1].formatCommand:match("%-%-print%-width=160")); local preview = vim.fn.maparg("<leader>pv", "n", false, true).callback; assert(type(preview) == "function"); assert(vim.fn.exists(":PreviewFile") == 2); assert(vim.fn.exists(":RenderMarkdown") == 2); preview(); vim.wait(100); preview()' \
+  '+lua assert(vim.bo.filetype == "markdown"); assert(vim.wo.wrap and vim.wo.linebreak and vim.wo.breakindent); assert(vim.bo.textwidth == 160); assert(vim.wo.colorcolumn == ""); assert(not vim.bo.formatoptions:find("l", 1, true)); local efm = dofile(".config/nvim/lsp/efm.lua"); assert(efm.settings.languages.markdown[1].formatCommand:match("%-%-print%-width=160")); assert(efm.settings.languages["markdown.mdx"][1].formatCommand:match("%-%-print%-width=160")); local preview = vim.fn.maparg("<leader>pv", "n", false, true).callback; assert(type(preview) == "function"); assert(vim.fn.exists(":PreviewFile") == 2); assert(vim.fn.exists(":RenderMarkdown") == 2); preview(); vim.wait(100); preview()' \
   '+qa!'
-pass 'Markdown uses its wider ruler, wraps, and toggles preview'
+pass 'Markdown wraps at its wider width without a ruler and toggles preview'
 
 TMUX= nvim --headless .config/nvim/init.lua \
-  '+lua assert(vim.bo.filetype == "lua"); assert(vim.wo.wrap and vim.wo.linebreak and vim.wo.breakindent); assert(vim.bo.textwidth == 80); assert(vim.wo.colorcolumn == "80"); assert(not vim.bo.formatoptions:find("t", 1, true))' \
+  '+lua assert(vim.bo.filetype == "lua"); assert(vim.wo.wrap and vim.wo.linebreak and vim.wo.breakindent); assert(vim.bo.textwidth == 80); assert(vim.wo.colorcolumn == ""); assert(not vim.bo.formatoptions:find("t", 1, true))' \
   '+qa!'
-pass 'code buffers soft-wrap at the normal ruler without changing text'
+pass 'code buffers soft-wrap at the normal width without a ruler or text changes'
 
 TMUX= nvim --headless install.sh \
   '+lua assert(vim.bo.filetype == "sh"); assert(vim.treesitter.language.get_lang(vim.bo.filetype) == "bash"); assert(vim.treesitter.query.get("bash", "highlights")); local query = vim.treesitter.query.get("bash", "highlights"); local root = vim.treesitter.get_parser(0, "bash"):parse()[1]:root(); local count = 0; for _ in query:iter_captures(root, 0, 0, -1) do count = count + 1; if count > 0 then break end end; assert(count > 0)' \

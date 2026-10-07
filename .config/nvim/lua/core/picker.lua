@@ -6,17 +6,17 @@ local state = {
   job = nil,
 }
 
--- Match Neo-tree's canvas in every fzf section. fzf can otherwise inherit the
--- terminal or editor background for its input and preview areas.
+-- Match the editor/Neo-tree canvas in every fzf section. fzf can otherwise
+-- inherit the terminal background for its input and preview areas.
 local FZF_COLORS = "--color="
   .. (vim.o.background == "light" and "light" or "dark")
   .. ","
   .. table.concat({
-    "bg+:#f4ede8,bg:#f8f0e7,spinner:#907aa9,hl:#b4637a",
-    "input-bg:#f8f0e7,list-bg:#f8f0e7,preview-bg:#f8f0e7",
-    "header-bg:#f8f0e7,footer-bg:#f8f0e7",
-    "fg:#575279,header:#b4637a,info:#907aa9,pointer:#907aa9",
-    "marker:#e5aaa0,fg+:#575279,prompt:#907aa9,hl+:#b4637a,border:#56949f,label:#b7b0b8",
+    "bg+:#374145,bg:#272e33,spinner:#bb8aac,hl:#ef7b83",
+    "input-bg:#272e33,list-bg:#272e33,preview-bg:#272e33",
+    "header-bg:#272e33,footer-bg:#272e33",
+    "fg:#d3c6aa,header:#ef7b83,info:#bb8aac,pointer:#bb8aac",
+    "marker:#e69875,fg+:#d3c6aa,prompt:#bb8aac,hl+:#ef7b83,border:#7fbbb3,label:#687a74",
   }, ",")
 
 -- Preview command for the file pickers. "{}" is the selected line, i.e. the

@@ -13,13 +13,38 @@ return {
       -- Neo-tree is the single project and directory explorer. Keeping one explorer
       -- makes "nvim .", ":e path/", and the sidebar use the same keys and behavior.
       local buffers = require("core.buffers")
+      local deleting_windows = {}
 
       require("neo-tree").setup({
         close_if_last_window = false,
         popup_border_style = "rounded",
+        log_level = vim.log.levels.WARN,
         enable_git_status = true,
         enable_diagnostics = true,
         event_handlers = {
+          {
+            event = "before_file_delete",
+            handler = function(path)
+              local windows = {}
+              for _, win in ipairs(vim.api.nvim_list_wins()) do
+                local buf = vim.api.nvim_win_get_buf(win)
+                if vim.api.nvim_buf_get_name(buf) == path then
+                  windows[#windows + 1] = win
+                end
+              end
+              deleting_windows[path] = windows
+            end,
+          },
+          {
+            event = "file_deleted",
+            handler = function(path)
+              local windows = deleting_windows[path] or {}
+              deleting_windows[path] = nil
+              vim.schedule(function()
+                buffers.recover_deleted_file_windows(windows)
+              end)
+            end,
+          },
           {
             event = "neo_tree_window_after_open",
             handler = function()

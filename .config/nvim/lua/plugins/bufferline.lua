@@ -12,9 +12,8 @@ return {
       -- mock set up in the EXPLORER section above, which is why this block has to
       -- follow it.
       --
-      -- Bufferline derives its palette from the colorscheme. Only the fills are
-      -- pinned below: the row shares Neo-tree's mantle canvas, while the
-      -- selected tab uses the editor base beneath it.
+      -- Bufferline derives its palette from the colorscheme. Keep the row on
+      -- the same canvas as Neo-tree and file buffers, with a distinct active tab.
       local function update_visibility()
         vim.opt.showtabline = #buffers.files() > 0 and 2 or 0
       end
@@ -50,13 +49,13 @@ return {
           },
         },
         highlights = {
-          fill = { bg = "#f8f0e7" },
-          background = { bg = "#f8f0e7" },
-          buffer_selected = { bg = "#faf4ed", bold = true },
+          fill = { bg = "#272e33" },
+          background = { bg = "#272e33" },
+          buffer_selected = { bg = "#374145", bold = true },
           -- The unsaved-change dot is part of the tab, not the fill beside it.
-          modified_selected = { bg = "#faf4ed" },
-          separator = { fg = "#f8f0e7", bg = "#f8f0e7" },
-          separator_selected = { fg = "#f8f0e7", bg = "#faf4ed" },
+          modified_selected = { bg = "#374145" },
+          separator = { fg = "#272e33", bg = "#272e33" },
+          separator_selected = { fg = "#272e33", bg = "#374145" },
         },
       })
 

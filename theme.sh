@@ -17,7 +17,7 @@ FILES=(
 )
 
 usage() {
-  printf 'Usage: %s [status|latte|mocha|macchiato|tokyonight-moon|tokyonight-day|rose-pine|rose-pine-dawn]\n' "$0"
+  printf 'Usage: %s [status|latte|mocha|macchiato|tokyonight-moon|tokyonight-day|rose-pine|rose-pine-dawn|everforest-light|everforest-dark|kanagawa-dragon]\n' "$0"
   printf 'Change the shared theme in every configured application.\n'
 }
 
@@ -48,6 +48,18 @@ palette() {
       # Rosé Pine Dawn with distinct derived shades for the shared 26-color UI.
       printf '%s' '#e5aaa0|#d7827e|#c27394|#907aa9|#b4637a|#a74e68|#dc8c5a|#ea9d34|#6d8f89|#286983|#6aaab2|#438797|#56949f|#a18bb4|#575279|#66617e|#797593|#89859b|#9893a5|#b7b0b8|#cecacd|#dfdad9|#f4ede8|#faf4ed|#f8f0e7|#ece4dc'
       ;;
+    everforest-light)
+      # Everforest Light Medium, with a few derived semantic shades for this UI.
+      printf '%s' '#e66868|#e67e80|#df69ba|#b16286|#f85552|#d75f5f|#f57d26|#dfa000|#8da101|#35a77c|#66a7b5|#4a9aa7|#3a94c5|#a882b0|#5c6a72|#708089|#829181|#939f91|#a6b0a0|#bdc3af|#e0dcc7|#e6e2cc|#efebd4|#fdf6e3|#f4f0d9|#e9e5cf'
+      ;;
+    everforest-dark)
+      # Everforest Dark Hard, with distinct derived semantic shades for this UI.
+      printf '%s' '#e69875|#e67e80|#d699b6|#bb8aac|#ef7b83|#c56b73|#e29a73|#dbbc7f|#a7c080|#83c092|#91c8c1|#6caaa4|#7fbbb3|#a9a6c2|#d3c6aa|#c4bba4|#9da9a0|#859289|#7a8478|#687a74|#495156|#414b50|#374145|#272e33|#2e383c|#1e2326'
+      ;;
+    kanagawa-dragon)
+      # Kanagawa Dragon; the peach and UI shades are semantic equivalents.
+      printf '%s' '#b6927b|#b98d7b|#a292a3|#8992a7|#c4746e|#e46876|#d79a7d|#c4b28a|#8a9a7b|#87a987|#8ea4a2|#658594|#8ba4b0|#949fb5|#c5c9c5|#c8c093|#a6a69c|#9e9b93|#7a8382|#737c73|#393836|#282727|#1d1c19|#181616|#12120f|#0d0c0c'
+      ;;
     *) return 1 ;;
   esac
 }
@@ -61,6 +73,9 @@ display_name() {
     tokyonight-day) printf 'TokyoNight Day' ;;
     rose-pine) printf 'Rose Pine' ;;
     rose-pine-dawn) printf 'Rose Pine Dawn' ;;
+    everforest-light) printf 'Everforest Light Med' ;;
+    everforest-dark) printf 'Everforest Dark Hard' ;;
+    kanagawa-dragon) printf 'Kanagawa Dragon' ;;
     *) return 1 ;;
   esac
 }
@@ -72,6 +87,9 @@ config_slug() {
     tokyonight-day) printf 'tokyonight_day' ;;
     rose-pine) printf 'rose_pine' ;;
     rose-pine-dawn) printf 'rose_pine_dawn' ;;
+    everforest-light) printf 'everforest_light' ;;
+    everforest-dark) printf 'everforest_dark' ;;
+    kanagawa-dragon) printf 'kanagawa_dragon' ;;
     *) return 1 ;;
   esac
 }
@@ -81,7 +99,7 @@ bat_theme() {
     latte) printf 'Catppuccin Latte' ;;
     mocha) printf 'Catppuccin Mocha' ;;
     macchiato) printf 'Catppuccin Macchiato' ;;
-    tokyonight-moon|tokyonight-day|rose-pine|rose-pine-dawn) printf 'ansi' ;;
+    tokyonight-moon|tokyonight-day|rose-pine|rose-pine-dawn|everforest-light|everforest-dark|kanagawa-dragon) printf 'ansi' ;;
     *) return 1 ;;
   esac
 }

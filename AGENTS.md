@@ -111,8 +111,8 @@ The Neovim workflow test must cover directory startup without an unnamed
 buffer, next-buffer selection, last-buffer fallback to full-screen Neo-tree,
 explorer focus/toggle behavior, and file-type-aware preview dispatch without
 launching real GUI apps. Neovim must not change tmux's configured status
-position. It must also preserve the 80-column code ruler and soft wrapping,
-plus the 160-column Markdown ruler and prose wrapping. Require an installed
+position. It must keep vertical rulers hidden while preserving 80-column code
+text width and soft wrapping, plus 160-column Markdown width and prose wrapping. Require an installed
 Bash parser and non-empty Treesitter highlight queries for shell buffers.
 
 Before committing, search the current tree for employer names, email addresses,

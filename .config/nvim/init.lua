@@ -61,10 +61,8 @@ vim.opt.rtp:prepend(lazypath)
 
 vim.opt.background = "dark"
 vim.opt.shada = "!,'100,<50,s10,h"
-vim.opt.cc = "80" -- Display the default code-width ruler
--- The width the rulers above are drawn at, and the one stylua.toml and prettier
--- are both set to. The rulers only paint; textwidth is what actually wraps, and
--- it is 0 unless set, which is why "t" and "c" in formatoptions did nothing.
+-- Keep the code width without painting a vertical ruler. stylua.toml and
+-- prettier use the same width; textwidth controls typing-time wrapping.
 vim.opt.textwidth = 80
 vim.opt.clipboard = "unnamedplus" -- Sync with system clipboard
 -- Keep LSP progress out of the cmdline. Neovim 0.12 defaults to "progress:c",
@@ -92,6 +90,7 @@ vim.opt.inccommand = "split" -- Show live preview of substitution
 vim.opt.laststatus = 3 -- one full-width statusline below the sidebar and file
 vim.opt.list = true -- Show some invisible characters
 vim.opt.listchars = { tab = "│ ", leadmultispace = "│ " } -- Set characters for invisible characters
+vim.opt.fillchars:append({ eob = " " }) -- No filler tildes below files or Neo-tree
 vim.opt.mouse = "a" -- Enable mouse mode
 vim.opt.number = true -- Print line number
 vim.opt.relativenumber = true -- Relative line numbers
@@ -221,7 +220,7 @@ vim.api.nvim_create_autocmd({ "BufWinEnter", "FileType" }, {
 })
 
 -- Prose also hard-wraps as it is typed. Markdown gets twice the normal code
--- width so paragraphs have more room while retaining a visible stopping point.
+-- width without drawing a vertical ruler.
 vim.api.nvim_create_autocmd("FileType", {
   pattern = { "markdown", "markdown.mdx", "text", "gitcommit" },
   group = vim.api.nvim_create_augroup("prose-wrap", { clear = true }),
@@ -231,10 +230,8 @@ vim.api.nvim_create_autocmd("FileType", {
     -- body at 72 so "git log" stays readable under its four-space indent.
     if args.match == "gitcommit" then
       vim.opt_local.textwidth = 72
-      vim.opt_local.colorcolumn = "72"
     elseif args.match == "markdown" or args.match == "markdown.mdx" then
       vim.opt_local.textwidth = 160
-      vim.opt_local.colorcolumn = "160"
       -- Reflow an existing long paragraph once it is edited instead of keeping
       -- the old line length merely because it predates this configuration.
       vim.opt_local.formatoptions:remove("l")

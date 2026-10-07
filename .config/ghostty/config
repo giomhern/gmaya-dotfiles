@@ -1,5 +1,6 @@
 # Theme
-theme = "Rose Pine Dawn"
+theme = "Everforest Dark Hard"
+background = #272e33
 font-family = "JetBrainsMono Nerd Font Mono"
 font-synthetic-style = false
 font-size = 12
