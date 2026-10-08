@@ -17,12 +17,16 @@ FILES=(
 )
 
 usage() {
-  printf 'Usage: %s [status|latte|mocha|macchiato|tokyonight-moon|tokyonight-day|rose-pine|rose-pine-dawn|everforest-light|everforest-dark|kanagawa-dragon|oxocarbon-dark|zenbones-light|zenbones-dark|neobones-light|neobones-dark|vimbones-light|forestbones-light|forestbones-dark|nordbones-dark|rosebones-light|rosebones-dark|tokyobones-light|tokyobones-dark|seoulbones-light|seoulbones-dark|duckbones-dark|zenburned-dark|zenwritten-light|zenwritten-dark|kanagawabones-dark]\n' "$0"
+  printf 'Usage: %s [status|latte|mocha|macchiato|tokyonight-moon|tokyonight-day|rose-pine|rose-pine-dawn|everforest-light|everforest-dark|kanagawa-dragon|oxocarbon-dark|oxocarbon-light|zenbones-light|zenbones-dark|neobones-light|neobones-dark|vimbones-light|forestbones-light|forestbones-dark|nordbones-dark|rosebones-light|rosebones-dark|tokyobones-light|tokyobones-dark|seoulbones-light|seoulbones-dark|duckbones-dark|zenburned-dark|zenwritten-light|zenwritten-dark|kanagawabones-dark]\n' "$0"
   printf 'Change the shared theme in every configured application.\n'
 }
 
 palette() {
   case "$1" in
+    oxocarbon-light)
+      # Upstream Oxocarbon Light with Carbon shades for shared UI slots.
+      printf '%s' '#ffab91|#d02670|#ee5396|#673ab7|#ff6f00|#da1e28|#ff832b|#b28600|#42be65|#08bdba|#ff7eb6|#1192e8|#0f62fe|#be95ff|#37474f|#525252|#697077|#878d96|#8d8d8d|#a2a9b0|#c1c7cd|#d4d4d4|#e0e0e0|#ffffff|#f4f4f4|#fafafa'
+      ;;
     # Upstream Zenbones palettes with unique derived slots for shared UI.
     zenbones-light)
       printf '%s' '#ab6b58|#b47b70|#995d8c|#88507d|#a8334c|#94253e|#944927|#803d1c|#4f6c31|#3f5a22|#3b8992|#2b747c|#286486|#1d5573|#2c363c|#4f5e68|#63717a|#78838b|#948b85|#b5a7a0|#c4b8b1|#cfc1ba|#dfd9d6|#f0edec|#e6e1df|#e8e4e3'
@@ -129,6 +133,7 @@ palette() {
 
 display_name() {
   case "$1" in
+    oxocarbon-light) printf 'Oxocarbon Light' ;;
     zenbones-light) printf 'Zenbones Light' ;;
     zenbones-dark) printf 'Zenbones Dark' ;;
     neobones-light) printf 'Neobones Light' ;;
@@ -165,6 +170,7 @@ display_name() {
 
 config_slug() {
   case "$1" in
+    oxocarbon-light) printf 'oxocarbon_light' ;;
     zenbones-light) printf 'zenbones_light' ;;
     zenbones-dark) printf 'zenbones_dark' ;;
     neobones-light) printf 'neobones_light' ;;
@@ -202,7 +208,7 @@ bat_theme() {
     latte) printf 'Catppuccin Latte' ;;
     mocha) printf 'Catppuccin Mocha' ;;
     macchiato) printf 'Catppuccin Macchiato' ;;
-    tokyonight-moon|tokyonight-day|rose-pine|rose-pine-dawn|everforest-light|everforest-dark|kanagawa-dragon|oxocarbon-dark|zenbones-light|zenbones-dark|neobones-light|neobones-dark|vimbones-light|forestbones-light|forestbones-dark|nordbones-dark|rosebones-light|rosebones-dark|tokyobones-light|tokyobones-dark|seoulbones-light|seoulbones-dark|duckbones-dark|zenburned-dark|zenwritten-light|zenwritten-dark|kanagawabones-dark) printf 'ansi' ;;
+    tokyonight-moon|tokyonight-day|rose-pine|rose-pine-dawn|everforest-light|everforest-dark|kanagawa-dragon|oxocarbon-dark|oxocarbon-light|zenbones-light|zenbones-dark|neobones-light|neobones-dark|vimbones-light|forestbones-light|forestbones-dark|nordbones-dark|rosebones-light|rosebones-dark|tokyobones-light|tokyobones-dark|seoulbones-light|seoulbones-dark|duckbones-dark|zenburned-dark|zenwritten-light|zenwritten-dark|kanagawabones-dark) printf 'ansi' ;;
     *) return 1 ;;
   esac
 }
@@ -230,7 +236,7 @@ verify_selection() {
     "$root/.config/btop/btop.conf" || return 1
   [[ -f $root/.config/btop/themes/$slug.theme ]] || return 1
   case "$theme" in
-    *bones-*|zenwritten-*|zenburned-*)
+    *bones-*|zenwritten-*|zenburned-*|oxocarbon-light)
       [[ -f $root/.config/ghostty/themes/$display ]] || return 1
       ;;
   esac
@@ -293,7 +299,7 @@ mkdir -p "$STAGE/.config/btop/themes"
 cp "$REPO/.config/btop/themes/$TO_SLUG.theme" \
   "$STAGE/.config/btop/themes/$TO_SLUG.theme"
 case "$ACTION" in
-  *bones-*|zenwritten-*|zenburned-*)
+  *bones-*|zenwritten-*|zenburned-*|oxocarbon-light)
     mkdir -p "$STAGE/.config/ghostty/themes"
     cp "$REPO/.config/ghostty/themes/$TO_DISPLAY" \
       "$STAGE/.config/ghostty/themes/$TO_DISPLAY"

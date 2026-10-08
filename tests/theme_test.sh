@@ -162,6 +162,14 @@ grep -Fq 'theme[main_bg]="#161616"' \
   "$FIXTURE/.config/btop/themes/oxocarbon_dark.theme"
 grep -Fq 'bg:#161616' "$FIXTURE/.config/nvim/lua/core/picker.lua"
 grep -Fq 'BAT_THEME="ansi"' "$FIXTURE/.zshrc"
+"$FIXTURE/theme.sh" oxocarbon-light >/dev/null
+"$FIXTURE/theme.sh" status | grep -Fq 'Oxocarbon Light'
+grep -Fq 'theme = "Oxocarbon Light"' "$FIXTURE/.config/ghostty/config"
+grep -Fq 'background = #ffffff' "$FIXTURE/.config/ghostty/config"
+grep -Fq 'selected_theme = "oxocarbon-light"' "$FIXTURE/.config/nvim/lua/plugins/colorscheme.lua"
+grep -Fq 'color_theme = "oxocarbon_light"' "$FIXTURE/.config/btop/btop.conf"
+grep -Fq 'theme[main_bg]="#ffffff"' "$FIXTURE/.config/btop/themes/oxocarbon_light.theme"
+grep -Fq 'bg:#ffffff' "$FIXTURE/.config/nvim/lua/core/picker.lua"
 "$FIXTURE/theme.sh" zenbones-light >/dev/null
 "$FIXTURE/theme.sh" status | grep -Fq 'Zenbones Light'
 grep -Fq 'theme = "Zenbones Light"' "$FIXTURE/.config/ghostty/config"

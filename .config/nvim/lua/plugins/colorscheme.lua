@@ -282,6 +282,29 @@ return {
         for group, spec in pairs(custom_theme_highlights(colors)) do
           vim.api.nvim_set_hl(0, group, spec)
         end
+      elseif selected_theme == "oxocarbon-light" then
+        vim.o.background = "light"
+        vim.cmd.colorscheme("oxocarbon")
+        local palette = require("oxocarbon").oxocarbon
+        local colors = {
+          mantle = palette.base01,
+          base = palette.base00,
+          surface0 = palette.base02,
+          overlay1 = palette.base05,
+          text = palette.base04,
+          rosewater = palette.base15,
+          blue = palette.base11,
+          green = palette.base13,
+          mauve = palette.base12,
+          red = palette.base10,
+          peach = palette.base10,
+          yellow = palette.base10,
+          sky = palette.base08,
+          teal = palette.base07,
+        }
+        for group, spec in pairs(custom_theme_highlights(colors)) do
+          vim.api.nvim_set_hl(0, group, spec)
+        end
       elseif selected_theme == "oxocarbon-dark" then
         vim.o.background = "dark"
         vim.cmd.colorscheme("oxocarbon")
