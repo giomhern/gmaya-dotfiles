@@ -522,7 +522,7 @@ Neo-tree is the only directory explorer. These commands cover opening it, moving
 | `<leader>ee`                | open or focus the sidebar and reveal the current file |
 | `<leader>et` / `<leader>ec` | toggle / close the sidebar                            |
 | `Ctrl-w` `h` / `Ctrl-w` `l` | move into Neo-tree / back to the file window          |
-| `Enter` or `l`              | open a file or expand a directory                     |
+| `Enter` or `l`              | open a file or expand a directory; keep tree focus    |
 | `h`                         | collapse the selected directory                       |
 | `a` / `d` / `r`             | add / delete / rename an entry                        |
 | `P`                         | toggle the floating file preview                      |
@@ -534,7 +534,9 @@ only view, both keep it open instead of creating a `[No Name]` buffer. It shows 
 `.git`. The buffer tab row stays over the file area, while the statusline spans the full width below both views.
 
 Opening Neovim with a directory (`nvim .`) or editing one (`:e path/`) opens Neo-tree full-screen with no underlying file or `[No Name]` buffer. When
-`<leader>bd` closes a file, it selects the next open file first. Closing the last file returns to that full-screen explorer state. It also closes an empty
+you open a file with `Enter` or `l`, the tree becomes a sidebar and stays focused. Use `Ctrl-w` `l` to move into the file.
+
+When `<leader>bd` closes a file, it selects the next open file first. Closing the last file returns to that full-screen explorer state. It also closes an empty
 `[No Name]` buffer: if a file remains, focus goes to an open file; otherwise Neo-tree takes the full view. Modified scratch or special windows remain open so
 their state is not lost, even if that means Neo-tree cannot be full-screen.
 

@@ -14,6 +14,27 @@ return {
       -- makes "nvim .", ":e path/", and the sidebar use the same keys and behavior.
       local buffers = require("core.buffers")
       local deleting_windows = {}
+      local function open_keep_explorer_focus(state)
+        local node = state.tree:get_node()
+        require("neo-tree.sources.filesystem.commands").open(state)
+        if not node or node.type ~= "file" then
+          return
+        end
+        local win = buffers.neo_tree_window()
+        if win then
+          vim.api.nvim_set_current_win(win)
+        else
+          -- Opening from the full-screen tree replaces it with the file.
+          -- Bring the explorer back as a sidebar beside that file.
+          require("neo-tree.command").execute({
+            action = "focus",
+            source = "filesystem",
+            position = "left",
+            dir = state.path,
+            reveal_file = node.path,
+          })
+        end
+      end
 
       require("neo-tree").setup({
         close_if_last_window = false,
@@ -98,7 +119,8 @@ return {
             -- as <leader>ee can complete.
             ["<space>"] = "none",
             ["h"] = "close_node",
-            ["l"] = "open",
+            ["l"] = open_keep_explorer_focus,
+            ["<cr>"] = open_keep_explorer_focus,
             ["P"] = {
               "toggle_preview",
               config = { use_float = true },

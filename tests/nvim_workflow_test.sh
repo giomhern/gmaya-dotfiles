@@ -19,6 +19,11 @@ TMUX= nvim --headless . \
   '+qa!'
 pass 'nvim dot opens one full-screen tree without an unnamed buffer'
 
+TMUX= nvim --headless . \
+  '+lua local ok, err = pcall(function() local manager = require("neo-tree.sources.manager"); local renderer = require("neo-tree.ui.renderer"); for _, item in ipairs({ { "README.md", "l" }, { "AGENTS.md", "<cr>" } }) do local path = vim.fn.getcwd() .. "/" .. item[1]; assert(vim.wait(1500, function() local state = manager.get_state_for_window(); return state and state.tree and state.tree:get_node(path) end)); local state = manager.get_state_for_window(); renderer.focus_node(state, path); vim.fn.maparg(item[2], "n", false, true).callback(); vim.wait(200); assert(vim.bo.filetype == "neo-tree", "open moved focus out of the explorer"); assert(#vim.api.nvim_tabpage_list_wins(0) == 2, "file did not open beside the tree"); local shown = false; for _, win in ipairs(vim.api.nvim_tabpage_list_wins(0)) do shown = shown or vim.api.nvim_buf_get_name(vim.api.nvim_win_get_buf(win)) == path end; assert(shown, "selected file is not visible"); assert(manager.get_state_for_window().tree:get_node():get_id() == path, "selected tree entry changed") end; local state = manager.get_state_for_window(); renderer.focus_node(state, vim.fn.getcwd() .. "/tests"); vim.fn.maparg("l", "n", false, true).callback(); vim.wait(200); assert(vim.bo.filetype == "neo-tree"); assert(manager.get_state_for_window().tree:get_node(vim.fn.getcwd() .. "/tests"):is_expanded()) end); if not ok then io.stderr:write(tostring(err), "\n"); vim.cmd.cquit() end' \
+  '+qa!'
+pass 'l and Enter open files beside the explorer while keeping focus and directory expansion'
+
 TMUX= nvim --headless README.md \
   '+lua local file = vim.api.nvim_get_current_buf(); vim.cmd.edit("tests"); assert(vim.bo.filetype == "neo-tree", ":edit directory showed a transient buffer"); assert(vim.api.nvim_buf_is_valid(file))' \
   '+qa!'
