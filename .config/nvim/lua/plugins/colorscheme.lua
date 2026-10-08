@@ -31,6 +31,22 @@ return {
       -- The selected family is changed by theme.sh. Both setup paths normalize their
       -- palettes so the custom picker, explorer, and statusline styling stays shared.
       local selected_theme = "zenbones-light"
+      local bones_themes = {
+        zenbones = true,
+        neobones = true,
+        vimbones = true,
+        forestbones = true,
+        nordbones = true,
+        rosebones = true,
+        tokyobones = true,
+        seoulbones = true,
+        duckbones = true,
+        zenburned = true,
+        zenwritten = true,
+        kanagawabones = true,
+      }
+      local bones_name, bones_background =
+        selected_theme:match("^(%a+)%-(%a+)$")
 
       local function custom_theme_highlights(colors)
         local popup_bg = colors.base
@@ -239,17 +255,18 @@ return {
           end,
         })
         vim.cmd.colorscheme("everforest")
-      elseif selected_theme == "zenbones-light" then
-        vim.o.background = "light"
-        vim.cmd.colorscheme("zenbones")
-        local palette = require("zenbones.palette").light
+      elseif bones_themes[bones_name] then
+        vim.o.background = bones_background
+        vim.cmd.colorscheme(bones_name)
+        local palette = require(bones_name .. ".palette")[bones_background]
+        local shade = bones_background == "light" and "da" or "li"
         local function hex(color)
           return color.hex:lower()
         end
         local colors = {
-          mantle = hex(palette.bg.da(4)),
+          mantle = hex(palette.bg[shade](4)),
           base = hex(palette.bg),
-          surface0 = hex(palette.bg.da(7)),
+          surface0 = hex(palette.bg[shade](7)),
           overlay1 = hex(palette.fg1),
           text = hex(palette.fg),
           rosewater = hex(palette.wood),

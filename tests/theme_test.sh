@@ -35,6 +35,8 @@ for rel in "${FILES[@]}"; do
   mkdir -p "$FIXTURE/$(dirname "$rel")"
   cp "$REPO/$rel" "$FIXTURE/$rel"
 done
+cp -R "$REPO/.config/ghostty/themes" "$FIXTURE/.config/ghostty/"
+cp "$REPO"/.config/btop/themes/*.theme "$FIXTURE/.config/btop/themes/"
 cp "$REPO/theme.sh" "$FIXTURE/theme.sh"
 chmod +x "$FIXTURE/theme.sh"
 
@@ -168,6 +170,15 @@ grep -Fq 'selected_theme = "zenbones-light"' "$FIXTURE/.config/nvim/lua/plugins/
 grep -Fq 'color_theme = "zenbones_light"' "$FIXTURE/.config/btop/btop.conf"
 grep -Fq 'theme[main_bg]="#f0edec"' "$FIXTURE/.config/btop/themes/zenbones_light.theme"
 grep -Fq 'bg:#f0edec' "$FIXTURE/.config/nvim/lua/core/picker.lua"
+for theme in zenbones-dark neobones-light neobones-dark vimbones-light \
+  forestbones-light forestbones-dark nordbones-dark rosebones-light rosebones-dark \
+  tokyobones-light tokyobones-dark seoulbones-light seoulbones-dark duckbones-dark \
+  zenburned-dark zenwritten-light zenwritten-dark kanagawabones-dark; do
+  "$FIXTURE/theme.sh" "$theme" >/dev/null
+  "$FIXTURE/theme.sh" status >/dev/null
+  grep -Fq "selected_theme = \"$theme\"" "$FIXTURE/.config/nvim/lua/plugins/colorscheme.lua"
+  grep -Fxq "$original_font" "$FIXTURE/.config/ghostty/config"
+done
 "$FIXTURE/theme.sh" "$original_theme" >/dev/null
 after="$(for rel in "${FILES[@]}"; do cksum "$FIXTURE/$rel"; done)"
 if [[ $before != "$after" ]]; then

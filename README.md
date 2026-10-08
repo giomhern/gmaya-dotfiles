@@ -698,6 +698,8 @@ The terminal tools share one visual theme. Check or change it from the repositor
 ./theme.sh kanagawa-dragon
 ./theme.sh oxocarbon-dark
 ./theme.sh zenbones-light
+./theme.sh zenwritten-light
+./theme.sh rosebones-dark
 ```
 
 The command updates Ghostty, Neovim, tmux, Starship, fzf (both shell and Neovim), bat, and btop together. Reload the shell with `exec zsh`, reload tmux with
@@ -713,3 +715,17 @@ blue and cyan accents stand out against the layered grays.
 
 Zenbones Light uses the upstream [Zenbones](https://github.com/zenbones-theme/zenbones.nvim) palette and Ghostty's matching built-in theme. Its paper background,
 restrained syntax colors, and emphasis through font styles keep the editor minimal; the shared UI retains muted accents for navigation and state.
+
+The full Zenbones collection is available through the same switcher:
+
+| Family | Switcher choices |
+| --- | --- |
+| Zenbones, Neobones, Forestbones, Rosebones, Tokyobones, Seoulbones, Zenwritten | `<family>-light` and `<family>-dark` |
+| Vimbones | `vimbones-light` |
+| Nordbones | `nordbones-dark` |
+| Duckbones | `duckbones-dark` |
+| Zenburned | `zenburned-dark` |
+| Kanagawabones | `kanagawabones-dark` |
+
+For example, `./theme.sh forestbones-light` changes every configured application together. Matching Ghostty palettes are included under
+`.config/ghostty/themes/`, so these choices also work when Ghostty does not ship that variant.

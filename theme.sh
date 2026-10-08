@@ -17,15 +17,69 @@ FILES=(
 )
 
 usage() {
-  printf 'Usage: %s [status|latte|mocha|macchiato|tokyonight-moon|tokyonight-day|rose-pine|rose-pine-dawn|everforest-light|everforest-dark|kanagawa-dragon|oxocarbon-dark|zenbones-light]\n' "$0"
+  printf 'Usage: %s [status|latte|mocha|macchiato|tokyonight-moon|tokyonight-day|rose-pine|rose-pine-dawn|everforest-light|everforest-dark|kanagawa-dragon|oxocarbon-dark|zenbones-light|zenbones-dark|neobones-light|neobones-dark|vimbones-light|forestbones-light|forestbones-dark|nordbones-dark|rosebones-light|rosebones-dark|tokyobones-light|tokyobones-dark|seoulbones-light|seoulbones-dark|duckbones-dark|zenburned-dark|zenwritten-light|zenwritten-dark|kanagawabones-dark]\n' "$0"
   printf 'Change the shared theme in every configured application.\n'
 }
 
 palette() {
   case "$1" in
+    # Upstream Zenbones palettes with unique derived slots for shared UI.
     zenbones-light)
-      # Zenbones Light's upstream terminal palette, with derived UI shades.
       printf '%s' '#ab6b58|#b47b70|#995d8c|#88507d|#a8334c|#94253e|#944927|#803d1c|#4f6c31|#3f5a22|#3b8992|#2b747c|#286486|#1d5573|#2c363c|#4f5e68|#63717a|#78838b|#948b85|#b5a7a0|#c4b8b1|#cfc1ba|#dfd9d6|#f0edec|#e6e1df|#e8e4e3'
+      ;;
+    zenbones-dark)
+      printf '%s' '#c78a6e|#e1828d|#b982ad|#b279a7|#de6e7c|#e8838f|#b77e64|#d68c67|#819b69|#8bae68|#66a5ad|#65b8c1|#6099c0|#61abda|#b4bdc3|#888f94|#797f84|#686e72|#706661|#5c534f|#4f4844|#403a37|#292523|#1c1917|#25211f|#302b29'
+      ;;
+    neobones-light)
+      printf '%s' '#ae572f|#c53d5a|#985b8d|#88507d|#a8334c|#94253e|#944927|#803d1c|#567a30|#3f5a22|#3b8992|#2b747c|#286486|#1d5573|#202e18|#415934|#4f6b3f|#60804c|#858e86|#96a098|#a5b1a7|#b2bfb4|#cddbcf|#e5ede6|#d6e3d8|#c8d5c9'
+      ;;
+    neobones-dark)
+      printf '%s' '#c78a6e|#e1828d|#b982ad|#b279a7|#de6e7c|#e8838f|#b77e64|#d68c67|#90ff6b|#a0ff85|#66a5ad|#65b8c1|#8190d4|#92a0e2|#c6d5cf|#98a39e|#86908c|#707975|#4b697c|#3e5868|#334a57|#2b3e49|#18252d|#0f191f|#152128|#1d2c35'
+      ;;
+    vimbones-light)
+      printf '%s' '#ae572f|#c53d5a|#985b8d|#88507d|#a8334c|#94253e|#944927|#803d1c|#4f6c31|#3f5a22|#3b8992|#2b747c|#286486|#1d5573|#353535|#5c5c5c|#6a6a6a|#7f7f7f|#8d8d76|#a2a288|#b0b093|#c0c0a1|#dcdcb9|#f0f0ca|#e5e5c1|#d6d6b5'
+      ;;
+    forestbones-light)
+      printf '%s' '#ecaa00|#f8706d|#e176be|#df69ba|#f85550|#e6271c|#dea000|#b98500|#8da200|#758700|#36a87e|#258c67|#3a94c4|#297ca6|#4f5b62|#6e7f88|#798c96|#879ca7|#9d9063|#b1a370|#c3b37b|#d4c387|#f2df9f|#faf3e1|#f5e8bf|#e9d795'
+      ;;
+    forestbones-dark)
+      printf '%s' '#e6c585|#e88c8e|#d9a1bb|#d69ab7|#e67c7f|#ed9294|#ddbd7f|#edc77a|#a9c181|#b0ce7b|#83c193|#7dd093|#7fbcb4|#7ac9c0|#e7dcc4|#b2a790|#9f9580|#867e6c|#6b7c89|#5d6d78|#53606a|#48545d|#374149|#2c343a|#313a41|#3b464e'
+      ;;
+    nordbones-dark)
+      printf '%s' '#d7937f|#c8777d|#b996b3|#b38dac|#c1616a|#d6787f|#cf866f|#e09680|#a4be8d|#a8cc86|#87bfce|#82cce0|#8fbcba|#89cac8|#ebeef3|#a5b4cd|#8da2c0|#7488a3|#707c95|#606b81|#576175|#4c5567|#39404e|#2f3541|#353c49|#3f4756'
+      ;;
+    rosebones-light)
+      printf '%s' '#f6a536|#c37489|#9a86b1|#917ba9|#b5637a|#a54a66|#ec9d33|#c68223|#286a84|#1c5970|#5795a0|#407d88|#5795a1|#407d89|#724341|#a4635f|#b56e6a|#c0807d|#a78d65|#bfa174|#d1b180|#e4c18c|#f2e0c9|#fbf6f0|#f5e9da|#eed7b7'
+      ;;
+    rosebones-dark)
+      printf '%s' '#f7c789|#ed839f|#c8aee9|#c4a7e7|#eb7193|#f289a4|#f6c074|#f9ca8e|#317490|#358daf|#9ccfd8|#94dae6|#9ccfd9|#94dae7|#e1d4d4|#bf9b99|#b48583|#a26f6c|#696485|#565172|#4a4563|#3c3851|#262435|#1a1825|#222030|#2d2a3d'
+      ;;
+    tokyobones-light)
+      printf '%s' '#a66e1a|#a45061|#675589|#5a4a79|#8b4351|#7e3242|#8f5e14|#794e0d|#34645d|#26554f|#176775|#34645e|#34548c|#26467a|#333a57|#56618d|#6370a2|#7782b1|#7b7e8d|#8d909e|#9b9da9|#abadb7|#c5c6cd|#d6d7dc|#cdced4|#bcbec6'
+      ;;
+    tokyobones-dark)
+      printf '%s' '#ebb86d|#f88b9d|#bfa2f7|#bb9bf7|#f77890|#f98ea0|#e1b068|#f2ba64|#74dbcb|#6de5d3|#2bc4de|#74dbcc|#7ba2f7|#90affa|#c0caf5|#7e98eb|#6085e7|#406fda|#646683|#535570|#484a61|#3a3c50|#262735|#1a1b26|#222330|#2c2d3d'
+      ;;
+    seoulbones-light)
+      printf '%s' '#d5916b|#df6b91|#957094|#896788|#dc5284|#be3c6d|#c48562|#a76b48|#628562|#487249|#008586|#006f70|#0084a3|#006f89|#555555|#777777|#848484|#969696|#868686|#989898|#a6a6a6|#b6b6b6|#d1d1d1|#e2e2e2|#d7d7d7|#c9c9c9'
+      ;;
+    seoulbones-dark)
+      printf '%s' '#ffe2a7|#e698ae|#abacc8|#a5a6c5|#e388a3|#eb99b1|#ffdf9b|#ffe5b3|#98bd99|#8fcd92|#6fbdbe|#6bcacb|#97bdde|#a2c8e9|#dddddd|#a8a8a8|#969696|#7f7f7f|#8b8b8b|#7c7c7c|#727272|#686868|#575757|#4b4b4b|#525252|#5c5c5c'
+      ;;
+    duckbones-dark)
+      printf '%s' '#f29f00|#fb3e00|#8268d1|#795ccc|#e03600|#ff4821|#e39500|#f6a100|#5dcd97|#58db9e|#00a3cb|#00b4e0|#00a3cc|#00b4e1|#ebefc0|#b3b692|#9ea080|#86896c|#585f83|#484e6d|#3c415b|#2f3449|#1c1f2e|#0e101a|#161926|#222536'
+      ;;
+    zenburned-dark)
+      printf '%s' '#c78a6e|#e68584|#b982ad|#b279a7|#e3716e|#ec8685|#b77e64|#d68c67|#819b69|#8bae68|#66a5ad|#65b8c1|#6099c0|#61abda|#f0e4cf|#c0ab86|#ab9977|#928264|#848484|#747474|#6a6a6a|#5e5e5e|#4b4b4b|#404040|#474747|#505050'
+      ;;
+    zenwritten-light)
+      printf '%s' '#ae572f|#c53d5a|#985b8d|#88507d|#a8334c|#94253e|#944927|#803d1c|#4f6c31|#3f5a22|#3b8992|#2b747c|#286486|#1d5573|#353535|#5c5c5c|#6a6a6a|#7f7f7f|#8b8b8b|#a0a0a0|#aeaeae|#bebebe|#dadada|#eeeeee|#e2e2e2|#d4d4d4'
+      ;;
+    zenwritten-dark)
+      printf '%s' '#c78a6e|#e1828d|#b982ad|#b279a7|#de6e7c|#e8838f|#b77e64|#d68c67|#819b69|#8bae68|#66a5ad|#65b8c1|#6099c0|#61abda|#bbbbbb|#8e8e8e|#7f7f7f|#6d6d6d|#686868|#555555|#494949|#3b3b3b|#262626|#191919|#222222|#2c2c2c'
+      ;;
+    kanagawabones-dark)
+      printf '%s' '#ebc787|#e6808a|#9c87bd|#957fb8|#e46a78|#ec818c|#e5c283|#f1c982|#98bc6d|#9ec967|#7eb3c9|#7bc2df|#7eb3ca|#7bc2e0|#ddd8bb|#a8a48d|#95917d|#807c6b|#69697b|#58586a|#4c4c5f|#414151|#2b2b37|#1f1f28|#272732|#31313f'
       ;;
     latte)
       printf '%s' '#dc8a78|#dd7878|#ea76cb|#8839ef|#d20f39|#e64553|#fe640b|#df8e1d|#40a02b|#179299|#04a5e5|#209fb5|#1e66f5|#7287fd|#4c4f69|#5c5f77|#6c6f85|#7c7f93|#8c8fa1|#9ca0b0|#acb0be|#bcc0cc|#ccd0da|#eff1f5|#e6e9ef|#dce0e8'
@@ -76,6 +130,24 @@ palette() {
 display_name() {
   case "$1" in
     zenbones-light) printf 'Zenbones Light' ;;
+    zenbones-dark) printf 'Zenbones Dark' ;;
+    neobones-light) printf 'Neobones Light' ;;
+    neobones-dark) printf 'Neobones Dark' ;;
+    vimbones-light) printf 'Vimbones Light' ;;
+    forestbones-light) printf 'Forestbones Light' ;;
+    forestbones-dark) printf 'Forestbones Dark' ;;
+    nordbones-dark) printf 'Nordbones Dark' ;;
+    rosebones-light) printf 'Rosebones Light' ;;
+    rosebones-dark) printf 'Rosebones Dark' ;;
+    tokyobones-light) printf 'Tokyobones Light' ;;
+    tokyobones-dark) printf 'Tokyobones Dark' ;;
+    seoulbones-light) printf 'Seoulbones Light' ;;
+    seoulbones-dark) printf 'Seoulbones Dark' ;;
+    duckbones-dark) printf 'Duckbones Dark' ;;
+    zenburned-dark) printf 'Zenburned Dark' ;;
+    zenwritten-light) printf 'Zenwritten Light' ;;
+    zenwritten-dark) printf 'Zenwritten Dark' ;;
+    kanagawabones-dark) printf 'Kanagawabones Dark' ;;
     latte) printf 'Catppuccin Latte' ;;
     mocha) printf 'Catppuccin Mocha' ;;
     macchiato) printf 'Catppuccin Macchiato' ;;
@@ -94,6 +166,24 @@ display_name() {
 config_slug() {
   case "$1" in
     zenbones-light) printf 'zenbones_light' ;;
+    zenbones-dark) printf 'zenbones_dark' ;;
+    neobones-light) printf 'neobones_light' ;;
+    neobones-dark) printf 'neobones_dark' ;;
+    vimbones-light) printf 'vimbones_light' ;;
+    forestbones-light) printf 'forestbones_light' ;;
+    forestbones-dark) printf 'forestbones_dark' ;;
+    nordbones-dark) printf 'nordbones_dark' ;;
+    rosebones-light) printf 'rosebones_light' ;;
+    rosebones-dark) printf 'rosebones_dark' ;;
+    tokyobones-light) printf 'tokyobones_light' ;;
+    tokyobones-dark) printf 'tokyobones_dark' ;;
+    seoulbones-light) printf 'seoulbones_light' ;;
+    seoulbones-dark) printf 'seoulbones_dark' ;;
+    duckbones-dark) printf 'duckbones_dark' ;;
+    zenburned-dark) printf 'zenburned_dark' ;;
+    zenwritten-light) printf 'zenwritten_light' ;;
+    zenwritten-dark) printf 'zenwritten_dark' ;;
+    kanagawabones-dark) printf 'kanagawabones_dark' ;;
     latte|mocha|macchiato) printf 'catppuccin_%s' "$1" ;;
     tokyonight-moon) printf 'tokyonight_moon' ;;
     tokyonight-day) printf 'tokyonight_day' ;;
@@ -112,7 +202,7 @@ bat_theme() {
     latte) printf 'Catppuccin Latte' ;;
     mocha) printf 'Catppuccin Mocha' ;;
     macchiato) printf 'Catppuccin Macchiato' ;;
-    tokyonight-moon|tokyonight-day|rose-pine|rose-pine-dawn|everforest-light|everforest-dark|kanagawa-dragon|oxocarbon-dark|zenbones-light) printf 'ansi' ;;
+    tokyonight-moon|tokyonight-day|rose-pine|rose-pine-dawn|everforest-light|everforest-dark|kanagawa-dragon|oxocarbon-dark|zenbones-light|zenbones-dark|neobones-light|neobones-dark|vimbones-light|forestbones-light|forestbones-dark|nordbones-dark|rosebones-light|rosebones-dark|tokyobones-light|tokyobones-dark|seoulbones-light|seoulbones-dark|duckbones-dark|zenburned-dark|zenwritten-light|zenwritten-dark|kanagawabones-dark) printf 'ansi' ;;
     *) return 1 ;;
   esac
 }
@@ -139,6 +229,11 @@ verify_selection() {
   grep -Fq "color_theme = \"$slug\"" \
     "$root/.config/btop/btop.conf" || return 1
   [[ -f $root/.config/btop/themes/$slug.theme ]] || return 1
+  case "$theme" in
+    *bones-*|zenwritten-*|zenburned-*)
+      [[ -f $root/.config/ghostty/themes/$display ]] || return 1
+      ;;
+  esac
 }
 
 CURRENT="$(tr -d '[:space:]' < "$THEME_FILE")"
@@ -197,6 +292,13 @@ trap 'rm -rf "$STAGE"' EXIT
 mkdir -p "$STAGE/.config/btop/themes"
 cp "$REPO/.config/btop/themes/$TO_SLUG.theme" \
   "$STAGE/.config/btop/themes/$TO_SLUG.theme"
+case "$ACTION" in
+  *bones-*|zenwritten-*|zenburned-*)
+    mkdir -p "$STAGE/.config/ghostty/themes"
+    cp "$REPO/.config/ghostty/themes/$TO_DISPLAY" \
+      "$STAGE/.config/ghostty/themes/$TO_DISPLAY"
+    ;;
+esac
 
 for rel in "${FILES[@]}"; do
   [[ -f $REPO/$rel ]] || {
