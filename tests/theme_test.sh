@@ -25,6 +25,7 @@ FILES=(
   .config/btop/themes/everforest_dark.theme
   .config/btop/themes/kanagawa_dragon.theme
   .config/btop/themes/oxocarbon_dark.theme
+  .config/btop/themes/zenbones_light.theme
   .config/nvim/lua/plugins/colorscheme.lua
   .config/nvim/lua/plugins/bufferline.lua
   .config/nvim/lua/core/picker.lua
@@ -159,6 +160,14 @@ grep -Fq 'theme[main_bg]="#161616"' \
   "$FIXTURE/.config/btop/themes/oxocarbon_dark.theme"
 grep -Fq 'bg:#161616' "$FIXTURE/.config/nvim/lua/core/picker.lua"
 grep -Fq 'BAT_THEME="ansi"' "$FIXTURE/.zshrc"
+"$FIXTURE/theme.sh" zenbones-light >/dev/null
+"$FIXTURE/theme.sh" status | grep -Fq 'Zenbones Light'
+grep -Fq 'theme = "Zenbones Light"' "$FIXTURE/.config/ghostty/config"
+grep -Fq 'background = #f0edec' "$FIXTURE/.config/ghostty/config"
+grep -Fq 'selected_theme = "zenbones-light"' "$FIXTURE/.config/nvim/lua/plugins/colorscheme.lua"
+grep -Fq 'color_theme = "zenbones_light"' "$FIXTURE/.config/btop/btop.conf"
+grep -Fq 'theme[main_bg]="#f0edec"' "$FIXTURE/.config/btop/themes/zenbones_light.theme"
+grep -Fq 'bg:#f0edec' "$FIXTURE/.config/nvim/lua/core/picker.lua"
 "$FIXTURE/theme.sh" "$original_theme" >/dev/null
 after="$(for rel in "${FILES[@]}"; do cksum "$FIXTURE/$rel"; done)"
 if [[ $before != "$after" ]]; then

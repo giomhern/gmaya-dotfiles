@@ -697,15 +697,19 @@ The terminal tools share one visual theme. Check or change it from the repositor
 ./theme.sh everforest-dark
 ./theme.sh kanagawa-dragon
 ./theme.sh oxocarbon-dark
+./theme.sh zenbones-light
 ```
 
 The command updates Ghostty, Neovim, tmux, Starship, fzf (both shell and Neovim), bat, and btop together. Reload the shell with `exec zsh`, reload tmux with
 prefix + `r`, and restart other open applications. The selected theme is stored in `.theme`; commit that change to carry the same look to another laptop. Tokyo
-Night, Rosé Pine, Everforest, Kanagawa Dragon, and Oxocarbon use bat's ANSI theme so syntax colors follow the terminal palette. Latte, Tokyo Night Day, Rosé Pine Dawn, and Everforest Light
-are light; the others are dark. Rosé Pine selects the Main variant; Everforest Light uses Medium contrast and Dark uses Hard. File buffers, Neo-tree, the inactive buffer
+Night, Rosé Pine, Everforest, Kanagawa Dragon, Oxocarbon, and Zenbones use bat's ANSI theme so syntax colors follow the terminal palette. Latte, Tokyo Night Day, Rosé Pine Dawn, Everforest Light,
+and Zenbones Light are light; the others are dark. Rosé Pine selects the Main variant; Everforest Light uses Medium contrast and Dark uses Hard. File buffers, Neo-tree, the inactive buffer
 tabs, and Neovim popups (including Neo-tree filters and the fzf file picker) share the same background in every theme. The active tab uses a subtly different
 surface so it remains visible.
 
 Oxocarbon uses the upstream dark palette from [Base16 Oxocarbon](https://github.com/nyoom-engineering/base16-oxocarbon) and the
 [Neovim colorscheme](https://github.com/nyoom-engineering/oxocarbon.nvim). The prompt, tmux bar, and editor statusline use flat, sparse shapes so the bright
 blue and cyan accents stand out against the layered grays.
+
+Zenbones Light uses the upstream [Zenbones](https://github.com/zenbones-theme/zenbones.nvim) palette and Ghostty's matching built-in theme. Its paper background,
+restrained syntax colors, and emphasis through font styles keep the editor minimal; the shared UI retains muted accents for navigation and state.

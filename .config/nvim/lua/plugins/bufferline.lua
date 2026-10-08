@@ -57,13 +57,13 @@ return {
           },
         },
         highlights = {
-          fill = { bg = "#161616" },
-          background = { bg = "#161616" },
-          buffer_selected = { bg = "#262626", bold = true },
+          fill = { bg = "#f0edec" },
+          background = { bg = "#f0edec" },
+          buffer_selected = { bg = "#dfd9d6", bold = true },
           -- The unsaved-change dot is part of the tab, not the fill beside it.
-          modified_selected = { bg = "#262626" },
-          separator = { fg = "#161616", bg = "#161616" },
-          separator_selected = { fg = "#161616", bg = "#262626" },
+          modified_selected = { bg = "#dfd9d6" },
+          separator = { fg = "#f0edec", bg = "#f0edec" },
+          separator_selected = { fg = "#f0edec", bg = "#dfd9d6" },
         },
       })
 

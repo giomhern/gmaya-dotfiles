@@ -4,6 +4,11 @@ return {
     name = "catppuccin",
     priority = 1000,
     dependencies = {
+      {
+        "zenbones-theme/zenbones.nvim",
+        lazy = false,
+        dependencies = { "rktjmp/lush.nvim" },
+      },
       { "folke/tokyonight.nvim", lazy = false },
       { "rose-pine/neovim", name = "rose-pine", lazy = false },
       { "neanias/everforest-nvim", name = "everforest", lazy = false },
@@ -25,7 +30,7 @@ return {
 
       -- The selected family is changed by theme.sh. Both setup paths normalize their
       -- palettes so the custom picker, explorer, and statusline styling stays shared.
-      local selected_theme = "oxocarbon-dark"
+      local selected_theme = "zenbones-light"
 
       local function custom_theme_highlights(colors)
         local popup_bg = colors.base
@@ -234,24 +239,50 @@ return {
           end,
         })
         vim.cmd.colorscheme("everforest")
+      elseif selected_theme == "zenbones-light" then
+        vim.o.background = "light"
+        vim.cmd.colorscheme("zenbones")
+        local palette = require("zenbones.palette").light
+        local function hex(color)
+          return color.hex:lower()
+        end
+        local colors = {
+          mantle = hex(palette.bg.da(4)),
+          base = hex(palette.bg),
+          surface0 = hex(palette.bg.da(7)),
+          overlay1 = hex(palette.fg1),
+          text = hex(palette.fg),
+          rosewater = hex(palette.wood),
+          blue = hex(palette.water),
+          green = hex(palette.leaf),
+          mauve = hex(palette.blossom),
+          red = hex(palette.rose),
+          peach = hex(palette.wood),
+          yellow = hex(palette.wood1),
+          sky = hex(palette.sky),
+          teal = hex(palette.leaf1),
+        }
+        for group, spec in pairs(custom_theme_highlights(colors)) do
+          vim.api.nvim_set_hl(0, group, spec)
+        end
       elseif selected_theme == "oxocarbon-dark" then
         vim.o.background = "dark"
         vim.cmd.colorscheme("oxocarbon")
         local colors = {
-          mantle = "#1f1f1f",
-          base = "#161616",
-          surface0 = "#262626",
-          overlay1 = "#6f6f6f",
-          text = "#f2f4f8",
-          rosewater = "#ffb3d6",
-          blue = "#78a9ff",
-          green = "#42be65",
-          mauve = "#be95ff",
-          red = "#fa4d56",
-          peach = "#ff832b",
-          yellow = "#f1c21b",
-          sky = "#3ddbd9",
-          teal = "#08bdba",
+          mantle = "#e6e1df",
+          base = "#f0edec",
+          surface0 = "#dfd9d6",
+          overlay1 = "#948b85",
+          text = "#2c363c",
+          rosewater = "#ab6b58",
+          blue = "#286486",
+          green = "#4f6c31",
+          mauve = "#88507d",
+          red = "#a8334c",
+          peach = "#944927",
+          yellow = "#803d1c",
+          sky = "#3b8992",
+          teal = "#3f5a22",
         }
         for group, spec in pairs(custom_theme_highlights(colors)) do
           vim.api.nvim_set_hl(0, group, spec)

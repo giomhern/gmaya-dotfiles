@@ -26,7 +26,7 @@ typeset -ga _GMAYA_FZF_BINDS=(
   --bind home:preview-top
   --bind end:preview-bottom
 )
-typeset -g _GMAYA_FZF_COLORS='--color=fg:#f2f4f8,fg+:#f2f4f8,bg:#161616,bg+:#262626,border:#525252,label:#8d8d8d,spinner:#82cfff,hl:#78a9ff,hl+:#78a9ff,header:#78a9ff,info:#8d8d8d,pointer:#08bdba,marker:#ff7eb6,prompt:#08bdba'
+typeset -g _GMAYA_FZF_COLORS='--color=fg:#2c363c,fg+:#2c363c,bg:#f0edec,bg+:#dfd9d6,border:#b5a7a0,label:#78838b,spinner:#2b747c,hl:#286486,hl+:#286486,header:#286486,info:#78838b,pointer:#3f5a22,marker:#b47b70,prompt:#3f5a22'
 
 if command -v fzf >/dev/null 2>&1; then
   eval "$(fzf --zsh)"

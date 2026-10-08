@@ -17,12 +17,16 @@ FILES=(
 )
 
 usage() {
-  printf 'Usage: %s [status|latte|mocha|macchiato|tokyonight-moon|tokyonight-day|rose-pine|rose-pine-dawn|everforest-light|everforest-dark|kanagawa-dragon|oxocarbon-dark]\n' "$0"
+  printf 'Usage: %s [status|latte|mocha|macchiato|tokyonight-moon|tokyonight-day|rose-pine|rose-pine-dawn|everforest-light|everforest-dark|kanagawa-dragon|oxocarbon-dark|zenbones-light]\n' "$0"
   printf 'Change the shared theme in every configured application.\n'
 }
 
 palette() {
   case "$1" in
+    zenbones-light)
+      # Zenbones Light's upstream terminal palette, with derived UI shades.
+      printf '%s' '#ab6b58|#b47b70|#995d8c|#88507d|#a8334c|#94253e|#944927|#803d1c|#4f6c31|#3f5a22|#3b8992|#2b747c|#286486|#1d5573|#2c363c|#4f5e68|#63717a|#78838b|#948b85|#b5a7a0|#c4b8b1|#cfc1ba|#dfd9d6|#f0edec|#e6e1df|#e8e4e3'
+      ;;
     latte)
       printf '%s' '#dc8a78|#dd7878|#ea76cb|#8839ef|#d20f39|#e64553|#fe640b|#df8e1d|#40a02b|#179299|#04a5e5|#209fb5|#1e66f5|#7287fd|#4c4f69|#5c5f77|#6c6f85|#7c7f93|#8c8fa1|#9ca0b0|#acb0be|#bcc0cc|#ccd0da|#eff1f5|#e6e9ef|#dce0e8'
       ;;
@@ -71,6 +75,7 @@ palette() {
 
 display_name() {
   case "$1" in
+    zenbones-light) printf 'Zenbones Light' ;;
     latte) printf 'Catppuccin Latte' ;;
     mocha) printf 'Catppuccin Mocha' ;;
     macchiato) printf 'Catppuccin Macchiato' ;;
@@ -88,6 +93,7 @@ display_name() {
 
 config_slug() {
   case "$1" in
+    zenbones-light) printf 'zenbones_light' ;;
     latte|mocha|macchiato) printf 'catppuccin_%s' "$1" ;;
     tokyonight-moon) printf 'tokyonight_moon' ;;
     tokyonight-day) printf 'tokyonight_day' ;;
@@ -106,7 +112,7 @@ bat_theme() {
     latte) printf 'Catppuccin Latte' ;;
     mocha) printf 'Catppuccin Mocha' ;;
     macchiato) printf 'Catppuccin Macchiato' ;;
-    tokyonight-moon|tokyonight-day|rose-pine|rose-pine-dawn|everforest-light|everforest-dark|kanagawa-dragon|oxocarbon-dark) printf 'ansi' ;;
+    tokyonight-moon|tokyonight-day|rose-pine|rose-pine-dawn|everforest-light|everforest-dark|kanagawa-dragon|oxocarbon-dark|zenbones-light) printf 'ansi' ;;
     *) return 1 ;;
   esac
 }

@@ -12,11 +12,11 @@ local FZF_COLORS = "--color="
   .. (vim.o.background == "light" and "light" or "dark")
   .. ","
   .. table.concat({
-    "bg+:#262626,bg:#161616,spinner:#82cfff,hl:#78a9ff",
-    "input-bg:#161616,list-bg:#161616,preview-bg:#161616",
-    "header-bg:#161616,footer-bg:#161616",
-    "fg:#f2f4f8,header:#78a9ff,info:#8d8d8d,pointer:#08bdba",
-    "marker:#ff7eb6,fg+:#f2f4f8,prompt:#08bdba,hl+:#78a9ff,border:#78a9ff,label:#8d8d8d",
+    "bg+:#dfd9d6,bg:#f0edec,spinner:#2b747c,hl:#286486",
+    "input-bg:#f0edec,list-bg:#f0edec,preview-bg:#f0edec",
+    "header-bg:#f0edec,footer-bg:#f0edec",
+    "fg:#2c363c,header:#286486,info:#78838b,pointer:#3f5a22",
+    "marker:#b47b70,fg+:#2c363c,prompt:#3f5a22,hl+:#286486,border:#286486,label:#78838b",
   }, ",")
 
 -- Preview command for the file pickers. "{}" is the selected line, i.e. the
